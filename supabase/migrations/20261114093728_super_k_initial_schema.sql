@@ -1,81 +1,24 @@
+-- Super K initial database schema (applied to Supabase project tataeikxoymbnvwxnwvx)
 create extension if not exists pgcrypto;
 
-create table if not exists public.branches (
-  id uuid primary key default gen_random_uuid(), code text unique not null, name text not null,
-  is_active boolean not null default true, created_at timestamptz not null default now()
-);
-create table if not exists public.profiles (
-  id uuid primary key references auth.users(id) on delete cascade, username text unique not null,
-  display_name text not null default '', role text not null default 'staff' check (role in ('admin','staff')),
-  is_active boolean not null default true, created_at timestamptz not null default now(), updated_at timestamptz not null default now()
-);
-create table if not exists public.branch_memberships (
-  id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade,
-  user_id uuid not null references public.profiles(id) on delete cascade, role text not null default 'staff' check (role in ('admin','manager','staff')),
-  created_at timestamptz not null default now(), unique(branch_id,user_id)
-);
-create table if not exists public.categories (
- id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade,
- name text not null, created_at timestamptz not null default now(), unique(branch_id,name)
-);
-create table if not exists public.products (
- id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade,
- category_id uuid references public.categories(id) on delete set null, sku text, barcode text, name text not null,
- unit text not null default 'ชิ้น', cost numeric(14,2) not null default 0, price numeric(14,2) not null default 0,
- quantity numeric(14,3) not null default 0, min_quantity numeric(14,3) not null default 0,
- is_active boolean not null default true, created_by uuid references public.profiles(id),
- created_at timestamptz not null default now(), updated_at timestamptz not null default now()
-);
-create unique index if not exists products_branch_sku_unique on public.products(branch_id,sku) where sku is not null and sku<>'';
-create unique index if not exists products_branch_barcode_unique on public.products(branch_id,barcode) where barcode is not null and barcode<>'';
-create table if not exists public.inventory_movements (
- id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade,
- product_id uuid not null references public.products(id) on delete cascade, quantity_delta numeric(14,3) not null,
- movement_type text not null check (movement_type in ('opening','purchase','sale','adjustment','return','transfer_in','transfer_out')),
- note text, user_id uuid references public.profiles(id), created_at timestamptz not null default now()
-);
-create table if not exists public.sales (
- id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade,
- receipt_no text, subtotal numeric(14,2) not null default 0, discount numeric(14,2) not null default 0,
- total numeric(14,2) not null default 0, payment_method text, status text not null default 'completed',
- created_by uuid references public.profiles(id), created_at timestamptz not null default now()
-);
-create table if not exists public.sale_items (
- id uuid primary key default gen_random_uuid(), sale_id uuid not null references public.sales(id) on delete cascade,
- product_id uuid references public.products(id) on delete set null, product_name text not null,
- quantity numeric(14,3) not null, unit_price numeric(14,2) not null, line_total numeric(14,2) not null
-);
-create table if not exists public.employee_jobs (
- id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade,
- user_id uuid references public.profiles(id) on delete set null, title text not null, description text,
- status text not null default 'pending' check (status in ('pending','in_progress','done','cancelled')),
- due_at timestamptz, created_by uuid references public.profiles(id), created_at timestamptz not null default now(), updated_at timestamptz not null default now()
-);
-create table if not exists public.activity_logs (
- id uuid primary key default gen_random_uuid(), branch_id uuid references public.branches(id) on delete set null,
- user_id uuid references public.profiles(id) on delete set null, action text not null, detail jsonb not null default '{}'::jsonb,
- created_at timestamptz not null default now()
-);
-create table if not exists public.chat_rooms (
- id uuid primary key default gen_random_uuid(), user_id uuid not null references public.profiles(id) on delete cascade,
- admin_user_id uuid not null references public.profiles(id) on delete cascade, branch_id uuid references public.branches(id) on delete set null,
- created_at timestamptz not null default now(), updated_at timestamptz not null default now(), unique(user_id,admin_user_id)
-);
-create table if not exists public.chat_messages (
- id uuid primary key default gen_random_uuid(), room_id uuid not null references public.chat_rooms(id) on delete cascade,
- sender_id uuid not null references public.profiles(id) on delete cascade,
- message_type text not null default 'text' check (message_type in ('text','image','audio')),
- body text, attachment_path text, attachment_mime text, created_at timestamptz not null default now(),
- expires_at timestamptz not null default (now()+interval '3 days'), read_at timestamptz,
- check (body is not null or attachment_path is not null)
-);
-create index if not exists memberships_user_branch_idx on public.branch_memberships(user_id,branch_id);
-create index if not exists products_branch_name_idx on public.products(branch_id,name);
-create index if not exists movements_branch_created_idx on public.inventory_movements(branch_id,created_at desc);
-create index if not exists jobs_branch_status_idx on public.employee_jobs(branch_id,status);
-create index if not exists chat_messages_room_created_idx on public.chat_messages(room_id,created_at desc);
-
-insert into public.branches(code,name) values ('HQ','สำนักงานใหญ่'),('SALAYA','ศาลายา') on conflict(code) do nothing;
+create table public.branches (id uuid primary key default gen_random_uuid(), name text not null, code text unique, is_active boolean not null default true, created_at timestamptz not null default now());
+create table public.profiles (id uuid primary key references auth.users(id) on delete cascade, username text unique, display_name text not null default '', role text not null default 'staff' check (role in ('admin','manager','staff')), is_active boolean not null default true, created_at timestamptz not null default now());
+create table public.branch_memberships (id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade, user_id uuid not null references public.profiles(id) on delete cascade, role text not null default 'staff' check (role in ('admin','manager','staff')), created_at timestamptz not null default now(), unique(branch_id,user_id));
+create table public.categories (id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade, name text not null, created_at timestamptz not null default now(), unique(branch_id,name));
+create table public.products (id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade, category_id uuid references public.categories(id) on delete set null, sku text, barcode text, name text not null, unit text not null default 'ชิ้น', quantity numeric(14,3) not null default 0, min_quantity numeric(14,3) not null default 0, cost numeric(14,2) not null default 0, sale_price numeric(14,2) not null default 0, image_path text, is_active boolean not null default true, created_at timestamptz not null default now(), updated_at timestamptz not null default now(), unique(branch_id,sku), unique(branch_id,barcode));
+create table public.inventory_movements (id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade, product_id uuid not null references public.products(id) on delete restrict, user_id uuid not null references public.profiles(id), movement_type text not null check (movement_type in ('in','out','adjust','sale','return')), quantity_delta numeric(14,3) not null, note text, created_at timestamptz not null default now());
+create table public.sales (id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete restrict, created_by uuid not null references public.profiles(id), receipt_no text not null, subtotal numeric(14,2) not null default 0, discount numeric(14,2) not null default 0, total numeric(14,2) not null default 0, payment_method text not null default 'cash', status text not null default 'completed' check (status in ('completed','void','refunded')), created_at timestamptz not null default now(), unique(branch_id,receipt_no));
+create table public.sale_items (id uuid primary key default gen_random_uuid(), sale_id uuid not null references public.sales(id) on delete cascade, product_id uuid references public.products(id) on delete set null, product_name text not null, quantity numeric(14,3) not null, unit_price numeric(14,2) not null, line_total numeric(14,2) not null);
+create table public.employee_jobs (id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade, user_id uuid references public.profiles(id) on delete set null, job_date date not null, status text not null check (status in ('off','leave','late','absent')), note text, created_by uuid not null references public.profiles(id), created_at timestamptz not null default now());
+create table public.activity_logs (id uuid primary key default gen_random_uuid(), branch_id uuid references public.branches(id) on delete set null, user_id uuid references public.profiles(id) on delete set null, action text not null, detail jsonb not null default '{}'::jsonb, created_at timestamptz not null default now());
+create table public.chat_rooms (id uuid primary key default gen_random_uuid(), branch_id uuid not null references public.branches(id) on delete cascade, user_id uuid not null references public.profiles(id) on delete cascade, admin_user_id uuid not null references public.profiles(id) on delete restrict, created_at timestamptz not null default now(), unique(branch_id,user_id), check (user_id <> admin_user_id));
+create table public.chat_messages (id uuid primary key default gen_random_uuid(), room_id uuid not null references public.chat_rooms(id) on delete cascade, sender_id uuid not null references public.profiles(id) on delete cascade, message_type text not null check (message_type in ('text','image','audio')), body text, attachment_path text, created_at timestamptz not null default now(), expires_at timestamptz not null default (now() + interval '3 days'), read_at timestamptz, check ((message_type='text' and body is not null and attachment_path is null) or (message_type in ('image','audio') and attachment_path is not null)));
+create index products_branch_name_idx on public.products(branch_id,name);
+create index inventory_movements_branch_created_idx on public.inventory_movements(branch_id,created_at desc);
+create index sales_branch_created_idx on public.sales(branch_id,created_at desc);
+create index employee_jobs_branch_date_idx on public.employee_jobs(branch_id,job_date);
+create index chat_messages_room_created_idx on public.chat_messages(room_id,created_at);
+create index chat_messages_expiry_idx on public.chat_messages(expires_at);
 
 alter table public.branches enable row level security;
 alter table public.profiles enable row level security;
@@ -90,25 +33,35 @@ alter table public.activity_logs enable row level security;
 alter table public.chat_rooms enable row level security;
 alter table public.chat_messages enable row level security;
 
-create or replace function public.super_k_is_admin() returns boolean language sql stable security definer set search_path=public as $$ select exists(select 1 from public.profiles where id=auth.uid() and role='admin' and is_active); $$;
-create or replace function public.super_k_has_branch(p_branch uuid) returns boolean language sql stable security definer set search_path=public as $$ select exists(select 1 from public.branch_memberships where user_id=auth.uid() and branch_id=p_branch); $$;
+create policy profiles_read_authenticated on public.profiles for select to authenticated using (true);
+create policy memberships_read_self on public.branch_memberships for select to authenticated using (user_id=(select auth.uid()));
+create policy branches_read_member on public.branches for select to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=branches.id and m.user_id=(select auth.uid())));
+create policy categories_read_member on public.categories for select to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=categories.branch_id and m.user_id=(select auth.uid())));
+create policy categories_manage_manager on public.categories for all to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=categories.branch_id and m.user_id=(select auth.uid()) and m.role in ('admin','manager'))) with check (exists(select 1 from public.branch_memberships m where m.branch_id=categories.branch_id and m.user_id=(select auth.uid()) and m.role in ('admin','manager')));
+create policy products_read_member on public.products for select to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=products.branch_id and m.user_id=(select auth.uid())));
+create policy products_manage_manager on public.products for all to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=products.branch_id and m.user_id=(select auth.uid()) and m.role in ('admin','manager'))) with check (exists(select 1 from public.branch_memberships m where m.branch_id=products.branch_id and m.user_id=(select auth.uid()) and m.role in ('admin','manager')));
+create policy inventory_read_member on public.inventory_movements for select to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=inventory_movements.branch_id and m.user_id=(select auth.uid())));
+create policy inventory_insert_member on public.inventory_movements for insert to authenticated with check (user_id=(select auth.uid()) and exists(select 1 from public.branch_memberships m where m.branch_id=inventory_movements.branch_id and m.user_id=(select auth.uid())));
+create policy sales_read_member on public.sales for select to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=sales.branch_id and m.user_id=(select auth.uid())));
+create policy sales_insert_member on public.sales for insert to authenticated with check (created_by=(select auth.uid()) and exists(select 1 from public.branch_memberships m where m.branch_id=sales.branch_id and m.user_id=(select auth.uid())));
+create policy sale_items_read_member on public.sale_items for select to authenticated using (exists(select 1 from public.sales s join public.branch_memberships m on m.branch_id=s.branch_id where s.id=sale_items.sale_id and m.user_id=(select auth.uid())));
+create policy sale_items_insert_member on public.sale_items for insert to authenticated with check (exists(select 1 from public.sales s join public.branch_memberships m on m.branch_id=s.branch_id where s.id=sale_items.sale_id and s.created_by=(select auth.uid()) and m.user_id=(select auth.uid())));
+create policy jobs_read_member on public.employee_jobs for select to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=employee_jobs.branch_id and m.user_id=(select auth.uid())));
+create policy jobs_manage_manager on public.employee_jobs for all to authenticated using (exists(select 1 from public.branch_memberships m where m.branch_id=employee_jobs.branch_id and m.user_id=(select auth.uid()) and m.role in ('admin','manager'))) with check (created_by=(select auth.uid()) and exists(select 1 from public.branch_memberships m where m.branch_id=employee_jobs.branch_id and m.user_id=(select auth.uid()) and m.role in ('admin','manager')));
+create policy activity_read_member on public.activity_logs for select to authenticated using (branch_id is null or exists(select 1 from public.branch_memberships m where m.branch_id=activity_logs.branch_id and m.user_id=(select auth.uid())));
+create policy activity_insert_self on public.activity_logs for insert to authenticated with check (user_id=(select auth.uid()) and (branch_id is null or exists(select 1 from public.branch_memberships m where m.branch_id=activity_logs.branch_id and m.user_id=(select auth.uid()))));
+create policy chat_rooms_read_participant on public.chat_rooms for select to authenticated using (user_id=(select auth.uid()) or admin_user_id=(select auth.uid()));
+create policy chat_rooms_create_self on public.chat_rooms for insert to authenticated with check (user_id=(select auth.uid()) and exists(select 1 from public.branch_memberships m where m.branch_id=chat_rooms.branch_id and m.user_id=(select auth.uid())) and exists(select 1 from public.profiles p where p.id=chat_rooms.admin_user_id and p.username='kiangkai' and p.is_active));
+create policy chat_messages_read_participant on public.chat_messages for select to authenticated using (exists(select 1 from public.chat_rooms r where r.id=chat_messages.room_id and (r.user_id=(select auth.uid()) or r.admin_user_id=(select auth.uid()))));
+create policy chat_messages_send_participant on public.chat_messages for insert to authenticated with check (sender_id=(select auth.uid()) and exists(select 1 from public.chat_rooms r where r.id=chat_messages.room_id and (r.user_id=(select auth.uid()) or r.admin_user_id=(select auth.uid()))));
+create policy chat_messages_mark_read on public.chat_messages for update to authenticated using (sender_id<>(select auth.uid()) and exists(select 1 from public.chat_rooms r where r.id=chat_messages.room_id and (r.user_id=(select auth.uid()) or r.admin_user_id=(select auth.uid())))) with check (sender_id<>(select auth.uid()));
 
-create policy branches_read_member on public.branches for select to authenticated using (public.super_k_is_admin() or public.super_k_has_branch(id));
-create policy profiles_read_self_or_admin on public.profiles for select to authenticated using (id=auth.uid() or public.super_k_is_admin());
-create policy profiles_update_self_or_admin on public.profiles for update to authenticated using (id=auth.uid() or public.super_k_is_admin()) with check (id=auth.uid() or public.super_k_is_admin());
-create policy memberships_read_self_or_admin on public.branch_memberships for select to authenticated using (user_id=auth.uid() or public.super_k_is_admin());
-create policy categories_read_member on public.categories for select to authenticated using (public.super_k_is_admin() or public.super_k_has_branch(branch_id));
-create policy products_read_member on public.products for select to authenticated using (public.super_k_is_admin() or public.super_k_has_branch(branch_id));
-create policy movements_read_member on public.inventory_movements for select to authenticated using (public.super_k_is_admin() or public.super_k_has_branch(branch_id));
-create policy sales_read_member on public.sales for select to authenticated using (public.super_k_is_admin() or public.super_k_has_branch(branch_id));
-create policy sale_items_read_member on public.sale_items for select to authenticated using (exists(select 1 from public.sales s where s.id=sale_id and (public.super_k_is_admin() or public.super_k_has_branch(s.branch_id))));
-create policy jobs_read_member on public.employee_jobs for select to authenticated using (public.super_k_is_admin() or public.super_k_has_branch(branch_id));
-create policy logs_read_admin on public.activity_logs for select to authenticated using (public.super_k_is_admin());
-create policy rooms_read_participant on public.chat_rooms for select to authenticated using (user_id=auth.uid() or admin_user_id=auth.uid() or public.super_k_is_admin());
-create policy rooms_insert_user on public.chat_rooms for insert to authenticated with check (user_id=auth.uid());
-create policy messages_read_participant on public.chat_messages for select to authenticated using (exists(select 1 from public.chat_rooms r where r.id=room_id and (r.user_id=auth.uid() or r.admin_user_id=auth.uid() or public.super_k_is_admin())));
-create policy messages_insert_participant on public.chat_messages for insert to authenticated with check (sender_id=auth.uid() and exists(select 1 from public.chat_rooms r where r.id=room_id and (r.user_id=auth.uid() or r.admin_user_id=auth.uid() or public.super_k_is_admin())));
-
-insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types) values ('super-k-chat','super-k-chat',false,10485760,array['image/jpeg','image/png','image/webp','audio/webm','audio/mp4','audio/mpeg','audio/ogg']) on conflict(id) do nothing;
-create policy chat_storage_read on storage.objects for select to authenticated using (bucket_id='super-k-chat' and exists(select 1 from public.chat_messages m join public.chat_rooms r on r.id=m.room_id where m.attachment_path=name and (r.user_id=auth.uid() or r.admin_user_id=auth.uid() or public.super_k_is_admin())));
-create policy chat_storage_insert on storage.objects for insert to authenticated with check (bucket_id='super-k-chat' and auth.uid()::text=split_part(name,'/',1));
+grant usage on schema public to authenticated;
+grant select on public.profiles,public.branch_memberships,public.branches,public.categories,public.products,public.inventory_movements,public.sales,public.sale_items,public.employee_jobs,public.activity_logs,public.chat_rooms,public.chat_messages to authenticated;
+grant insert on public.inventory_movements,public.sales,public.sale_items,public.activity_logs,public.chat_rooms,public.chat_messages to authenticated;
+grant update(read_at) on public.chat_messages to authenticated;
+grant insert,update,delete on public.categories,public.products,public.employee_jobs to authenticated;
+grant usage,select on all sequences in schema public to authenticated;
+insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types) values('super-k-chat','super-k-chat',false,10485760,array['image/jpeg','image/png','image/webp','audio/webm','audio/ogg','audio/mpeg','audio/mp4']) on conflict(id) do nothing;
+create policy chat_storage_read_participant on storage.objects for select to authenticated using (bucket_id='super-k-chat' and exists(select 1 from public.chat_rooms r where r.id::text=(storage.foldername(name))[1] and (r.user_id=(select auth.uid()) or r.admin_user_id=(select auth.uid()))));
+create policy chat_storage_insert_participant on storage.objects for insert to authenticated with check (bucket_id='super-k-chat' and exists(select 1 from public.chat_rooms r where r.id::text=(storage.foldername(name))[1] and (r.user_id=(select auth.uid()) or r.admin_user_id=(select auth.uid()))));
