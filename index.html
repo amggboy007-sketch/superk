@@ -2010,8 +2010,10 @@ body: JSON.stringify({ action: name, args: payload }), signal: controller.signal
 });
 try {
 let response = await call();
-if (response.status === 401 && cloudToken && await refreshCloudAuth()) response = await call();
-const data = await response.json().catch(() => ({}));
+let data = await response.json().catch(() => ({}));
+if (cloudToken && (response.status === 401 || /Session หมดอายุ/.test(String(data?.error || ''))) && await refreshCloudAuth()) {
+response = await call(); data = await response.json().catch(() => ({}));
+}
 if (!response.ok || data?.ok === false) throw new Error(data.error || data.message || `HTTP ${response.status}`);
 return data;
 } catch (error) {
@@ -4642,7 +4644,8 @@ e.preventDefault(); const button = e.submitter, pin = e.target.elements.pin.valu
 if (!/^\d{6}$/.test(pin)) return toast('กรุณากรอกรหัสผ่าน 6 หลัก', 1);
 if (button) button.disabled = true;
 try {
-const result = await cloudRpc('api_branch_switch', { p_token: cloudToken, p_branch_id: branch.id, p_pin_hash: await hash(pin) });
+await cloudRpc('api_branch_login', { p_branch_id: currentBranch.id, p_name: me.name, p_password: pin });
+const result = await cloudRpc('api_branch_switch', { p_token: cloudToken, p_branch_id: branch.id });
 if (!result.ok) { if (button) button.disabled = false; e.target.elements.pin.value = ''; try { localStorage.removeItem(pinKey); } catch (_) {} return toast(result.error || 'เข้าสาขาไม่สำเร็จ', 1); }
 try { localStorage.removeItem(pinKey); } catch (_) {}
 sess.set(cloudToken, result.branch.id, cloudTokenStore.getSession()?.refreshToken); setCurrentBranch(result.branch); applyCloudState(result.state); me = result.me;
@@ -4669,7 +4672,7 @@ if (!/^\d{6}$/.test(pin)) { errorBox.textContent = 'กรุณากรอก�
 if (button) button.disabled = true;
 let verificationToken = '';
 try {
-const verification = await cloudRpc('api_branch_login', { p_branch_id: currentBranch.id, p_name: username, p_pin_hash: await hash(pin) });
+const verification = await cloudRpc('api_branch_login', { p_branch_id: currentBranch.id, p_name: username, p_password: pin });
 if (!verification.ok) throw new Error(verification.error || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
 verificationToken = verification.token || '';
 if (!verificationToken || !verification.me?.owner || String(verification.me.name).toLowerCase() !== String(me?.name || '').toLowerCase()) throw new Error('ยืนยันได้เฉพาะบัญชีผู้ดูแลหลักที่ใช้งานอยู่');
@@ -5437,7 +5440,7 @@ if (!/^\d{6}$/.test(pin)) { errorBox.textContent = 'กรุณากรอก�
 button.disabled = true;
 let verificationToken = '';
 try {
-const verification = await cloudRpc('api_branch_login', { p_branch_id: currentBranch.id, p_name: username, p_pin_hash: await hash(pin) });
+const verification = await cloudRpc('api_branch_login', { p_branch_id: currentBranch.id, p_name: username, p_password: pin });
 if (!verification.ok || !verification.token) throw new Error(verification.error || 'ยืนยันชื่อผู้ใช้หรือรหัสผ่านไม่สำเร็จ');
 verificationToken = verification.token;
 if (String(verification.me?.name || '').toLowerCase() !== activeName.toLowerCase()) throw new Error('ยืนยันบัญชีที่กำลังใช้งานไม่สำเร็จ');
