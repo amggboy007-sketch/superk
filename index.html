@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<title>ไข่หวานบ้านซูชิ | ระบบจัดการสต็อกวัตถุดิบ</title>
+<title>Super K | ระบบบริหารจัดการธุรกิจหลายสาขา</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -95,6 +95,27 @@ button{cursor:pointer;border:0;background:none;user-select:none}
 .login-submit{background:linear-gradient(135deg,#ee9db4,#e9a96f);box-shadow:0 7px 17px rgba(226,151,165,.25)}
 .hint{background:#fff4d9;color:#936a36}
 .login-note{color:#a18d98!important}
+.story-mark{font-family:var(--font);font-weight:900;font-size:17px;letter-spacing:-1px}
+.subscription-expired{min-height:100vh;display:grid;place-items:center;padding:22px;background:linear-gradient(145deg,#f7f4ef,#eef3f8)}
+.subscription-expired-card{width:min(100%,460px);padding:30px 26px;border:1px solid #e4e8e6;border-radius:24px;background:#fff;box-shadow:0 20px 55px rgba(26,45,39,.12);text-align:center}
+.subscription-expired-icon{width:58px;height:58px;margin:0 auto 15px;display:grid;place-items:center;border-radius:18px;background:#fff3df;color:#b7791f;font-size:29px}
+.subscription-kicker{color:#9b835d;font-size:10px;font-weight:800;letter-spacing:2px}
+.subscription-expired-card h1{margin:8px 0;font-size:21px;color:#263b33}
+.subscription-expired-card p{margin:9px 0;color:#66756e;font-size:13px;line-height:1.7}
+.subscription-expired-card .subscription-expired-branch{font-weight:700;color:#344e42}
+.subscription-expired-date{font-weight:700;color:#a36b20!important}
+.subscription-expired-note{padding:10px 12px;border-radius:12px;background:#f5f8f5;font-size:11px!important}
+.subscription-expired-card .btn{width:100%;margin-top:12px}
+.branch-subscription{display:block;margin-top:2px;font-size:10px;font-weight:700;color:#9fd8b1}
+.branch-subscription.is-warning{color:#f5c46b}
+.branch-subscription.is-expired{color:#ff9aaa}
+.bm-subscription{flex:0 0 100%;font-size:10.5px;font-weight:700;color:var(--ok);line-height:1.4}
+.bm-subscription.is-warning{color:var(--warn)}
+.bm-subscription.is-expired{color:var(--bad)}
+.bm-name-wrap{flex-wrap:wrap;row-gap:2px}
+.bm-card .bm-manage-subscription{background:var(--acc-light)!important;color:var(--acc-hover)!important;border:1px solid var(--theme-border-strong)!important;box-shadow:none!important}
+.bm-card .bm-actions{flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:680px){.subscription-expired-card{padding:25px 20px}.branch-subscription{font-size:9px}}
 .branch-select-wrap{position:relative}
 .branch-select-wrap:after{content:'⌄';position:absolute;right:14px;top:50%;transform:translateY(-55%);pointer-events:none;color:var(--mute);font-size:17px}
 .branch-select{appearance:none;padding-right:38px;font-weight:650}
@@ -1785,14 +1806,14 @@ try {
 <section id="login" class="hide">
   <div class="login-wrap">
     <div class="login-story" aria-hidden="true">
-      <div class="story-brand"><span class="story-mark" id="siteStoryLogo" aria-hidden="true">🍣</span><span><span class="story-brand-name" id="siteStoryName">ไข่หวานบ้านซูชิ</span><span class="story-brand-sub">ร้านซูชิและวัตถุดิบสดใหม่</span></span></div>
-      <div class="story-copy"><h2 id="siteLoginHeading">สต็อกวัตถุดิบร้านไข่หวานบ้านซูชิ</h2></div>
-      <div class="ingredient-art"><span class="ingredient rice">🍚</span><span class="ingredient fish">🐟</span><span class="ingredient leaf">🌿</span><span class="art-caption">คัดสรรวัตถุดิบด้วยความใส่ใจ</span></div>
-      <div class="story-foot"><span>ไข่หวานบ้านซูชิ</span><span>สดใหม่ · ใส่ใจ · ได้คุณภาพ</span></div>
+      <div class="story-brand"><span class="story-mark" id="siteStoryLogo" aria-hidden="true">SK</span><span><span class="story-brand-name" id="siteStoryName">Super K</span><span class="story-brand-sub">BUSINESS MANAGEMENT PLATFORM</span></span></div>
+      <div class="story-copy"><span class="eyebrow">ONE PLATFORM · MULTIPLE BRANCHES</span><h2 id="siteLoginHeading">จัดการธุรกิจหลายสาขา<br>ได้ในที่เดียว</h2><p>ระบบจัดการสต็อก งานพนักงาน และข้อมูลสาขา เชื่อมต่อบนคลาวด์</p></div>
+      <div class="ingredient-art"><span class="ingredient rice">📦</span><span class="ingredient fish">📊</span><span class="ingredient leaf">🏬</span><span class="art-caption">SMART WORKSPACE FOR YOUR BUSINESS</span></div>
+      <div class="story-foot"><span>SUPER K</span><span>จัดการง่าย · ทำงานเป็นระบบ · ทุกสาขา</span></div>
     </div>
     <form class="lg" id="lgForm" autocomplete="on">
       <div class="lg-header">
-        <div class="lg-icon" id="siteLoginLogo" aria-hidden="true" style="font-size:27px">🍣</div>
+        <div class="lg-icon" id="siteLoginLogo" aria-hidden="true" style="font-size:19px;font-weight:900;letter-spacing:-1px">SK</div>
         <h1>เข้าสู่ระบบ</h1>
       </div>
       <label class="fld"><span>สาขาที่ปฏิบัติงาน</span><div class="branch-select-wrap"><select class="in branch-select" id="lgBranch" name="branch" required aria-label="เลือกสาขาที่ปฏิบัติงานก่อนเข้าสู่ระบบ"><option value="">กำลังโหลดรายชื่อสาขา…</option></select></div></label>
@@ -1802,8 +1823,20 @@ try {
       <div class="msg" id="lgMsg" role="alert" aria-live="polite"></div>
       <button type="submit" class="btn login-submit">เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
       <div class="hint hide" id="lgHint">เข้าใช้งานครั้งแรก ให้เจ้าของร้านลงชื่อเข้าใช้และตั้งรหัสใหม่</div>
-      <p class="login-note">สำหรับใช้งานภายในร้าน · ข้อมูลบันทึกไว้ในฐานข้อมูลกลางของร้าน</p>
+      <p class="login-note">Super K · ระบบบริหารจัดการธุรกิจบนคลาวด์สำหรับหลายสาขา</p>
     </form>
+  </div>
+</section>
+<section id="subscriptionExpired" class="subscription-expired hide" aria-live="polite">
+  <div class="subscription-expired-card">
+    <div class="subscription-expired-icon">⌛</div>
+    <span class="subscription-kicker">SUPER K MEMBERSHIP</span>
+    <h1>สิทธิ์ใช้งานสาขานี้หมดอายุแล้ว</h1>
+    <p id="subscriptionExpiredBranch" class="subscription-expired-branch">สาขา</p>
+    <p>กรุณาติดต่อผู้ดูแล Super K เพื่อดำเนินการต่ออายุสมาชิก</p>
+    <p class="subscription-expired-date" id="subscriptionExpiredDate"></p>
+    <p class="subscription-expired-note">ข้อมูลของสาขายังคงจัดเก็บอยู่ในระบบ และจะไม่ถูกลบเมื่อสมาชิกหมดอายุ</p>
+    <button type="button" class="btn login-submit" id="subscriptionExpiredLogout">กลับไปหน้าเข้าสู่ระบบ</button>
   </div>
 </section><!-- MAIN APP SHELL -->
 <div id="app" class="hide">
@@ -1812,7 +1845,7 @@ try {
       <div class="brand-badge" id="siteHeaderLogo">🍣</div>
       <div class="brand-copy">
         <div class="brand-title-row"><span class="brand-title" id="siteHeaderName">ไข่หวานบ้านซูชิ</span><span class="sync-status hide" id="syncStatus" role="status" aria-live="polite" aria-label="ข้อมูลอัปเดตจากเครื่องอื่นแล้ว"><i class="sync-status-dot" aria-hidden="true"></i><span>อัปเดต</span></span></div>
-        <small class="brand-branch" id="branchName">สาขาพันท้ายนรสิงห์</small><small id="clock">กำลังโหลดเวลา...</small>
+        <small class="brand-branch" id="branchName">สาขาพันท้ายนรสิงห์</small><small id="branchSubscription" class="branch-subscription hide"></small><small id="clock">กำลังโหลดเวลา...</small>
       </div>
     </div>
     <nav class="dtabs" id="dtabs"></nav>
@@ -1856,13 +1889,13 @@ if (data.branchName && currentBranch?.id) {
   if (option) option.textContent = 'สาขา' + branchName;
 }
 try { if (logo) localStorage.setItem('inv_site_logo_cache', logo); else localStorage.removeItem('inv_site_logo_cache'); } catch {}
-document.title = name + ' | ระบบจัดการสต็อกวัตถุดิบ';
+document.title = 'Super K | ระบบบริหารจัดการธุรกิจหลายสาขา';
 const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
-setText('siteStoryName', name);
+setText('siteStoryName', 'Super K');
+setText('siteLoginHeading', 'จัดการธุรกิจหลายสาขาได้ในที่เดียว');
 setText('siteHeaderName', name);
-setText('siteLoginHeading', 'ระบบจัดการสต็อก ' + name);
-const marks = ['siteStoryLogo', 'siteLoginLogo', 'siteHeaderLogo', 'siteBootLogo'];
-marks.forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = logo ? '<img src="' + esc(logo) + '" alt="" class="site-brand-image">' : '🍣'; });
+['siteHeaderLogo', 'siteBootLogo'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = logo ? '<img src="' + esc(logo) + '" alt="" class="site-brand-image">' : 'SK'; });
+['siteStoryLogo', 'siteLoginLogo'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = 'SK'; });
 const preview = document.getElementById('siteLogoPreview');
 if (preview) { preview.hidden = !logo; if (logo) preview.src = logo; else preview.removeAttribute('src'); }
 const nameInput = document.getElementById('siteNameInput');
@@ -2017,6 +2050,7 @@ let cloudToken = cloudTokenStore.get(), syncSnapshot = null, syncVersion = 0, sy
 const branchStore = { key: 'inv_selected_branch', get() { try { return localStorage.getItem(this.key) || ''; } catch { return ''; } }, set(id) { try { if (id) localStorage.setItem(this.key, id); else localStorage.removeItem(this.key); } catch {} } };
 const PRIMARY_BRANCH_FALLBACK = { id: 'e735a3bf-8a74-4a8c-9e9b-7af778e91234', name: 'พันท้ายนรสิงห์' };
 let branches = [], currentBranch = { id: '', name: 'พันท้ายนรสิงห์' };
+let currentSubscription = null, subscriptionTimer = null, subscriptionBusy = false;
 function setCurrentBranch(branch) {
 if (!branch?.id || !branch?.name) return;
 currentBranch = { id: String(branch.id), name: String(branch.name) }; branchStore.set(currentBranch.id);
@@ -2595,6 +2629,59 @@ e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
 $('#lgMsg').textContent = '';
 });
 $('#lgForm').addEventListener('submit', e => { e.preventDefault(); if ($('#lgPinInput').value.length === 6) tryLogin(); });
+function formatSubscriptionDate(value) {
+if (!value) return 'ยังไม่ได้กำหนดวันหมดอายุ';
+const d = new Date(value);
+return Number.isNaN(d.getTime()) ? 'ไม่พบวันหมดอายุ' : d.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+}
+function subscriptionDaysLeft(value) {
+const ms = Date.parse(value || '');
+return Number.isFinite(ms) ? Math.max(0, Math.ceil((ms - Date.now()) / 86400000)) : 0;
+}
+function subscriptionText(data) {
+if (!data?.expires_at) return 'ยังไม่ได้กำหนดอายุสมาชิก';
+const left = Number(data.remaining_seconds ?? Math.max(0, Math.floor((Date.parse(data.expires_at) - Date.now()) / 1000)));
+if (data.expired || left <= 0) return 'หมดอายุแล้ว · ' + formatSubscriptionDate(data.expires_at);
+return 'เหลือ ' + Math.max(1, Math.ceil(left / 86400)) + ' วัน · หมดอายุ ' + formatSubscriptionDate(data.expires_at);
+}
+function updateSubscriptionHeader(data = currentSubscription) {
+const el = document.getElementById('branchSubscription'); if (!el) return;
+if (!data) { el.textContent = ''; el.className = 'branch-subscription hide'; return; }
+const expired = !!data.expired || Number(data.remaining_seconds) <= 0;
+const warning = !expired && Number(data.remaining_seconds) <= 7 * 86400;
+el.textContent = 'สมาชิก: ' + subscriptionText(data);
+el.className = 'branch-subscription' + (expired ? ' is-expired' : warning ? ' is-warning' : '');
+}
+function showSubscriptionExpired(data = {}) {
+stopPresence();
+if (subscriptionTimer) { clearInterval(subscriptionTimer); subscriptionTimer = null; }
+const page = document.getElementById('subscriptionExpired');
+document.getElementById('subscriptionExpiredBranch').textContent = 'สาขา' + (data.branch_name || currentBranch?.name || '');
+document.getElementById('subscriptionExpiredDate').textContent = data.expires_at ? 'หมดอายุเมื่อ ' + formatSubscriptionDate(data.expires_at) : 'ยังไม่มีข้อมูลวันหมดอายุในระบบ';
+document.getElementById('bootScreen')?.classList.add('hide');
+document.getElementById('app')?.classList.add('hide');
+document.getElementById('login')?.classList.add('hide');
+page?.classList.remove('hide');
+}
+async function refreshSubscriptionStatus(showExpired = true) {
+if (!cloudToken || !currentBranch?.id || subscriptionBusy) return null;
+subscriptionBusy = true;
+try {
+const data = await cloudRpc('api_subscription_status', { p_branch_id: currentBranch.id });
+currentSubscription = data;
+const branchIndex = branches.findIndex(b => String(b.id) === String(currentBranch.id));
+if (branchIndex >= 0) branches[branchIndex] = { ...branches[branchIndex], starts_at:data.starts_at, expires_at:data.expires_at, remaining_seconds:data.remaining_seconds, subscription_expired:data.expired };
+updateSubscriptionHeader(data);
+if (data.expired && showExpired) showSubscriptionExpired(data);
+return data;
+} catch (error) { console.warn('ตรวจสอบสมาชิก Super K ไม่สำเร็จ', error); return null; }
+finally { subscriptionBusy = false; }
+}
+function startSubscriptionMonitor() {
+if (subscriptionTimer) clearInterval(subscriptionTimer);
+subscriptionTimer = setInterval(() => { if (document.visibilityState !== 'hidden') refreshSubscriptionStatus(true); }, 60000);
+}
+document.getElementById('subscriptionExpiredLogout')?.addEventListener('click', () => logout());
 async function tryLogin() {
 const name = $('#lgUser').value.trim().toLowerCase(), pinVal = $('#lgPinInput').value, msg = $('#lgMsg');
 const fail = t => { msg.textContent = t; $('#lgPinInput').value = ''; };
@@ -2613,11 +2700,16 @@ cloudToken = authData.access_token; sess.set(authData.access_token, branchId, au
 lock.n++; if (lock.n >= 5) { lock = { n: 0, until: Date.now() + 30000 }; store.set('inv_lock', lock); return fail('ลองผิด 5 ครั้ง ล็อก 30 วินาที'); }
 store.set('inv_lock', lock); return fail(error.message || 'เข้าสู่ระบบไม่สำเร็จ');
 }
+let subscription;
+try { subscription = await cloudRpc('api_subscription_status', { p_branch_id: branchId }); }
+catch (error) { sess.set(null); return fail(error.message || 'ตรวจสอบสมาชิกสาขาไม่สำเร็จ'); }
+if (subscription.expired) { currentSubscription = subscription; showSubscriptionExpired(subscription); return; }
+currentSubscription = subscription; updateSubscriptionHeader(subscription);
+lock = { n: 0, until: 0 }; store.set('inv_lock', lock);
+if (IS_MOBILE_BROWSER) { try { localStorage.setItem('inv_last_username', name); } catch {} }
 let result;
 try { result = await cloudRpc('api_get_state', { p_branch_id: branchId }); }
 catch (error) { sess.set(null); return fail(error.message || 'บัญชีนี้ไม่มีสิทธิ์เข้าสาขาที่เลือก'); }
-lock = { n: 0, until: 0 }; store.set('inv_lock', lock);
-if (IS_MOBILE_BROWSER) { try { localStorage.setItem('inv_last_username', name); } catch {} }
 applyCloudState(result.state); syncSnapshot = cloneData(result.state); syncVersion = result.version || 1;
 if (logNeedsPrune) save();
 enter(result.me, result.branch);
@@ -2628,10 +2720,13 @@ me = u; $('#lgPinInput').value = ''; $('#lgUser').value = '';
 void refreshPushSubscriptionForSession();
 $('#bootScreen').classList.add('hide'); $('#login').classList.add('hide'); $('#app').classList.remove('hide');
 $('#meName').textContent = u.name; $('#meRole').textContent = ROLE[u.role]; $('#btnEditName').classList.toggle('hide', !!u.branchManagerAccess); $('#btnPin').classList.toggle('hide', !!u.branchManagerAccess);
-tab = 'stock'; build(); startPresence(); refreshAnnouncement(true); if (u.must) pinModal(true);
+tab = 'stock'; build(); startPresence(); refreshAnnouncement(true); void refreshSubscriptionStatus(true); startSubscriptionMonitor(); if (u.must) pinModal(true);
 }
 function logout() {
 stopPresence();
+if (subscriptionTimer) { clearInterval(subscriptionTimer); subscriptionTimer = null; }
+currentSubscription = null; updateSubscriptionHeader(null);
+const expiredPage = document.getElementById('subscriptionExpired'); if (expiredPage) expiredPage.classList.add('hide');
 const oldToken = cloudToken;
 if (oldToken) {
   const deviceId = store.get('inv_notification_device_id', '');
@@ -4110,7 +4205,7 @@ const stockResetLog = L.find(x => x.note === STOCK_RESET_NOTE);
 const resetAudit = stockResetLog && (!lastReset || Number(stockResetLog.ts) > Number(lastReset.ts || 0)) ? { scope: 'stock', user: stockResetLog.user, ts: stockResetLog.ts } : lastReset;
 return `<div class="sect"><h2>ตั้งค่าระบบ</h2><small>กำหนดค่าการแสดงผลและข้อมูล</small></div>
   <div class="dash-grid settings-grid">
-    ${can.manageBranches() ? `<div class="dash-card branch-admin-card bm-card"><div class="bm-head"><h3>🏬 จัดการสาขา<span class="bm-count">${branches.length}</span></h3><button type="button" class="btn sm bm-add" id="createBranchBtn">${ic('plus')} เพิ่มสาขา</button></div><details class="bm-info"><summary>วิธีเข้าถึงสาขา</summary><p class="settings-hint">จัดการสาขาได้เฉพาะบัญชีหลัก kiangkai ผู้ใช้งานสาขาอื่นต้องเข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสของตนเอง และเข้าได้เฉพาะสาขาที่เลือกไว้</p></details><div class="bm-list">${branches.map(b => { const isCurrent = String(b.id)===String(currentBranch.id); return `<div class="bm-row${isCurrent?' is-current':''}"><span class="bm-name-wrap"><span class="bm-name" title="${esc(b.name)}">${esc(b.name)}</span>${branchOnlineHtml(b)}</span>${isCurrent?`<span class="bm-badge">กำลังใช้งาน</span>`:`<span class="bm-actions"><button type="button" class="btn sm bm-btn bm-close" data-delete-branch="${esc(b.id)}" aria-label="ลบสาขา ${esc(b.name)}">ลบสาขา</button><button type="button" class="btn sm bm-btn bm-enter" data-switch-branch="${esc(b.id)}" aria-label="เข้าสาขา ${esc(b.name)}">เข้า</button></span>`}</div>`; }).join('')}</div></div>` : ''}
+    ${can.manageBranches() ? `<div class="dash-card branch-admin-card bm-card"><div class="bm-head"><h3>🏬 จัดการสาขา<span class="bm-count">${branches.length}</span></h3><button type="button" class="btn sm bm-add" id="createBranchBtn">${ic('plus')} เพิ่มสาขา</button></div><details class="bm-info"><summary>วิธีเข้าถึงสาขา</summary><p class="settings-hint">จัดการสาขาได้เฉพาะบัญชีหลัก kiangkai ผู้ใช้งานสาขาอื่นต้องเข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสของตนเอง และเข้าได้เฉพาะสาขาที่เลือกไว้</p></details><div class="bm-list">${branches.map(b => { const isCurrent = String(b.id)===String(currentBranch.id); return `<div class="bm-row${isCurrent?' is-current':''}"><span class="bm-name-wrap"><span class="bm-name" title="${esc(b.name)}">${esc(b.name)}</span>${branchOnlineHtml(b)}<small class="bm-subscription ${!b.expires_at || b.subscription_expired ? 'is-expired' : (Number(b.remaining_seconds) <= 604800 ? 'is-warning' : '')}">${esc(subscriptionText({expires_at:b.expires_at,remaining_seconds:b.remaining_seconds,expired:b.subscription_expired}))}</small></span><span class="bm-actions">${isCurrent?`<span class="bm-badge">กำลังใช้งาน</span>`:`<button type="button" class="btn sm bm-btn bm-close" data-delete-branch="${esc(b.id)}" aria-label="ลบสาขา ${esc(b.name)}">ลบสาขา</button><button type="button" class="btn sm bm-btn bm-enter" data-switch-branch="${esc(b.id)}" aria-label="เข้าสาขา ${esc(b.name)}">เข้า</button>`}<button type="button" class="btn sm bm-btn bm-manage-subscription" data-manage-subscription="${esc(b.id)}" aria-label="จัดการวันสมาชิก ${esc(b.name)}">จัดการวัน</button></span></div>`; }).join('')}</div></div>` : ''}
     ${canManageSite ? `<div class="dash-card disclosure-card site-admin-card" id="siteAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="siteAdminDisclosurePanel"><span>🌐 จัดการเว็บไซต์</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="siteAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><p class="settings-hint">กำหนดชื่อเว็บไซต์ ชื่อสาขา และโลโก้เฉพาะสาขาที่กำลังใช้งาน การเปลี่ยนแปลงจะไม่กระทบสาขาอื่น</p><label class="fld"><span>ชื่อเว็บไซต์</span><input class="in" id="siteNameInput" maxlength="60" value="${esc(siteBrand.siteName)}" placeholder="ชื่อเว็บไซต์"></label><label class="fld"><span>ชื่อสาขา</span><input class="in" id="siteBranchNameInput" maxlength="80" value="${esc(currentBranch.name)}" placeholder="ชื่อสาขา"></label><label class="fld"><span>โลโก้เว็บไซต์ (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="siteLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame"><img id="siteLogoPreview" class="site-logo-preview site-brand-image" alt="ตัวอย่างโลโก้" ${siteBrand.logoData ? `src="${esc(siteBrand.logoData)}"` : 'hidden'}></div><small>ตัวอย่างพื้นที่โลโก้บนหัวเว็บไซต์จริง</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearSiteLogoBtn">นำโลโก้ออก</button><button type="button" class="btn sm" id="saveSiteBrandBtn">บันทึกการเปลี่ยนแปลง</button></div><small class="settings-hint">รองรับรูปต้นฉบับสูงสุด 20 MB ระบบจะย่อและบีบอัดเป็น WEBP ให้อัตโนมัติ โดยคงสัดส่วนภาพ</small></div></div></div>` : ''}
     ${isAnnouncer() ? `<div class="dash-card disclosure-card announce-card" id="announceCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="announceDisclosurePanel"><span>📢 ประกาศข้อความ</span><span class="disclosure-count" id="announceCount"></span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="announceDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">
       <p class="settings-hint">ข้อความจะเลื่อนจากขวาไปซ้ายใต้หัวเว็บไซต์ของผู้ใช้ในสาขาที่เลือก จนครบเวลาที่กำหนด หรือจนกว่าจะยกเลิก</p>
@@ -4186,23 +4281,23 @@ return `<div class="sect"><h2>ตั้งค่าระบบ</h2><small>ก�
     </div>` : ''}
     ${can.reset() || can.permissions() ? '</div>' : ''}
     <div class="dash-card disclosure-card about-site-card"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="aboutSiteDisclosurePanel"><span>ℹ️ เกี่ยวกับเว็บไซต์</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="aboutSiteDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><div class="about-site-content">
-      <div class="about-site-intro"><span class="about-site-kicker">SYSTEM GUIDE</span><h3>คู่มือความสามารถของเว็บไซต์</h3><p>เว็บไซต์ไข่หวานบ้านซูชิ เป็นระบบบริหารจัดการสต๊อกและงานภายในร้าน ออกแบบให้ติดตามวัตถุดิบ การเคลื่อนไหวของสินค้า ประวัติการทำรายการ และการทำงานของพนักงานได้ในที่เดียว รองรับการทำงานแยกตามสาขา พร้อมระบบบัญชีและสิทธิ์การเข้าถึง</p></div>
+      <div class="about-site-intro"><span class="about-site-kicker">SUPER K · PLATFORM GUIDE</span><h3>เกี่ยวกับแพลตฟอร์ม Super K</h3><p>Super K คือแพลตฟอร์มบริหารจัดการธุรกิจที่รองรับการทำงานหลายสาขาในระบบเดียว รวมเครื่องมือจัดการสต็อก การรับเข้า–เบิกจ่าย ประวัติ แดชบอร์ด งานพนักงาน และบัญชีผู้ใช้ โดยแยกข้อมูลและสิทธิ์ตามสาขา พร้อมระบบสมาชิกแบบกำหนดระยะเวลาใช้งานรายสาขา</p></div>
       <div class="about-site-grid">
-        <section class="about-site-section"><h4><span>📦</span> 01 · ระบบจัดการสต๊อกวัตถุดิบ</h4><p>ใช้ดูแลรายการวัตถุดิบและจำนวนคงเหลือของร้านเป็นศูนย์กลาง ช่วยให้ผู้ใช้งานตรวจสอบข้อมูลสินค้าและติดตามการเปลี่ยนแปลงของสต๊อกได้สะดวก</p><ul><li>แสดงรายการวัตถุดิบและจำนวนคงเหลือในระบบ</li><li>จัดการข้อมูลรายการสินค้าและข้อมูลประกอบตามสิทธิ์ที่ได้รับ</li><li>ใช้ข้อมูลสต๊อกเป็นฐานสำหรับบันทึกรับเข้าและเบิกจ่าย</li><li>แยกข้อมูลตามสาขาที่กำลังใช้งาน</li></ul></section>
-        <section class="about-site-section"><h4><span>🔄</span> 02 · การรับเข้าและเบิกจ่าย</h4><p>บันทึกความเคลื่อนไหวของวัตถุดิบ เพื่อให้ทราบว่ามีการเพิ่มหรือลดจำนวนจากการทำรายการเมื่อใด และสามารถย้อนตรวจสอบรายการที่เกิดขึ้นได้</p><ul><li>บันทึกรายการรับเข้าสต๊อก</li><li>บันทึกรายการเบิกจ่ายวัตถุดิบ</li><li>เก็บรายละเอียดการเคลื่อนไหวไว้ในประวัติ</li><li>ใช้ข้อมูลรายการเพื่อประกอบการตรวจสอบยอดคงเหลือ</li></ul></section>
-        <section class="about-site-section"><h4><span>🧾</span> 03 · ประวัติและการตรวจสอบย้อนหลัง</h4><p>รวบรวมประวัติการเคลื่อนไหวของสต๊อก ช่วยตรวจสอบรายการที่เคยบันทึกและติดตามความเปลี่ยนแปลงของข้อมูลในช่วงเวลาที่ต้องการ</p><ul><li>เรียกดูประวัติการทำรายการย้อนหลัง</li><li>ใช้ตัวกรองช่วงวันที่เพื่อค้นหาข้อมูลตามระยะเวลา</li><li>ตรวจสอบรายการรับเข้าและเบิกจ่ายจากประวัติ</li><li>ข้อมูลประวัติแยกตามสาขา</li></ul></section>
-        <section class="about-site-section"><h4><span>📊</span> 04 · แดชบอร์ดและสรุปข้อมูล</h4><p>แสดงภาพรวมข้อมูลการดำเนินงานในรูปแบบตัวเลขและกราฟ เพื่อช่วยให้ผู้ดูแลมองเห็นแนวโน้มและเปรียบเทียบกิจกรรมของร้านได้ง่ายขึ้น</p><ul><li>สรุปข้อมูลการรับเข้าและเบิกจ่าย</li><li>แสดงกราฟและตัวเลขภาพรวมตามช่วงเวลาที่เลือก</li><li>ใช้ข้อมูลประกอบการติดตามการเคลื่อนไหวของวัตถุดิบ</li><li>ข้อมูลที่แสดงอ้างอิงจากรายการที่บันทึกในระบบ</li></ul></section>
-        <section class="about-site-section"><h4><span>🗓️</span> 05 · ปฏิทินจ๊อบและสถานะพนักงาน</h4><p>เครื่องมือสำหรับผู้ดูแลจัดการตารางงานและติดตามสถานะของพนักงานในแต่ละวัน โดยแสดงข้อมูลเป็นปฏิทินและรายงานสรุป</p><ul><li>ดูตารางจ๊อบพนักงานในรูปแบบปฏิทินรายเดือน</li><li>บันทึกและแก้ไขสถานะ เช่น ปกติ ขาด สาย ลา และหยุด</li><li>จัดการวันหยุดประจำและการสลับวันหยุด</li><li>เลือกพนักงานเพื่อดูข้อมูลรายบุคคลหรือภาพรวม</li><li>สรุปการตัดวีค แบ่งเป็นวีค 1 (วันที่ 11–25) และวีค 2 (วันที่ 26–10)</li><li>เลือกดูสรุปรายเดือนหรือสรุปรายสัปดาห์ของทีม</li><li>ปิดรอบวีคเพื่อบันทึกผล และเปิดรอบอีกครั้งได้ตามสิทธิ์</li></ul></section>
-        <section class="about-site-section"><h4><span>👥</span> 06 · บัญชีผู้ใช้และสิทธิ์การใช้งาน</h4><p>ควบคุมการเข้าถึงข้อมูลและเครื่องมือต่าง ๆ ตามบทบาทของผู้ใช้งาน เพื่อให้แต่ละคนใช้งานได้เฉพาะส่วนที่ได้รับอนุญาต</p><ul><li>เข้าสู่ระบบด้วยบัญชีผู้ใช้ของตนเอง</li><li>จัดการบัญชีผู้ใช้ตามสิทธิ์ของผู้ดูแล</li><li>กำหนดสิทธิ์การจัดการสต๊อก รายการ ผู้ใช้ และการตั้งค่าที่เกี่ยวข้อง</li><li>รองรับการกำหนดสิทธิ์การจัดการจ๊อบพนักงานและเมนูด้านข้าง</li><li>การดำเนินการสำคัญบางประเภทจำกัดเฉพาะผู้ดูแลที่ได้รับอนุญาต</li></ul></section>
-        <section class="about-site-section"><h4><span>🏬</span> 07 · ระบบหลายสาขา</h4><p>รองรับการใช้งานมากกว่าหนึ่งสาขา โดยแยกข้อมูลการดำเนินงานของแต่ละสาขาออกจากกัน ช่วยให้ผู้ดูแลสลับไปจัดการสาขาที่ต้องการได้</p><ul><li>แสดงและเลือกสาขาที่ต้องการใช้งาน</li><li>ข้อมูลสต๊อกและประวัติผูกกับสาขาที่เลือก</li><li>การสำรองหรือกู้คืนแบบรายสาขามีผลกับสาขาที่ระบุ</li><li>การจัดการสาขาจำกัดตามสิทธิ์ผู้ดูแลหลัก</li></ul></section>
-        <section class="about-site-section"><h4><span>📢</span> 08 · ประกาศและการปรับแต่งหน้าจอ</h4><p>มีเครื่องมือช่วยสื่อสารข้อมูลภายในและปรับประสบการณ์ใช้งานให้เหมาะกับผู้ใช้และอุปกรณ์</p><ul><li>ผู้มีสิทธิ์สามารถสร้างประกาศข้อความและเลือกสาขาที่ต้องการให้แสดง</li><li>กำหนดระยะเวลาแสดงประกาศเป็นชั่วโมงและนาที</li><li>ตรวจสอบประกาศที่กำลังแสดงและยกเลิกประกาศได้</li><li>รองรับธีมและการปรับรูปแบบการแสดงผลของเว็บไซต์</li><li>มีเมนูนำทางที่ปรับตามขนาดหน้าจอ รวมถึงเมนูด้านข้างบนอุปกรณ์ที่รองรับ</li></ul></section>
-        <section class="about-site-section"><h4><span>☁️</span> 09 · ฐานข้อมูลและการจัดเก็บบนคลาวด์</h4><p>ข้อมูลระบบจัดเก็บในฐานข้อมูล PostgreSQL ผ่าน Supabase เพื่อให้หน้าเว็บเรียกใช้ข้อมูลจากฐานข้อมูลกลางตามสาขาและสิทธิ์ของบัญชี</p><ul><li>จัดเก็บข้อมูลระบบไว้บนฐานข้อมูลส่วนกลาง</li><li>ข้อมูลสำรองอัตโนมัติจัดเก็บในฐานข้อมูลส่วนตัวของระบบ ไม่ใช่โฟลเดอร์ดาวน์โหลดบนอุปกรณ์</li><li>การใช้งานข้อมูลขึ้นอยู่กับการเชื่อมต่ออินเทอร์เน็ตและบริการฐานข้อมูล</li><li>หน้าตั้งค่ามีเครื่องมือตรวจสอบปริมาณพื้นที่ฐานข้อมูลที่ใช้งาน</li></ul></section>
-        <section class="about-site-section"><h4><span>🛡️</span> 10 · ระบบสำรองข้อมูลอัตโนมัติ</h4><p>ช่วยลดความเสี่ยงจากข้อมูลสูญหาย โดยระบบสำรองข้อมูลครอบคลุมทุกสาขาตามรอบเวลาที่กำหนด</p><ul><li>สร้าง Backup อัตโนมัติทุก 60 นาที ตั้งแต่ 08:00–21:00 น. (เวลาไทย)</li><li>หยุด Backup อัตโนมัติตั้งแต่ 22:00–07:00 น.</li><li>เก็บ Backup ล่าสุดไม่เกิน 6 ชุด โดยลบชุดที่เก่าที่สุดอัตโนมัติเมื่อมีชุดใหม่</li><li>ผู้ดูแลหลักยังสามารถสั่งสร้าง Backup ด้วยตนเองได้</li><li>ก่อนกู้คืนรายสาขา ระบบจะสร้าง Backup สถานะปัจจุบันครบทุกสาขาไว้ก่อน</li></ul></section>
-        <section class="about-site-section"><h4><span>⬇️</span> 11 · การดาวน์โหลดและกู้คืนข้อมูล</h4><p>ผู้ดูแลสามารถเลือก Backup เวอร์ชันที่ต้องการ เพื่อนำข้อมูลของสาขาที่ระบุออกมาเก็บไว้หรือใช้กู้คืนเมื่อจำเป็น</p><ul><li>เปิดหัวข้อ “Backup ข้อมูล (ทุกสาขา)” และเลือกเวอร์ชันที่ต้องการ</li><li>ดาวน์โหลดไฟล์ JSON แยกตามสาขาจาก Backup เวอร์ชันนั้น</li><li>ก่อนกู้คืน ตรวจสอบชื่อสาขาและเวลาของ Backup ให้ถูกต้อง</li><li>ยืนยันตัวตนด้วย Username และรหัสผ่าน 6 หลักของบัญชีผู้ดูแลหลัก</li><li>การกู้คืนจะแทนที่ข้อมูลปัจจุบันของสาขาที่เลือกด้วยข้อมูลจาก Backup ที่เลือก</li><li>ข้อมูลที่เปลี่ยนแปลงหลังเวลาสำรองอาจไม่อยู่ในไฟล์ที่นำมากู้คืน</li></ul></section>
-        <section class="about-site-section"><h4><span>📈</span> 12 · พื้นที่จัดเก็บและข้อควรทราบ</h4><p>หน้าพื้นที่ฐานข้อมูลแสดงปริมาณการใช้งานจริงและเปรียบเทียบกับเพดานอ้างอิงที่ตั้งไว้ในหน้าระบบ</p><ul><li>ค่าอ้างอิงที่หน้าระบบแสดงคือ 500 MiB สำหรับฐานข้อมูลทั้งระบบ ไม่ใช่โควตาเฉพาะไฟล์ Backup</li><li>ขนาดข้อมูลสำรองขึ้นอยู่กับปริมาณข้อมูลที่จัดเก็บในทุกสาขา</li><li>พื้นที่ใช้งานจริงอาจเปลี่ยนตามปริมาณข้อมูลและแผนบริการ Supabase</li><li>ควรดาวน์โหลด Backup เก็บไว้ในพื้นที่ปลอดภัยเป็นระยะ โดยเฉพาะก่อนกู้คืนหรือแก้ไขข้อมูลสำคัญ</li></ul></section>
+        <section class="about-site-section"><h4><span>📦</span> 01 · จัดการสินค้าและสต็อก</h4><p>ดูแลข้อมูลสินค้าและปริมาณคงเหลือแยกตามสาขา เพื่อให้ทีมงานตรวจสอบและอัปเดตสต็อกได้ในที่เดียว</p><ul><li>เพิ่ม แก้ไข และจัดหมวดหมู่รายการสินค้า</li><li>กำหนดหน่วยนับและจำนวนขั้นต่ำ</li><li>ดูรายการคงเหลือและค้นหาสินค้า</li><li>แยกข้อมูลสต็อกตามสาขาที่ใช้งาน</li></ul></section>
+        <section class="about-site-section"><h4><span>🔄</span> 02 · รับเข้าและเบิกจ่าย</h4><p>บันทึกการเคลื่อนไหวของสินค้าอย่างเป็นระบบ เพื่อให้ติดตามการเปลี่ยนแปลงของยอดคงเหลือได้</p><ul><li>บันทึกรับสินค้าเข้าคลัง</li><li>บันทึกเบิกจ่ายสินค้าออก</li><li>ปรับยอดคงเหลือตามสิทธิ์</li><li>เชื่อมโยงรายการกับประวัติการทำงาน</li></ul></section>
+        <section class="about-site-section"><h4><span>🧾</span> 03 · ประวัติและตรวจสอบย้อนหลัง</h4><p>ค้นหารายการเคลื่อนไหวและตรวจสอบกิจกรรมที่เกิดขึ้นในแต่ละสาขา</p><ul><li>เรียกดูประวัติรับเข้า เบิกจ่าย และปรับยอด</li><li>กรองข้อมูลตามช่วงวันที่</li><li>ตรวจสอบรายการย้อนหลังเพื่อช่วยติดตามความถูกต้อง</li><li>แยกประวัติตามสาขา</li></ul></section>
+        <section class="about-site-section"><h4><span>📊</span> 04 · แดชบอร์ดและรายงาน</h4><p>สรุปข้อมูลสำคัญในรูปแบบตัวเลขและกราฟ เพื่อช่วยให้ผู้ดูแลเห็นภาพรวมการดำเนินงาน</p><ul><li>สรุปการรับเข้าและเบิกจ่าย</li><li>แสดงข้อมูลตามช่วงเวลาที่เลือก</li><li>ติดตามสถานะและแนวโน้มของสต็อก</li><li>ใช้ข้อมูลจริงที่บันทึกไว้ในระบบ</li></ul></section>
+        <section class="about-site-section"><h4><span>🗓️</span> 05 · งานพนักงานและตารางงาน</h4><p>เครื่องมือจัดตารางและติดตามสถานะการทำงานของทีมในแต่ละวัน</p><ul><li>ดูปฏิทินจ๊อบพนักงานรายเดือน</li><li>บันทึกสถานะปกติ ขาด สาย ลา และหยุด</li><li>จัดการวันหยุดและการสลับวันหยุด</li><li>สรุปรายสัปดาห์และรายเดือน</li><li>ปิดรอบและเปิดรอบตามสิทธิ์ที่ได้รับ</li></ul></section>
+        <section class="about-site-section"><h4><span>👥</span> 06 · บัญชีผู้ใช้และสิทธิ์</h4><p>กำหนดการเข้าถึงเครื่องมือให้เหมาะกับบทบาทและหน้าที่ของผู้ใช้งาน</p><ul><li>เข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสผ่าน 6 หลัก</li><li>จัดการบัญชีผู้ใช้ตามสิทธิ์ผู้ดูแล</li><li>กำหนดสิทธิ์เมนูและการจัดการข้อมูล</li><li>จำกัดการเข้าถึงข้อมูลตามสาขาที่ได้รับอนุญาต</li></ul></section>
+        <section class="about-site-section"><h4><span>🏬</span> 07 · ระบบหลายสาขา</h4><p>จัดการหลายสาขาภายใต้แพลตฟอร์มเดียว โดยข้อมูลของแต่ละสาขาแยกจากกัน</p><ul><li>เพิ่มและจัดการสาขาโดยผู้ดูแลหลัก</li><li>สลับสาขาเพื่อดูแลข้อมูลแต่ละพื้นที่</li><li>ข้อมูลสต็อก ประวัติ และงานผูกกับสาขา</li><li>การสำรองและกู้คืนข้อมูลเลือกเป็นรายสาขาได้</li></ul></section>
+        <section class="about-site-section"><h4><span>⏳</span> 08 · สมาชิกและระยะเวลาใช้งาน</h4><p>แต่ละสาขามีอายุสมาชิกแยกจากกัน ผู้ดูแลหลักเป็นผู้กำหนดและจัดการวันใช้งาน</p><ul><li>สาขาใหม่เริ่มต้นด้วยสมาชิก 30 วัน</li><li>แสดงจำนวนวันที่เหลือและวันหมดอายุบนหัวเว็บไซต์</li><li>ผู้ดูแลหลักเพิ่มหรือลดวันให้แต่ละสาขาได้อิสระ</li><li>ต่ออายุขณะที่ยังไม่หมดอายุจะนับต่อจากวันหมดอายุเดิม</li><li>หากหมดอายุแล้ว การต่ออายุจะเริ่มนับจากเวลาที่ต่ออายุ</li><li>เมื่อหมดอายุ ระบบระงับการใช้งานสาขานั้น แต่ไม่ลบข้อมูล</li></ul></section>
+        <section class="about-site-section"><h4><span>📢</span> 09 · ประกาศและการปรับแต่ง</h4><p>สื่อสารข่าวสารและปรับหน้าตาการใช้งานให้เหมาะกับทีมงาน</p><ul><li>สร้างประกาศและเลือกสาขาที่ต้องการให้เห็น</li><li>กำหนดระยะเวลาแสดงประกาศ</li><li>เลือกธีมและปรับขนาดตัวอักษร</li><li>รองรับหน้าจอมือถือและคอมพิวเตอร์</li></ul></section>
+        <section class="about-site-section"><h4><span>☁️</span> 10 · ฐานข้อมูลบนคลาวด์</h4><p>ข้อมูลระบบจัดเก็บใน PostgreSQL ผ่าน Supabase และเรียกใช้ตามบัญชีและสิทธิ์ของผู้ใช้</p><ul><li>ข้อมูลส่วนกลางเชื่อมต่อผ่านอินเทอร์เน็ต</li><li>แยกข้อมูลตามสาขาและสิทธิ์การใช้งาน</li><li>ระบบต้องเชื่อมต่อบริการคลาวด์เพื่อทำงาน</li><li>การใช้งานพื้นที่ขึ้นอยู่กับข้อมูลและแผนบริการ</li></ul></section>
+        <section class="about-site-section"><h4><span>🛡️</span> 11 · สำรองข้อมูลและกู้คืน</h4><p>มีเครื่องมือสำรองข้อมูลเพื่อช่วยลดความเสี่ยงจากข้อมูลสูญหาย</p><ul><li>ระบบสำรองข้อมูลอัตโนมัติตามรอบเวลาที่ตั้งไว้</li><li>เก็บชุดสำรองล่าสุดตามนโยบายของระบบ</li><li>ผู้ดูแลหลักสั่งสำรองข้อมูลเองได้</li><li>ดาวน์โหลดและกู้คืนข้อมูลตามสาขาที่เลือก</li><li>ควรตรวจสอบสาขาและเวลาของชุดสำรองก่อนกู้คืน</li></ul></section>
+        <section class="about-site-section"><h4><span>🔐</span> 12 · ความปลอดภัยและข้อควรทราบ</h4><p>ระบบตรวจสอบตัวตนและสิทธิ์การใช้งานที่ฝั่งเซิร์ฟเวอร์สำหรับคำสั่งข้อมูลหลัก</p><ul><li>ห้ามเปิดเผยรหัสผ่านหรือข้อมูลลับของบัญชี</li><li>สิทธิ์ผู้ดูแลหลักใช้จัดการสาขาและสมาชิก</li><li>การหมดอายุสมาชิกไม่ใช่การลบข้อมูล</li><li>ควรสำรองข้อมูลสำคัญไว้ในพื้นที่ปลอดภัยเพิ่มเติม</li></ul></section>
       </div>
-      <div class="about-site-note"><b>💡 คำแนะนำในการใช้งาน</b><p>ตรวจสอบสาขาที่กำลังใช้งานก่อนบันทึกรายการทุกครั้ง ใช้ตัวกรองวันที่เมื่อต้องการค้นหาประวัติ และตรวจสอบชื่อสาขา เวอร์ชัน และเวลาของไฟล์สำรองให้ครบถ้วนก่อนกู้คืนข้อมูล</p></div>
-    </div></div></div></div>
+      <div class="about-site-note"><b>💡 คำแนะนำในการใช้งาน</b><p>ตรวจสอบสาขาที่กำลังใช้งานก่อนบันทึกข้อมูลทุกครั้ง ตรวจสอบจำนวนวันสมาชิกของแต่ละสาขาเป็นระยะ และตรวจสอบชื่อสาขา เวอร์ชัน และเวลาของไฟล์สำรองก่อนกู้คืน</p></div>
+    </div>    </div></div></div></div>
   </div>`;
 }
 /* ---------- Transform-first settings disclosures (FLIP layout + compositor motion) ---------- */
@@ -4488,6 +4583,7 @@ updatePageMascots(); toast(`ตั้งจำนวนสติ๊กเกอ�
 
 
 if ($('#createBranchBtn')) $('#createBranchBtn').onclick = createBranchModal;
+document.querySelectorAll('[data-manage-subscription]').forEach(button => button.onclick = () => manageBranchSubscription(button.dataset.manageSubscription));
 document.querySelectorAll('[data-switch-branch]').forEach(button => button.onclick = () => switchBranch(button.dataset.switchBranch));
 document.querySelectorAll('[data-delete-branch]').forEach(button => button.onclick = () => deleteBranch(button.dataset.deleteBranch));
 document.querySelectorAll('[data-disclosure-toggle]').forEach(button => button.onclick = () => toggleDisclosure(button));
@@ -4672,15 +4768,37 @@ toast('บันทึกสิทธิ์ผู้ใช้งานแล้�
 } else toast('บันทึกสิทธิ์ผู้ใช้งานแล้ว');
 };
 }
+function manageBranchSubscription(branchId) {
+if (!me?.owner || String(me?.name || '').toLowerCase() !== 'kiangkai') return toast('เฉพาะผู้ดูแลหลักเท่านั้นที่จัดการวันสมาชิกได้', 1);
+const branch = branches.find(b => String(b.id) === String(branchId)); if (!branch) return toast('ไม่พบสาขาที่เลือก', 1);
+const expiry = branch.expires_at ? formatSubscriptionDate(branch.expires_at) : 'ยังไม่มีวันหมดอายุ';
+openModal(`<h3>⏳ จัดการสมาชิกสาขา${esc(branch.name)}</h3><p class="settings-hint">วันหมดอายุปัจจุบัน: <b>${esc(expiry)}</b><br>หากสาขายังไม่หมดอายุ การเพิ่มวันจะต่อจากวันหมดอายุเดิม หากหมดอายุแล้ว การเพิ่มวันจะเริ่มนับจากเวลาปัจจุบัน</p><form id="manageSubscriptionForm"><label class="fld"><span>การปรับระยะเวลา</span><select class="in" name="direction"><option value="add">เพิ่มวัน</option><option value="remove">ลดวัน</option></select></label><label class="fld"><span>จำนวนวัน (1–3650 วัน)</span><input class="in" name="days" type="number" inputmode="numeric" min="1" max="3650" step="1" value="30" required></label><small class="settings-hint">ระบบจะบันทึกประวัติการเปลี่ยนแปลงทุกครั้ง</small><div class="acts"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button type="submit" class="btn" id="saveSubscriptionBtn">บันทึกวันสมาชิก</button></div></form>`);
+const form = document.getElementById('manageSubscriptionForm');
+form.onsubmit = async e => {
+e.preventDefault();
+const button = document.getElementById('saveSubscriptionBtn');
+const days = Number(form.elements.days.value), delta = form.elements.direction.value === 'remove' ? -days : days;
+if (!Number.isInteger(days) || days < 1 || days > 3650) return toast('จำนวนวันต้องอยู่ระหว่าง 1–3650 วัน', 1);
+button.disabled = true; button.textContent = 'กำลังบันทึก…';
+try {
+const result = await cloudRpc('api_subscription_adjust', { p_branch_id: branch.id, p_days_delta: delta });
+const sub = result.subscription;
+branches = branches.map(b => String(b.id) === String(branch.id) ? {...b,starts_at:sub.starts_at,expires_at:sub.expires_at,remaining_seconds:sub.remaining_seconds,subscription_expired:sub.remaining_seconds<=0} : b);
+if (String(currentBranch.id) === String(branch.id)) { currentSubscription = {...sub,branch_id:branch.id,branch_name:branch.name,expired:sub.remaining_seconds<=0}; updateSubscriptionHeader(currentSubscription); }
+closeModal(); build(); toast((delta > 0 ? 'เพิ่ม' : 'ลด') + 'วันสมาชิกสาขา' + branch.name + 'แล้ว');
+} catch (error) { button.disabled = false; button.textContent = 'บันทึกวันสมาชิก'; toast(error.message || 'ปรับวันสมาชิกไม่สำเร็จ', 1); }
+};
+}
 function createBranchModal() {
 if (!can.manageBranches()) return toast('บัญชีนี้ไม่มีสิทธิ์จัดการสาขา', 1);
-openModal(`<h3>🏬 เพิ่มสาขาใหม่</h3><p class="settings-hint">สาขาใหม่จะเริ่มโดยไม่มีวัตถุดิบ ประวัติ หรือบัญชีพนักงาน ผู้ดูแลสาขาจะสร้างบัญชีให้ภายหลัง</p><form id="createBranchForm"><label class="fld"><span>ชื่อสาขา</span><input class="in" name="name" maxlength="80" required placeholder="เช่น สาขา..." autocomplete="off"></label><div class="acts"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button class="btn">สร้างสาขา</button></div></form>`);
+openModal(`<h3>🏬 เพิ่มสาขาใหม่</h3><p class="settings-hint">สาขาใหม่จะเริ่มต้นด้วยสมาชิก <b>30 วัน</b> พร้อมข้อมูลสาขาใหม่ที่ยังไม่มีวัตถุดิบ ประวัติ หรือบัญชีพนักงาน</p><form id="createBranchForm"><label class="fld"><span>ชื่อสาขา</span><input class="in" name="name" maxlength="80" required placeholder="เช่น สาขา..." autocomplete="off"></label><div class="acts"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button class="btn">สร้างสาขา</button></div></form>`);
 $('#createBranchForm').onsubmit = async e => {
 e.preventDefault(); const button = e.submitter; if (button) button.disabled = true;
 try {
 const result = await cloudRpc('api_branch_create', { p_token: cloudToken, p_name: fv(e.target, 'name') });
 if (!result.ok) { if (button) button.disabled = false; return toast(result.error || 'สร้างสาขาไม่สำเร็จ', 1); }
 branches = [...branches.filter(branch => branch.id !== result.branch.id), result.branch];
+if (String(currentBranch.id) === String(result.branch.id)) currentSubscription = { ...result.branch, expired:false };
 void dispatchPendingPushEvents();
 renderBranchOptions(branches); closeModal(); build(); toast(`สร้าง${result.branch.name}แล้ว ข้อมูลของสาขาเริ่มต้นว่างเปล่า`);
 } catch (error) { if (button) button.disabled = false; toast(error.message || 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ', 1); }
