@@ -1842,9 +1842,9 @@ try {
 <div id="app" class="hide">
   <header class="top">
     <div class="brand">
-      <div class="brand-badge" id="siteHeaderLogo">🍣</div>
+      <div class="brand-badge" id="siteHeaderLogo">SK</div>
       <div class="brand-copy">
-        <div class="brand-title-row"><span class="brand-title" id="siteHeaderName">ไข่หวานบ้านซูชิ</span><span class="sync-status hide" id="syncStatus" role="status" aria-live="polite" aria-label="ข้อมูลอัปเดตจากเครื่องอื่นแล้ว"><i class="sync-status-dot" aria-hidden="true"></i><span>อัปเดต</span></span></div>
+        <div class="brand-title-row"><span class="brand-title" id="siteHeaderName">Super K</span><span class="sync-status hide" id="syncStatus" role="status" aria-live="polite" aria-label="ข้อมูลอัปเดตจากเครื่องอื่นแล้ว"><i class="sync-status-dot" aria-hidden="true"></i><span>อัปเดต</span></span></div>
         <small class="brand-branch" id="branchName">สาขาพันท้ายนรสิงห์</small><small id="branchSubscription" class="branch-subscription hide"></small><small id="clock">กำลังโหลดเวลา...</small>
       </div>
     </div>
@@ -2673,7 +2673,7 @@ currentSubscription = data;
 const branchIndex = branches.findIndex(b => String(b.id) === String(currentBranch.id));
 if (branchIndex >= 0) branches[branchIndex] = { ...branches[branchIndex], starts_at:data.starts_at, expires_at:data.expires_at, remaining_seconds:data.remaining_seconds, subscription_expired:data.expired };
 updateSubscriptionHeader(data);
-if (data.expired && showExpired) showSubscriptionExpired(data);
+if (data.expired && !data.owner && showExpired) showSubscriptionExpired(data);
 return data;
 } catch (error) { console.warn('ตรวจสอบสมาชิก Super K ไม่สำเร็จ', error); return null; }
 finally { subscriptionBusy = false; }
@@ -2704,7 +2704,7 @@ store.set('inv_lock', lock); return fail(error.message || 'เข้าสู่
 let subscription;
 try { subscription = await cloudRpc('api_subscription_status', { p_branch_id: branchId }); }
 catch (error) { sess.set(null); return fail(error.message || 'ตรวจสอบสมาชิกสาขาไม่สำเร็จ'); }
-if (subscription.expired) { currentSubscription = subscription; showSubscriptionExpired(subscription); return; }
+if (subscription.expired && !subscription.owner) { currentSubscription = subscription; showSubscriptionExpired(subscription); return; }
 currentSubscription = subscription; updateSubscriptionHeader(subscription);
 lock = { n: 0, until: 0 }; store.set('inv_lock', lock);
 if (IS_MOBILE_BROWSER) { try { localStorage.setItem('inv_last_username', name); } catch {} }
@@ -5697,7 +5697,7 @@ const token = sess.get();
 if (token) {
 try {
 const subscription = await cloudRpc('api_subscription_status', { p_branch_id: branchStore.get() || currentBranch.id });
-if (subscription.expired) { currentSubscription = subscription; showSubscriptionExpired(subscription); return; }
+if (subscription.expired && !subscription.owner) { currentSubscription = subscription; showSubscriptionExpired(subscription); return; }
 currentSubscription = subscription;
 const result = await cloudRpc('api_get_state', { p_token: token });
 if (result.ok) {
