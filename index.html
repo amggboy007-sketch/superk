@@ -115,6 +115,7 @@ button{cursor:pointer;border:0;background:none;user-select:none}
 .bm-name-wrap{flex-wrap:wrap;row-gap:2px}
 .bm-card .bm-manage-subscription{background:var(--acc-light)!important;color:var(--acc-hover)!important;border:1px solid var(--theme-border-strong)!important;box-shadow:none!important}
 .bm-card .bm-actions{flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:480px){.bm-row{flex-wrap:wrap;align-items:flex-start}.bm-name-wrap{flex:1 1 100%}.bm-card .bm-actions{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px}.bm-card .bm-actions .bm-btn{width:100%;min-width:0!important;padding:0 6px!important;font-size:11px!important}.bm-card .bm-actions .bm-badge{justify-self:start}}
 @media(max-width:680px){.subscription-expired-card{padding:25px 20px}.branch-subscription{font-size:9px}}
 .branch-select-wrap{position:relative}
 .branch-select-wrap:after{content:'⌄';position:absolute;right:14px;top:50%;transform:translateY(-55%);pointer-events:none;color:var(--mute);font-size:17px}
@@ -2650,7 +2651,9 @@ const el = document.getElementById('branchSubscription'); if (!el) return;
 if (!data) { el.textContent = ''; el.className = 'branch-subscription hide'; return; }
 const expired = !!data.expired || Number(data.remaining_seconds) <= 0;
 const warning = !expired && Number(data.remaining_seconds) <= 7 * 86400;
-el.textContent = 'สมาชิก: ' + subscriptionText(data);
+const days = Math.max(1, Math.ceil(Math.max(0, Number(data.remaining_seconds) || 0) / 86400));
+el.textContent = expired ? 'สมาชิกหมดอายุแล้ว' : 'สมาชิกเหลือ ' + days + ' วัน';
+el.title = data.expires_at ? 'หมดอายุ ' + formatSubscriptionDate(data.expires_at) : 'ยังไม่ได้กำหนดวันหมดอายุ';
 el.className = 'branch-subscription' + (expired ? ' is-expired' : warning ? ' is-warning' : '');
 }
 function showSubscriptionExpired(data = {}) {
