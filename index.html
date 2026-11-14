@@ -159,6 +159,25 @@ tr:hover td{background:#fffafb}
  .mobile-nav{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
  .mobile-nav button{font-size:9px}
 }
+
+@media(max-width:680px){
+ #page-stock .table-wrap{overflow:visible;margin:0}
+ #page-stock table{width:100%;min-width:0;border-collapse:separate;border-spacing:0}
+ #page-stock thead{display:none}
+ #page-stock tbody{display:grid;gap:8px}
+ #page-stock tbody tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 12px;padding:11px 12px;border:1px solid #f1e1e6;border-radius:16px;background:#fffefd;box-shadow:0 3px 12px rgba(150,102,124,.06)}
+ #page-stock tbody td{display:block;min-width:0;padding:2px 0;border:0;font-size:11px;overflow-wrap:anywhere}
+ #page-stock tbody td:first-child{grid-column:1/-1;padding-bottom:6px;border-bottom:1px solid #f5e9ed}
+ #page-stock tbody td:first-child strong{font-size:13px;color:#634c5b}
+ #page-stock tbody td:nth-child(2)::before{content:'บาร์โค้ด';display:block;color:#a18495;font-size:9px}
+ #page-stock tbody td:nth-child(3)::before{content:'จำนวนคงเหลือ';display:block;color:#a18495;font-size:9px}
+ #page-stock tbody td:nth-child(4)::before{content:'จำนวนขั้นต่ำ';display:block;color:#a18495;font-size:9px}
+ #page-stock tbody td:nth-child(5)::before{content:'ต้นทุน';display:block;color:#a18495;font-size:9px}
+ #page-stock tbody td:nth-child(6)::before{content:'สถานะ';display:block;color:#a18495;font-size:9px}
+ #page-stock tbody td:nth-child(7){grid-column:1/-1;text-align:right;padding-top:5px;border-top:1px solid #f5e9ed}
+ #page-stock tbody td:nth-child(7) button{min-height:34px;padding:6px 12px}
+ #page-stock tbody td[colspan]{grid-column:1/-1;text-align:center;padding:22px 8px}
+}
 @media(prefers-reduced-motion:reduce){#app .page{animation:none!important}}
 </style>
 </head>
