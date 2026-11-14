@@ -4066,7 +4066,7 @@ const stockResetLog = L.find(x => x.note === STOCK_RESET_NOTE);
 const resetAudit = stockResetLog && (!lastReset || Number(stockResetLog.ts) > Number(lastReset.ts || 0)) ? { scope: 'stock', user: stockResetLog.user, ts: stockResetLog.ts } : lastReset;
 return `<div class="sect"><h2>ตั้งค่าระบบ</h2><small>กำหนดค่าการแสดงผลและข้อมูล</small></div>
   <div class="dash-grid settings-grid">
-    ${can.manageBranches() ? `<div class="dash-card branch-admin-card bm-card"><div class="bm-head"><h3>🏬 จัดการสาขา<span class="bm-count">${branches.length}</span></h3><button type="button" class="btn sm bm-add" id="createBranchBtn">${ic('plus')} เพิ่มสาขา</button></div><details class="bm-info"><summary>วิธีเข้าถึงสาขา</summary><p class="settings-hint">จัดการสาขาได้เฉพาะบัญชีหลัก kiangkai ผู้ใช้งานสาขาอื่นต้องเข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสของตนเอง และเข้าได้เฉพาะสาขาที่เลือกไว้</p></details><div class="bm-list">${branches.map(b => { const isCurrent = String(b.id)===String(currentBranch.id); return `<div class="bm-row${isCurrent?' is-current':''}"><span class="bm-name-wrap"><span class="bm-name" title="${esc(b.name)}">${esc(b.name)}</span>${branchOnlineHtml(b)}</span>${isCurrent?`<span class="bm-badge">กำลังใช้งาน</span>`:`<span class="bm-actions"><button type="button" class="btn sm bm-btn bm-close" data-deactivate-branch="${esc(b.id)}" aria-label="ปิดสาขา ${esc(b.name)}">ปิด</button><button type="button" class="btn sm bm-btn bm-enter" data-switch-branch="${esc(b.id)}" aria-label="เข้าสาขา ${esc(b.name)}">เข้า</button></span>`}</div>`; }).join('')}</div></div>` : ''}
+    ${can.manageBranches() ? `<div class="dash-card branch-admin-card bm-card"><div class="bm-head"><h3>🏬 จัดการสาขา<span class="bm-count">${branches.length}</span></h3><button type="button" class="btn sm bm-add" id="createBranchBtn">${ic('plus')} เพิ่มสาขา</button></div><details class="bm-info"><summary>วิธีเข้าถึงสาขา</summary><p class="settings-hint">จัดการสาขาได้เฉพาะบัญชีหลัก kiangkai ผู้ใช้งานสาขาอื่นต้องเข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสของตนเอง และเข้าได้เฉพาะสาขาที่เลือกไว้</p></details><div class="bm-list">${branches.map(b => { const isCurrent = String(b.id)===String(currentBranch.id); return `<div class="bm-row${isCurrent?' is-current':''}"><span class="bm-name-wrap"><span class="bm-name" title="${esc(b.name)}">${esc(b.name)}</span>${branchOnlineHtml(b)}</span>${isCurrent?`<span class="bm-badge">กำลังใช้งาน</span>`:`<span class="bm-actions"><button type="button" class="btn sm bm-btn bm-close" data-delete-branch="${esc(b.id)}" aria-label="ลบสาขา ${esc(b.name)}">ลบสาขา</button><button type="button" class="btn sm bm-btn bm-enter" data-switch-branch="${esc(b.id)}" aria-label="เข้าสาขา ${esc(b.name)}">เข้า</button></span>`}</div>`; }).join('')}</div></div>` : ''}
     ${canManageSite ? `<div class="dash-card disclosure-card site-admin-card" id="siteAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="siteAdminDisclosurePanel"><span>🌐 จัดการเว็บไซต์</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="siteAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><p class="settings-hint">เปลี่ยนชื่อและโลโก้ส่วนกลาง ข้อมูลนี้จะแสดงเหมือนกันในทุกสาขาและหน้าเข้าสู่ระบบ</p><label class="fld"><span>ชื่อเว็บไซต์</span><input class="in" id="siteNameInput" maxlength="60" value="${esc(siteBrand.siteName)}" placeholder="ชื่อเว็บไซต์"></label><label class="fld"><span>โลโก้เว็บไซต์ (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="siteLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame"><img id="siteLogoPreview" class="site-logo-preview site-brand-image" alt="ตัวอย่างโลโก้" ${siteBrand.logoData ? `src="${esc(siteBrand.logoData)}"` : 'hidden'}></div><small>ตัวอย่างพื้นที่โลโก้บนหัวเว็บไซต์จริง</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearSiteLogoBtn">นำโลโก้ออก</button><button type="button" class="btn sm" id="saveSiteBrandBtn">บันทึกการเปลี่ยนแปลง</button></div><small class="settings-hint">รองรับรูปต้นฉบับสูงสุด 20 MB ระบบจะย่อและบีบอัดเป็น WEBP ให้อัตโนมัติ โดยคงสัดส่วนภาพ</small></div></div></div>` : ''}
     ${isAnnouncer() ? `<div class="dash-card disclosure-card announce-card" id="announceCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="announceDisclosurePanel"><span>📢 ประกาศข้อความ</span><span class="disclosure-count" id="announceCount"></span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="announceDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">
       <p class="settings-hint">ข้อความจะเลื่อนจากขวาไปซ้ายใต้หัวเว็บไซต์ของผู้ใช้ในสาขาที่เลือก จนครบเวลาที่กำหนด หรือจนกว่าจะยกเลิก</p>
@@ -4437,7 +4437,7 @@ updatePageMascots(); toast(`ตั้งจำนวนสติ๊กเกอ�
 
 if ($('#createBranchBtn')) $('#createBranchBtn').onclick = createBranchModal;
 document.querySelectorAll('[data-switch-branch]').forEach(button => button.onclick = () => switchBranch(button.dataset.switchBranch));
-document.querySelectorAll('[data-deactivate-branch]').forEach(button => button.onclick = () => deactivateBranch(button.dataset.deactivateBranch));
+document.querySelectorAll('[data-delete-branch]').forEach(button => button.onclick = () => deleteBranch(button.dataset.deleteBranch));
 document.querySelectorAll('[data-disclosure-toggle]').forEach(button => button.onclick = () => toggleDisclosure(button));
 bindAnnounceCard(); refreshBranchOnline();
 const resetScopeSelect = $('#resetScope');
@@ -4653,34 +4653,34 @@ syncSnapshot = cloneData(result.state); syncVersion = result.version; closeModal
 } catch (error) { if (button) button.disabled = false; toast(error.message || 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ', 1); }
 };
 }
-async function deactivateBranch(branchId) {
-if (!can.manageBranches() || !me?.owner) return toast('เฉพาะบัญชีผู้ดูแลหลักเท่านั้นที่ปิดสาขาได้', 1);
+async function deleteBranch(branchId) {
+if (!can.manageBranches() || !me?.owner) return toast('เฉพาะบัญชีผู้ดูแลหลักเท่านั้นที่ลบสาขาได้', 1);
 const branch = branches.find(item => String(item.id) === String(branchId));
-if (!branch || String(branch.id) === String(currentBranch.id)) return toast('ไม่สามารถปิดสาขาที่กำลังใช้งานได้ กรุณาสลับไปสาขาอื่นก่อน', 1);
-openModal(`<h3>⚠️ ยืนยันการปิดสาขา</h3><p class="branch-confirm-note">กำลังจะปิดการใช้งาน <b>สาขา${esc(branch.name)}</b><br>พนักงานจะเข้าสาขานี้ไม่ได้ ข้อมูลสต็อกและประวัติเดิมจะยังเก็บไว้<br><strong>กรอกชื่อผู้ใช้และรหัสผ่าน 6 หลักของผู้ดูแลหลักเพื่อยืนยันอีกครั้ง</strong></p><form id="deactivateBranchForm"><label class="fld"><span>ชื่อผู้ใช้ผู้ดูแลหลัก</span><input class="in" name="username" maxlength="30" autocomplete="username" autocapitalize="none" spellcheck="false" required></label><label class="fld"><span>รหัสผ่าน 6 หลัก</span><input class="in" name="pin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="current-password" required></label><small class="storage-error" id="branchDeactivateError" role="alert" aria-live="polite"></small><div class="branch-confirm-actions"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button type="submit" class="btn bad">ยืนยันปิดสาขา</button></div></form>`);
-const form = $('#deactivateBranchForm');
+if (!branch || String(branch.id) === String(currentBranch.id)) return toast('ไม่สามารถลบสาขาที่กำลังใช้งานได้ กรุณาสลับไปสาขาอื่นก่อน', 1);
+openModal(`<h3>🗑️ ยืนยันการลบสาขาถาวร</h3><p class="branch-confirm-note">คุณกำลังจะลบ <b>สาขา${esc(branch.name)}</b><br><strong style="color:var(--bad,#c33)">ข้อมูลของสาขานี้จะถูกลบถาวรทั้งหมด</strong><br>รวมถึงสินค้า สต็อก ประวัติการเคลื่อนไหว งานพนักงาน ห้องแชทและไฟล์แนบ โพสต์ และข้อมูลสำรองของสาขานี้<br>ผู้ใช้ที่มีสาขาอื่นอยู่จะยังใช้งานสาขาอื่นได้ ส่วนบัญชีที่ไม่มีสาขาเหลือจะถูกปิดใช้งาน<br><strong>กรอก Username และรหัสผ่าน 6 หลักของผู้ดูแลหลักเพื่อยืนยัน</strong></p><form id="deleteBranchForm"><label class="fld"><span>Username ผู้ดูแลหลัก</span><input class="in" name="username" maxlength="30" autocomplete="username" autocapitalize="none" spellcheck="false" required></label><label class="fld"><span>รหัสผ่าน 6 หลัก</span><input class="in" name="pin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="current-password" required></label><small class="storage-error" id="branchDeleteError" role="alert" aria-live="polite"></small><div class="branch-confirm-actions"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button type="submit" class="btn bad">ยืนยันลบสาขาถาวร</button></div></form>`);
+const form = $('#deleteBranchForm');
 form.elements.username.focus();
 form.elements.pin.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6); });
 form.onsubmit = async e => {
 e.preventDefault();
-const button = e.submitter, errorBox = $('#branchDeactivateError');
+const button = e.submitter, errorBox = $('#branchDeleteError');
 const username = form.elements.username.value.trim().toLowerCase();
 const pin = form.elements.pin.value;
 errorBox.textContent = '';
-if (username !== String(me?.name || '').toLowerCase()) { errorBox.textContent = 'ชื่อผู้ใช้ไม่ตรงกับบัญชีผู้ดูแลหลักที่กำลังใช้งาน'; return; }
+if (username !== 'kiangkai' || username !== String(me?.name || '').toLowerCase()) { errorBox.textContent = 'ต้องยืนยันด้วยบัญชีผู้ดูแลหลัก kiangkai เท่านั้น'; return; }
 if (!/^\d{6}$/.test(pin)) { errorBox.textContent = 'กรุณากรอกรหัสผ่านให้ครบ 6 หลัก'; return; }
 if (button) button.disabled = true;
 let verificationToken = '';
 try {
 const verification = await cloudRpc('api_branch_login', { p_branch_id: currentBranch.id, p_name: username, p_password: pin });
-if (!verification.ok) throw new Error(verification.error || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+if (!verification.ok) throw new Error(verification.error || 'Username หรือรหัสผ่านไม่ถูกต้อง');
 verificationToken = verification.token || '';
-if (!verificationToken || !verification.me?.owner || String(verification.me.name).toLowerCase() !== String(me?.name || '').toLowerCase()) throw new Error('ยืนยันได้เฉพาะบัญชีผู้ดูแลหลักที่ใช้งานอยู่');
-const result = await cloudRpc('api_branch_deactivate', { p_token: verificationToken, p_branch_id: branch.id, p_current_branch_id: currentBranch.id });
-if (!result.ok) throw new Error(result.error || 'ปิดสาขาไม่สำเร็จ');
+if (!verificationToken || !verification.me?.owner || String(verification.me.name).toLowerCase() !== 'kiangkai') throw new Error('ยืนยันได้เฉพาะบัญชีผู้ดูแลหลัก kiangkai เท่านั้น');
+const result = await cloudRpc('api_branch_delete', { p_branch_id: branch.id, p_current_branch_id: currentBranch.id, p_verification_token: verificationToken });
+if (!result.ok) throw new Error(result.error || 'ลบสาขาไม่สำเร็จ');
 branches = branches.filter(item => String(item.id) !== String(branch.id));
 void dispatchPendingPushEvents();
-renderBranchOptions(branches); closeModal(); build(); toast(`ปิดการใช้งานสาขา${branch.name}แล้ว ข้อมูลเดิมยังเก็บไว้`);
+renderBranchOptions(branches); closeModal(); build(); toast(`ลบสาขา${branch.name}และข้อมูลที่เกี่ยวข้องทั้งหมดแล้ว`);
 } catch (error) {
 errorBox.textContent = error.message || 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ';
 if (button) button.disabled = false;
