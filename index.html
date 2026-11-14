@@ -4676,7 +4676,7 @@ const verification = await cloudRpc('api_branch_login', { p_branch_id: currentBr
 if (!verification.ok) throw new Error(verification.error || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
 verificationToken = verification.token || '';
 if (!verificationToken || !verification.me?.owner || String(verification.me.name).toLowerCase() !== String(me?.name || '').toLowerCase()) throw new Error('ยืนยันได้เฉพาะบัญชีผู้ดูแลหลักที่ใช้งานอยู่');
-const result = await cloudRpc('api_branch_deactivate', { p_token: verificationToken, p_branch_id: branch.id });
+const result = await cloudRpc('api_branch_deactivate', { p_token: verificationToken, p_branch_id: branch.id, p_current_branch_id: currentBranch.id });
 if (!result.ok) throw new Error(result.error || 'ปิดสาขาไม่สำเร็จ');
 branches = branches.filter(item => String(item.id) !== String(branch.id));
 void dispatchPendingPushEvents();
