@@ -1847,21 +1847,19 @@ try {
 <section id="login" class="hide">
   <div class="login-wrap">
     <div class="login-story" aria-hidden="true">
-      <div class="story-brand"><span class="story-mark" id="siteStoryLogo" aria-hidden="true">SK</span><span><span class="story-brand-name" id="siteStoryName">Super K</span><span class="story-brand-sub">SUPER K · SMART BUSINESS WORKSPACE</span></span></div>
+      <div class="login-platform-brand login-platform-brand-top"><span class="login-platform-symbol official-login-logo" id="officialLoginLogo" aria-label="โลโก้ทางการ Super K">SK</span><span class="login-platform-wordmark">Super K<small>SMART BUSINESS PLATFORM</small></span></div>
       <div class="story-copy"><span class="eyebrow">ONE PLATFORM · EVERY BRANCH</span><h2 id="siteLoginHeading">จัดการธุรกิจหลายสาขา<br>ได้ในที่เดียว</h2><p>ระบบจัดการสต็อก งานพนักงาน และข้อมูลสาขา เชื่อมต่อบนคลาวด์</p></div>
       <div class="ingredient-art"><span class="ingredient rice">📦</span><span class="ingredient fish">📊</span><span class="ingredient leaf">🏬</span><span class="art-caption">SMART WORKSPACE FOR YOUR BUSINESS</span></div>
       <div class="story-foot"><span>SUPER K</span><span>จัดการง่าย · ทำงานเป็นระบบ · ทุกสาขา</span></div>
     </div>
     <form class="lg" id="lgForm" autocomplete="on">
-      <div class="official-login-logo" id="officialLoginLogo" aria-label="โลโก้ทางการ Super K">SK</div>
-      <div class="login-platform-brand"><span class="login-platform-symbol">SK</span><span class="login-platform-wordmark">Super K<small>SMART BUSINESS PLATFORM</small></span></div>
       <div class="lg-header">
         <div class="lg-icon" id="siteLoginLogo" aria-hidden="true" style="font-size:19px;font-weight:900;letter-spacing:-1px">SK</div>
         <h1>เข้าสู่ระบบ</h1>
       </div>
       <label class="fld branch-choice-field"><span>เลือกเว็บไซต์ของคุณ</span><div class="branch-select-wrap branch-choice-wrap" id="branchChoiceWrap">
 <select class="in branch-select branch-choice-native" id="lgBranch" name="branch" required aria-label="เลือกเว็บไซต์ของคุณ"><option value="">กำลังโหลดรายชื่อสาขา…</option></select>
-<button type="button" class="branch-choice-trigger" id="branchChoiceTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="branchChoiceList"><span class="branch-choice-leading" aria-hidden="true">⌂</span><span class="branch-choice-current" id="branchChoiceCurrent">กำลังโหลดรายชื่อเว็บไซต์…</span><span class="branch-choice-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></span></button>
+<button type="button" class="branch-choice-trigger" id="branchChoiceTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="branchChoiceList"><span class="branch-choice-leading" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 20.5h17M5.5 20.5V8.8L12 4l6.5 4.8v11.7M9 20.5v-6h6v6M8.5 9.5h.01M15.5 9.5h.01"/></svg></span><span class="branch-choice-current" id="branchChoiceCurrent">กำลังโหลดรายชื่อเว็บไซต์…</span><span class="branch-choice-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></span></button>
 <div class="branch-choice-panel" id="branchChoicePanel"><div class="branch-choice-panel-inner"><div class="branch-choice-options" id="branchChoiceList" role="listbox" aria-label="เว็บไซต์ที่เลือกได้"></div></div></div></div></label>
       <small class="branch-help">เลือกสาขาที่ผู้ดูแลสร้างบัญชีให้ บัญชีพนักงานเข้าได้เฉพาะสาขานั้น</small>
       <label class="fld"><span>ชื่อผู้ใช้</span><input class="in" id="lgUser" name="username" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="ชื่อผู้ใช้ของคุณ" required></label>
@@ -7779,5 +7777,76 @@ html:has(#login:not(.hide)),body:has(#login:not(.hide)){height:100%;overflow:hid
 }
 @media(prefers-reduced-motion:reduce){.branch-choice-arrow{transition:none!important}}
 </style>
+
+<style id="superk-login-professional-polish-v3">
+/* Platform identity belongs at the top of the hero panel, not inside the login form. */
+.login-platform-brand-top{
+  display:flex!important;align-items:center!important;gap:13px!important;
+  margin:0 0 clamp(20px,3.4vh,34px)!important;padding:0 0 17px!important;
+  border-bottom:1px solid rgba(128,91,113,.17)!important;
+  position:relative;z-index:2;
+}
+.login-platform-brand-top .login-platform-symbol{
+  width:52px!important;height:52px!important;flex:none;border-radius:17px!important;
+  display:grid!important;place-items:center!important;overflow:hidden;
+  background:linear-gradient(145deg,#eaa4b9,#efc28f)!important;
+  color:#fff!important;font-size:18px!important;font-weight:900!important;
+  box-shadow:0 8px 20px rgba(177,111,139,.2)!important;
+}
+.login-platform-brand-top .login-platform-symbol img,
+#officialLoginLogo img{width:100%;height:100%;display:block;object-fit:contain;border-radius:inherit;padding:4px}
+.login-platform-brand-top .login-platform-wordmark{font-size:25px!important;font-weight:850!important;letter-spacing:-.8px!important;color:#543d4d!important}
+.login-platform-brand-top .login-platform-wordmark small{display:block;margin-top:5px!important;font-size:8px!important;letter-spacing:2.1px!important;color:#a47d90!important}
+.login-story .story-copy{margin-top:0!important}
+.login-story .eyebrow{font-size:10px;letter-spacing:2.2px;font-weight:800}
+.login-story .story-copy h2{font-weight:750;letter-spacing:-.5px}
+.login-story .story-copy p{line-height:1.75}
+#login .lg .login-platform-brand{display:none!important}
+/* Replace the hand-drawn pseudo house with a clean, properly aligned branch icon. */
+.branch-choice-leading{
+  position:relative!important;width:38px!important;height:38px!important;flex:none;
+  display:grid!important;place-items:center!important;border-radius:13px!important;
+  background:linear-gradient(145deg,#fff0f4,#fff8ed)!important;color:#b8758d!important;
+}
+.branch-choice-leading:before,.branch-choice-leading:after{content:none!important;display:none!important}
+.branch-choice-leading svg{width:21px!important;height:21px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.65!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+/* A distinct circular arrow button, rotating upward when the branch list opens. */
+.branch-choice-arrow{
+  width:39px!important;height:39px!important;flex:none!important;
+  display:grid!important;place-items:center!important;border-radius:50%!important;
+  border:1px solid #ecd7df!important;
+  background:linear-gradient(145deg,#fff,#fff1f5)!important;
+  color:#a95f7b!important;
+  box-shadow:0 3px 9px rgba(156,91,119,.10),inset 0 1px 0 rgba(255,255,255,.95)!important;
+  transition:transform .38s cubic-bezier(.2,.8,.2,1),background .22s ease,border-color .22s ease,box-shadow .22s ease!important;
+}
+.branch-choice-arrow svg{width:18px!important;height:18px!important;stroke-width:2.1!important;transition:transform .38s cubic-bezier(.2,.8,.2,1)!important}
+.branch-choice-wrap.is-open .branch-choice-arrow{
+  transform:rotate(180deg)!important;background:linear-gradient(145deg,#f5dce6,#fcecf2)!important;
+  border-color:#dfb2c2!important;box-shadow:0 4px 12px rgba(156,91,119,.16)!important;
+}
+.branch-choice-trigger:active .branch-choice-arrow{box-shadow:0 1px 4px rgba(156,91,119,.12)!important}
+.branch-choice-trigger{gap:12px!important}
+.branch-choice-current{font-size:14px!important;font-weight:700!important;color:#5c4655!important}
+.branch-choice-trigger{border:1.5px solid #ead9df!important;box-shadow:0 4px 13px rgba(109,72,87,.045)!important}
+.branch-choice-wrap.is-open .branch-choice-trigger{border-color:#dcaabd!important;box-shadow:0 0 0 4px rgba(220,170,189,.13)!important}
+@media(max-width:680px){
+ .login-platform-brand-top{margin:0 0 15px!important;padding:0 0 12px!important;gap:10px!important}
+ .login-platform-brand-top .login-platform-symbol{width:43px!important;height:43px!important;border-radius:14px!important}
+ .login-platform-brand-top .login-platform-wordmark{font-size:22px!important}
+ .login-platform-brand-top .login-platform-wordmark small{font-size:7px!important;letter-spacing:1.8px!important;margin-top:4px!important}
+ .login-story .story-copy{margin-top:0!important}
+ .login-story .eyebrow{font-size:8px!important;letter-spacing:1.7px!important}
+ .branch-choice-leading{width:34px!important;height:34px!important}
+ .branch-choice-leading svg{width:19px!important;height:19px!important}
+ .branch-choice-arrow{width:36px!important;height:36px!important}
+}
+@media(max-height:740px) and (max-width:680px){
+ .login-platform-brand-top{margin-bottom:11px!important;padding-bottom:9px!important}
+ .login-platform-brand-top .login-platform-symbol{width:39px!important;height:39px!important}
+}
+@media(prefers-reduced-motion:reduce){.branch-choice-arrow,.branch-choice-arrow svg{transition:none!important}}
+</style>
+
 </body>
 </html>
