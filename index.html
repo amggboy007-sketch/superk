@@ -3196,8 +3196,10 @@ status.classList.add('blink');
 syncStatusTimer = setTimeout(() => { status.classList.remove('blink'); status.classList.add('hide'); }, 5000);
 }
 setInterval(refreshCloudState, 2000);
-window.addEventListener('focus', refreshCloudState);
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refreshCloudState(); if (tab === 'settings') refreshStorageUsage(); } });
+if (storageUsageTimer) clearInterval(storageUsageTimer);
+storageUsageTimer = setInterval(refreshStorageUsage, 60 * 60 * 1000);
+window.addEventListener('focus', () => { refreshCloudState(); refreshStorageUsage(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refreshCloudState(); refreshStorageUsage(); } });
 const can = {
 edit: () => fullAccessUser(me) || !!me?.permissions?.editStock,
 del: () => fullAccessUser(me) || !!me?.permissions?.deleteStock,
@@ -4745,11 +4747,7 @@ panel.inert = false;
 panel.classList.add('open');
 });
 if (isWideDesktop()) requestAnimationFrame(updatePageMascots);
-if (me?.owner || me?.role === 'admin') {
-refreshStorageUsage();
-if (storageUsageTimer) clearInterval(storageUsageTimer);
-storageUsageTimer = setInterval(refreshStorageUsage, 60 * 60 * 1000);
-}
+if (me?.owner || me?.role === 'admin') refreshStorageUsage();
 if ($('#refreshStorageUsage')) $('#refreshStorageUsage').onclick = refreshStorageUsage;
 if (cloudToken && $('#adminBackupList')) {
 refreshAdminBackups();
