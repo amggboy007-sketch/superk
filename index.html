@@ -1980,7 +1980,7 @@ toast(appDownloadUrl ? 'บันทึกลิงก์ดาวน์โห�
 finally { if (button) { button.disabled = false; button.textContent = 'บันทึกลิงก์'; } }
 }
 async function loadOfficialBrand() {
-try { const result = await cloudRpc('api_site_brand_get'); if (result?.ok) applyOfficialBrand({ logoData: result.officialLogoData ?? result.logoData }); }
+try { const result = await cloudRpc('api_official_brand_get'); if (result?.ok) applyOfficialBrand({ logoData: result.logoData }); }
 catch (error) { console.warn('โหลดโลโก้ทางการ Super K ไม่สำเร็จ', error); }
 }
 async function loadSiteBrand(branchId = currentBranch?.id) {
