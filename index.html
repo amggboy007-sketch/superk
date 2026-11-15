@@ -7640,5 +7640,19 @@ body[data-theme="panda"] .btn:not(.sec),body[data-theme="panda"] .fab{box-shadow
 @media(prefers-reduced-motion:reduce){.sub-step-btn,.sub-direction-btn{transition:none!important}}
 </style>
 
+
+<style id="branch-manager-live-state-v1">
+.bm-card .bm-actions .bm-badge{
+  border-color:#a8d8b5!important;background:#eaf7ed!important;color:#34784a!important;
+  box-shadow:0 0 0 2px rgba(104,177,125,.08)!important;
+}
+.bm-card .bm-actions .bm-badge::before{
+  content:"";width:7px;height:7px;flex:none;border-radius:50%;margin-right:6px;
+  background:#55ad70;box-shadow:0 0 0 3px rgba(85,173,112,.16);animation:bmCurrentPulse 2s ease-in-out infinite;
+}
+@keyframes bmCurrentPulse{0%,100%{box-shadow:0 0 0 3px rgba(85,173,112,.16)}50%{box-shadow:0 0 0 5px rgba(85,173,112,.05)}}
+@media(prefers-reduced-motion:reduce){.bm-card .bm-actions .bm-badge::before{animation:none}}
+</style>
+
 </body>
 </html>
