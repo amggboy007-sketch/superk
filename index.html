@@ -1818,6 +1818,7 @@ html.formal-theme .top-runway{display:none!important}
 .site-admin-card .fld{margin-bottom:12px}
 .site-admin-card input[type=file]{font-size:12px;padding:9px}
 .story-brand-name{display:block}
+.lg{position:relative}
 .official-login-logo{position:absolute;top:15px;right:15px;width:42px;height:42px;display:grid;place-items:center;overflow:hidden;border:1px solid var(--theme-border-strong);border-radius:12px;background:var(--theme-wash);color:var(--acc-hover);font-size:14px;font-weight:900;box-shadow:var(--shadow-sm)}
 .official-login-logo .site-brand-image{width:100%;height:100%;padding:4px;box-sizing:border-box}
 .official-logo-settings{padding:13px;border:1px solid var(--theme-border-strong);border-radius:14px;background:var(--theme-wash);margin-bottom:12px}
@@ -3349,6 +3350,20 @@ main.querySelectorAll('.page-mascots').forEach(row => row.remove());
 main.querySelectorAll('.card-mascot').forEach(mascot => mascot.remove());
 main.querySelectorAll('.has-card-mascot').forEach(card => card.classList.remove('has-card-mascot'));
 if (THEMES[currentTheme]?.formal) return;
+const floatingFriends = ['#jobPage.open .jp-card', '#eggFeedPage.open .ef-card'];
+floatingFriends.forEach(selector => {
+  const floatingCards = [...document.querySelectorAll(selector)];
+  floatingCards.forEach((card, index) => {
+    if (index % 3 !== 0) return;
+    card.querySelectorAll(':scope > .card-mascot').forEach(node => node.remove());
+    card.classList.add('has-card-mascot');
+    const sticker = document.createElement('span');
+    sticker.className = 'card-mascot mascot-top-right';
+    sticker.setAttribute('aria-hidden', 'true');
+    sticker.textContent = friends[(index + (selector.includes('jp-card') ? 1 : 2)) % friends.length];
+    card.append(sticker);
+  });
+});
 const cards = [];
 const add = (selector, placement = 'mascot-top-right', every = 1) => {
 [...main.querySelectorAll(selector)].forEach((card, index) => { if (index % every === 0) cards.push({ card, placement }); });
@@ -6704,6 +6719,8 @@ const JMENU = [{ id: 'jobs', icon: '🗓️', label: 'จ๊อบพนัก�
     body.scrollTop = oldScroll;
     bindBranchManagerActions(body);
     updateSubscriptionCountdowns();
+    const card = body.querySelector('.branch-admin-card');
+    if (card && !card.querySelector('.card-mascot')) { const friends = THEME_CARD_FRIENDS[currentTheme] || THEMES[currentTheme]?.friends || ['🌿','✨','🏬']; const sticker = document.createElement('span'); sticker.className = 'card-mascot mascot-top-right'; sticker.setAttribute('aria-hidden','true'); sticker.textContent = friends[0]; card.classList.add('has-card-mascot'); card.append(sticker); }
     refreshBranchOnline();
   };
   rightDock.querySelector('.sd-right-tab').onclick = () => rightMenuOpen(!rightDock.classList.contains('open'));
@@ -6717,7 +6734,7 @@ const JMENU = [{ id: 'jobs', icon: '🗓️', label: 'จ๊อบพนัก�
   window.jOpenPage = () => {
     loadJ(); JS.view = 'cal'; JS.who = 'all'; const t = new Date(); JS.y = t.getFullYear(); JS.m = t.getMonth(); JS.sel = dk(t);
     $('#jpGear').style.display = jMgr() ? '' : 'none';
-    jRender(); jpBody().scrollTop = 0; page.classList.add('open'); page.setAttribute('aria-hidden', 'false');
+    jRender(); jpBody().scrollTop = 0; page.classList.add('open'); page.setAttribute('aria-hidden', 'false'); updatePageMascots();
   };
   const refresh = () => {
     const on = !!me && !$('#app').classList.contains('hide') && !isWideDesktop() && JMENU.some(m => m.show());
@@ -6770,7 +6787,7 @@ const JMENU = [{ id: 'jobs', icon: '🗓️', label: 'จ๊อบพนัก�
  document.body.append(page);
  const body=()=>document.getElementById('efBody');
  window.eggFeedClose=()=>page.classList.remove('open');
- window.eggFeedOpen=async()=>{if(!can.eggFeed())return toast('ไม่มีสิทธิ์ใช้งานฟีด Super K',1);page.classList.add('open');await load();};
+ window.eggFeedOpen=async()=>{if(!can.eggFeed())return toast('ไม่มีสิทธิ์ใช้งานฟีด Super K',1);page.classList.add('open');updatePageMascots();await load();};
  async function readImage(file){
   if(!file)return '';
   if(!file.type.startsWith('image/'))throw new Error('กรุณาเลือกไฟล์รูปภาพ');
