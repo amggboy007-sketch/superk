@@ -1854,11 +1854,15 @@ try {
     </div>
     <form class="lg" id="lgForm" autocomplete="on">
       <div class="official-login-logo" id="officialLoginLogo" aria-label="โลโก้ทางการ Super K">SK</div>
+      <div class="login-platform-brand"><span class="login-platform-symbol">SK</span><span class="login-platform-wordmark">Super K<small>SMART BUSINESS PLATFORM</small></span></div>
       <div class="lg-header">
         <div class="lg-icon" id="siteLoginLogo" aria-hidden="true" style="font-size:19px;font-weight:900;letter-spacing:-1px">SK</div>
         <h1>เข้าสู่ระบบ</h1>
       </div>
-      <label class="fld"><span>สาขาที่ปฏิบัติงาน</span><div class="branch-select-wrap"><select class="in branch-select" id="lgBranch" name="branch" required aria-label="เลือกสาขาที่ปฏิบัติงานก่อนเข้าสู่ระบบ"><option value="">กำลังโหลดรายชื่อสาขา…</option></select></div></label>
+      <label class="fld branch-choice-field"><span>เลือกเว็บไซต์ของคุณ</span><div class="branch-select-wrap branch-choice-wrap" id="branchChoiceWrap">
+<select class="in branch-select branch-choice-native" id="lgBranch" name="branch" required aria-label="เลือกเว็บไซต์ของคุณ"><option value="">กำลังโหลดรายชื่อสาขา…</option></select>
+<button type="button" class="branch-choice-trigger" id="branchChoiceTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="branchChoiceList"><span class="branch-choice-leading" aria-hidden="true">⌂</span><span class="branch-choice-current" id="branchChoiceCurrent">กำลังโหลดรายชื่อเว็บไซต์…</span><span class="branch-choice-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></span></button>
+<div class="branch-choice-panel" id="branchChoicePanel"><div class="branch-choice-panel-inner"><div class="branch-choice-options" id="branchChoiceList" role="listbox" aria-label="เว็บไซต์ที่เลือกได้"></div></div></div></div></label>
       <small class="branch-help">เลือกสาขาที่ผู้ดูแลสร้างบัญชีให้ บัญชีพนักงานเข้าได้เฉพาะสาขานั้น</small>
       <label class="fld"><span>ชื่อผู้ใช้</span><input class="in" id="lgUser" name="username" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="ชื่อผู้ใช้ของคุณ" required></label>
       <label class="fld"><span>รหัสลับ 6 หลัก</span><input class="in" id="lgPinInput" name="pin" type="password" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="current-password" placeholder="••••••" style="letter-spacing:5px;text-align:center;font-size:18px"></label>
@@ -7657,5 +7661,39 @@ body[data-theme="panda"] .btn:not(.sec),body[data-theme="panda"] .fab{box-shadow
 
 <style id="right-drawer-handle-full-v2">.sd-right-tab{left:auto!important;right:6px!important;width:32px!important;height:38px!important;border-radius:13px!important;overflow:visible!important;clip-path:none!important;box-sizing:border-box!important}.sd-right-tab::before,.sd-right-tab::after{display:none!important}</style>
 <style id="superk-feed-icon-v1">.ef-title-icon{width:20px;height:20px;vertical-align:-4px;margin-right:5px;fill:none;stroke:var(--acc-hover,var(--acc));stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}</style>
+
+<style id="superk-login-brand-dropdown-v1">
+.login-platform-brand{display:flex;align-items:center;gap:11px;margin:0 0 25px;padding:0 0 19px;border-bottom:1px solid #f1e6e8}
+.login-platform-symbol{width:43px;height:43px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(145deg,#f5b4c6,#f1c99f);color:#fff;font-size:17px;font-weight:900;letter-spacing:-1px;box-shadow:0 7px 17px rgba(222,151,174,.23)}
+.login-platform-wordmark{color:#503b4a;font-size:21px;line-height:1.05;font-weight:800;letter-spacing:-.55px}
+.login-platform-wordmark small{display:block;margin-top:5px;color:#ad8998;font-size:8px;letter-spacing:2px;font-weight:700}
+.branch-choice-wrap{position:relative}.branch-choice-wrap:after{display:none!important}
+.branch-choice-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;left:0!important;bottom:0!important;padding:0!important}
+.branch-choice-trigger{width:100%;min-height:54px;padding:8px 12px;display:flex;align-items:center;gap:11px;text-align:left;border:1.5px solid #f0dfe2;border-radius:14px;background:linear-gradient(135deg,#fffaf9,#fff);color:#634d5c;box-shadow:0 3px 10px rgba(120,75,93,.035);transition:border-color .2s ease,box-shadow .2s ease,transform .18s ease}
+.branch-choice-trigger:hover{border-color:#e8b3c3;box-shadow:0 6px 15px rgba(191,126,149,.11)}.branch-choice-trigger:active{transform:scale(.992)}
+.branch-choice-wrap.is-open .branch-choice-trigger{border-color:#e6a6ba;box-shadow:0 0 0 4px rgba(232,155,178,.13)}
+.branch-choice-leading{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:11px;background:#fff0f3;color:#d27d98;font-size:20px}
+.branch-choice-current{flex:1;min-width:0;font-size:13.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.branch-choice-arrow{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:10px;background:#fff4f1;color:#b87b88;transition:transform .32s cubic-bezier(.2,.75,.25,1),background .2s ease}
+.branch-choice-arrow svg{width:17px;height:17px;stroke:currentColor;stroke-width:2.2;fill:none}
+.branch-choice-wrap.is-open .branch-choice-arrow{transform:rotate(180deg);background:#fce9ee}
+.branch-choice-panel{position:absolute;z-index:25;top:calc(100% + 8px);left:0;right:0;display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(-7px);pointer-events:none;transition:grid-template-rows .34s cubic-bezier(.2,.75,.25,1),opacity .22s ease,transform .34s cubic-bezier(.2,.75,.25,1)}
+.branch-choice-wrap.is-open .branch-choice-panel{grid-template-rows:1fr;opacity:1;transform:translateY(0);pointer-events:auto}
+.branch-choice-panel-inner{min-height:0;overflow:hidden;border-radius:15px}
+.branch-choice-options{max-height:220px;overflow-y:auto;padding:6px;border:1px solid #f0dfe2;border-radius:15px;background:rgba(255,255,255,.98);box-shadow:0 16px 35px rgba(100,64,80,.16);overscroll-behavior:contain}
+.branch-choice-option{width:100%;min-height:44px;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;text-align:left;color:#665260;font-size:13px;font-weight:550;transition:background .16s ease,color .16s ease}
+.branch-choice-option:hover,.branch-choice-option:focus-visible{background:#fff2f5;color:#b95f7d;outline:none}
+.branch-choice-option[aria-selected="true"]{background:#fff0f3;color:#b95f7d;font-weight:750}
+.branch-choice-option-mark{width:27px;height:27px;flex:none;display:grid;place-items:center;border-radius:9px;background:#fff8e9;color:#b58a59}
+.branch-choice-empty{padding:12px;color:#9a8791;font-size:12px;text-align:center}
+@media(max-width:680px){.login-platform-brand{margin-bottom:18px;padding-bottom:14px}.login-platform-symbol{width:39px;height:39px}.login-platform-wordmark{font-size:19px}.branch-choice-options{max-height:190px}}
+@media(prefers-reduced-motion:reduce){.branch-choice-trigger,.branch-choice-arrow,.branch-choice-panel,.branch-choice-option{transition:none!important}}
+</style>
+<script id="superk-login-branch-picker-v1">
+(()=>{const w=document.getElementById('branchChoiceWrap'),n=document.getElementById('lgBranch'),t=document.getElementById('branchChoiceTrigger'),c=document.getElementById('branchChoiceCurrent'),l=document.getElementById('branchChoiceList');if(!w||!n||!t||!c||!l)return;
+const close=()=>{w.classList.remove('is-open');t.setAttribute('aria-expanded','false')},open=()=>{if(!t.disabled){w.classList.add('is-open');t.setAttribute('aria-expanded','true')}};
+const sync=()=>{const o=n.options[n.selectedIndex];c.textContent=o&&o.value?o.textContent.trim():'แตะเพื่อเลือกเว็บไซต์';l.replaceChildren();const opts=Array.from(n.options).filter(x=>x.value&&!x.disabled);if(!opts.length){const e=document.createElement('div');e.className='branch-choice-empty';e.textContent='ยังไม่มีเว็บไซต์ให้เลือก';l.append(e)}opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='branch-choice-option';b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===n.value));const mark=document.createElement('span');mark.className='branch-choice-option-mark';mark.textContent='⌂';mark.setAttribute('aria-hidden','true');const label=document.createElement('span');label.textContent=o.textContent.trim();b.append(mark,label);b.addEventListener('click',()=>{n.value=o.value;n.dispatchEvent(new Event('change',{bubbles:true}));sync();close();t.focus()});l.append(b)});t.disabled=n.disabled||!opts.length;if(n.disabled)c.textContent=n.options[0]?.textContent.trim()||'กำลังโหลดรายชื่อเว็บไซต์…'};
+t.addEventListener('click',()=>w.classList.contains('is-open')?close():open());n.addEventListener('change',sync);new MutationObserver(sync).observe(n,{childList:true,subtree:true,attributes:true});document.addEventListener('click',e=>{if(!w.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&w.classList.contains('is-open')){close();t.focus()}});sync()})();
+</script>
 </body>
 </html>
