@@ -5054,24 +5054,52 @@ renderBranchOptions(branches); closeModal(); build(); toast(`สร้าง${re
 } catch (error) { if (button) button.disabled = false; toast(error.message || 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ', 1); }
 };
 }
+async function saveBranchSwitchPin(branchId, username, pin) {
+ const key=await getRememberKey(true),iv=crypto.getRandomValues(new Uint8Array(12));
+ const plain=new TextEncoder().encode(JSON.stringify({branchId:String(branchId),username:String(username).toLowerCase(),pin:String(pin)}));
+ const cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain);
+ const storageKey='superk_branch_pin_'+encodeURIComponent(String(username).toLowerCase())+'_'+encodeURIComponent(String(branchId));
+ localStorage.setItem(storageKey,JSON.stringify({iv:bytesToB64(iv),cipher:bytesToB64(new Uint8Array(cipher))}));
+ const saved=JSON.parse(localStorage.getItem(storageKey)||'null');
+ const verified=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(saved.iv)},key,b64ToBytes(saved.cipher))));
+ if(verified.pin!==String(pin)||verified.username!==String(username).toLowerCase()||verified.branchId!==String(branchId))throw new Error('ตรวจสอบข้อมูลรหัสสาขาที่บันทึกไม่ผ่าน');
+}
+async function getBranchSwitchPin(branchId, username) {
+ const storageKey='superk_branch_pin_'+encodeURIComponent(String(username).toLowerCase())+'_'+encodeURIComponent(String(branchId));
+ const raw=localStorage.getItem(storageKey);if(!raw)return '';
+ try{
+  const saved=JSON.parse(raw),key=await getRememberKey(false);if(!key||!saved?.iv||!saved?.cipher)throw new Error('missing key');
+  const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(saved.iv)},key,b64ToBytes(saved.cipher));
+  const data=JSON.parse(new TextDecoder().decode(plain));
+  if(data.branchId!==String(branchId)||data.username!==String(username).toLowerCase()||!/^[0-9]{6}$/.test(String(data.pin||'')))throw new Error('invalid branch credential');
+  return String(data.pin);
+ }catch(error){console.warn('เรียกคืนรหัสผ่านสาขาไม่สำเร็จ',error);localStorage.removeItem(storageKey);return '';}
+}
+function clearBranchSwitchPin(branchId, username) {
+ const storageKey='superk_branch_pin_'+encodeURIComponent(String(username).toLowerCase())+'_'+encodeURIComponent(String(branchId));
+ try{localStorage.removeItem(storageKey);}catch{}
+}
 function switchBranch(branchId) {
-if (!can.manageBranches()) return toast('บัญชีนี้ไม่มีสิทธิ์จัดการสาขา', 1);
-const branch = branches.find(item => String(item.id) === String(branchId)); if (!branch) return toast('ไม่พบสาขาที่เลือก', 1);
-openModal(`<h3>🏬 เข้าสาขา${esc(branch.name)}</h3><p class="settings-hint">ยืนยันตัวตนด้วยรหัสผ่าน 6 หลัก เพื่อสลับสาขาโดยไม่ออกจากระบบ</p><form id="switchBranchForm"><label class="fld"><span>รหัสผ่าน 6 หลัก</span><input class="in" name="pin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="current-password" required></label><label class="pin-remember"><input type="checkbox" name="remember"><span>จำรหัสผ่านไว้ในเครื่องนี้</span></label><div class="acts"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button class="btn">เข้าสาขานี้</button></div></form>`);
-const pinKey = `branchPin:${branch.id}`;
-$('#switchBranchForm').onsubmit = async e => {
-e.preventDefault(); const button = e.submitter, pin = e.target.elements.pin.value, remember = e.target.elements.remember.checked;
-if (!/^\d{6}$/.test(pin)) return toast('กรุณากรอกรหัสผ่าน 6 หลัก', 1);
-if (button) button.disabled = true;
-try {
-await cloudRpc('api_branch_login', { p_branch_id: currentBranch.id, p_name: me.name, p_password: pin });
-const result = await cloudRpc('api_branch_switch', { p_token: cloudToken, p_branch_id: branch.id });
-if (!result.ok) { if (button) button.disabled = false; e.target.elements.pin.value = ''; try { localStorage.removeItem(pinKey); } catch (_) {} return toast(result.error || 'เข้าสาขาไม่สำเร็จ', 1); }
-try { localStorage.removeItem(pinKey); } catch (_) {}
-sess.set(cloudToken, result.branch.id, cloudTokenStore.getSession()?.refreshToken); setCurrentBranch(result.branch); void loadSiteBrand(result.branch.id); applyCloudState(result.state); me = result.me;
-syncSnapshot = cloneData(result.state); syncVersion = result.version; closeModal(); enter(me, result.branch); toast(`เข้าสาขา${result.branch.name}แล้ว`);
-} catch (error) { if (button) button.disabled = false; toast(error.message || 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ', 1); }
-};
+ if (!can.manageBranches()) return toast('บัญชีนี้ไม่มีสิทธิ์จัดการสาขา', 1);
+ const branch = branches.find(item => String(item.id) === String(branchId)); if (!branch) return toast('ไม่พบสาขาที่เลือก', 1);
+ openModal(`<h3>🏬 เข้าสาขา${esc(branch.name)}</h3><p class="settings-hint">ยืนยันตัวตนด้วยรหัสผ่าน 6 หลัก เพื่อสลับสาขาโดยไม่ออกจากระบบ</p><form id="switchBranchForm"><label class="fld"><span>รหัสผ่าน 6 หลัก</span><input class="in" name="pin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="current-password" required></label><label class="pin-remember"><input type="checkbox" name="remember"><span>จำรหัสผ่านไว้ในเครื่องนี้</span></label><div class="acts"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button class="btn">เข้าสาขานี้</button></div></form>`);
+ const form=$('#switchBranchForm'),pinInput=form.elements.pin,rememberInput=form.elements.remember;
+ void getBranchSwitchPin(branch.id,me.name).then(pin=>{if(!form.isConnected||!pin)return;pinInput.value=pin;rememberInput.checked=true;});
+ form.onsubmit = async e => {
+  e.preventDefault(); const button=e.submitter,pin=pinInput.value,remember=rememberInput.checked;
+  if(!/^[0-9]{6}$/.test(pin))return toast('กรุณากรอกรหัสผ่าน 6 หลัก',1);
+  if(button)button.disabled=true;
+  try {
+   const login=await cloudRpc('api_branch_login',{p_branch_id:currentBranch.id,p_name:me.name,p_password:pin});
+   if(login?.ok===false)throw new Error(login.error||'ยืนยันรหัสผ่านไม่สำเร็จ');
+   const result=await cloudRpc('api_branch_switch',{p_token:cloudToken,p_branch_id:branch.id});
+   if(!result.ok){if(button)button.disabled=false;pinInput.value='';return toast(result.error||'เข้าสาขาไม่สำเร็จ',1);}
+   if(remember){try{await saveBranchSwitchPin(branch.id,me.name,pin);}catch(error){console.warn('บันทึกรหัสผ่านสาขาไม่สำเร็จ',error);toast('เข้าสาขาสำเร็จ แต่บันทึกรหัสผ่านในเครื่องไม่สำเร็จ',1);}}
+   else clearBranchSwitchPin(branch.id,me.name);
+   sess.set(cloudToken,result.branch.id,cloudTokenStore.getSession()?.refreshToken);setCurrentBranch(result.branch);void loadSiteBrand(result.branch.id);applyCloudState(result.state);me=result.me;
+   syncSnapshot=cloneData(result.state);syncVersion=result.version;closeModal();enter(me,result.branch);toast(`เข้าสาขา${result.branch.name}แล้ว`);
+  } catch(error){if(button)button.disabled=false;toast(error.message||'เชื่อมต่อฐานข้อมูลไม่สำเร็จ',1);}
+ };
 }
 async function deleteBranch(branchId) {
 if (!can.manageBranches() || !me?.owner) return toast('เฉพาะบัญชีผู้ดูแลหลักเท่านั้นที่ลบสาขาได้', 1);
