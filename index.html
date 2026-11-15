@@ -1383,7 +1383,11 @@ html.nav-busy .card-mascot{animation-play-state:paused!important}
 
 .login-remember{margin:2px 0 3px!important;color:var(--ink)!important;font-size:13px!important;font-weight:650}
 .login-remember input{width:17px!important;height:17px!important;accent-color:var(--acc)}
-.login-remember-note{display:block;margin:-1px 0 10px 25px;color:var(--mute);font-size:10.5px;line-height:1.35}
+.storage-refresh-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 15px;border:1px solid color-mix(in srgb,var(--acc) 32%,var(--line));border-radius:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 16%,var(--card-bg)),var(--card-bg));color:var(--ink);font-weight:800;box-shadow:0 5px 14px color-mix(in srgb,var(--acc) 12%,transparent);transition:transform .2s ease,box-shadow .2s ease,opacity .2s ease}
+.storage-refresh-btn:active{transform:scale(.97)}.storage-refresh-btn:disabled{opacity:.65}.storage-refresh-icon{display:grid;place-items:center;width:23px;height:23px;border-radius:7px;background:var(--acc);color:white;font-size:20px;line-height:1}.storage-refresh-btn.is-loading .storage-refresh-icon{animation:storageSpin .8s linear infinite}@keyframes storageSpin{to{transform:rotate(360deg)}}
+.storage-section{padding:12px;border:1px solid var(--line);border-radius:15px;background:color-mix(in srgb,var(--theme-wash) 55%,var(--card-bg));margin-top:12px}.storage-section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.storage-section-head>b{font-size:13px;color:var(--ink)}.storage-plan-tag{font-size:10px;font-weight:800;padding:4px 8px;border-radius:99px;background:var(--theme-soft);color:var(--mute);white-space:nowrap}
+.storage-section .storage-progress{margin-bottom:0}.storage-section .storage-usage-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:520px){.storage-section .storage-usage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.storage-section .storage-metric:last-child{grid-column:1/-1;display:grid;align-items:start}.storage-section .storage-metric:last-child b{order:initial}.storage-section .storage-metric:last-child small:last-child{order:initial}}
 /* ===== Settings drop-down: full-width panel + new chevron badge ===== */
 .disclosure-panel.open .disclosure-inner,.disclosure-inner{padding-right:14px!important}
 .disclosure-chevron{display:grid;place-items:center;width:30px;height:30px;margin-left:auto;border:1px solid color-mix(in srgb,var(--acc) 34%,var(--card-bg));border-radius:10px;background:color-mix(in srgb,var(--acc) 13%,var(--card-bg));color:var(--acc-hover);transform:none;transition:background-color .25s ease,border-color .25s ease,color .25s ease!important}
@@ -1868,7 +1872,7 @@ try {
       <label class="fld"><span>ชื่อผู้ใช้</span><input class="in" id="lgUser" name="username" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="ชื่อผู้ใช้ของคุณ" required></label>
       <label class="fld"><span>รหัสลับ 6 หลัก</span><input class="in" id="lgPinInput" name="pin" type="password" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="current-password" placeholder="••••••" style="letter-spacing:5px;text-align:center;font-size:18px"></label>
       <label class="pin-remember login-remember" for="lgRememberLogin"><input type="checkbox" id="lgRememberLogin" name="rememberLogin"><span>จดจำการเข้าสู่ระบบของฉัน</span></label>
-      <small class="login-remember-note">จำชื่อผู้ใช้และเว็บไซต์ที่เลือกไว้บนอุปกรณ์นี้ โดยไม่บันทึกรหัสลับ</small>
+
       <div class="msg" id="lgMsg" role="alert" aria-live="polite"></div>
       <button type="submit" class="btn login-submit">เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
       <div class="hint hide" id="lgHint">เข้าใช้งานครั้งแรก ให้เจ้าของร้านลงชื่อเข้าใช้และตั้งรหัสใหม่</div>
@@ -2778,10 +2782,8 @@ catch (error) { sess.set(null); return fail(error.message || 'ตรวจสอ
 if (subscription.expired && !subscription.owner) { currentSubscription = subscription; showSubscriptionExpired(subscription); return; }
 currentSubscription = subscription; updateSubscriptionHeader(subscription);
 lock = { n: 0, until: 0 }; store.set('inv_lock', lock);
-try {
-  if (rememberLogin) localStorage.setItem('superk_remember_login', JSON.stringify({ username: name, branchId }));
-  else localStorage.removeItem('superk_remember_login');
-} catch {}
+if (rememberLogin) await saveRememberedLogin(name, branchId, pinVal);
+else await clearRememberedLogin();
 let result;
 try { result = await cloudRpc('api_get_state', { p_branch_id: branchId }); }
 catch (error) { sess.set(null); return fail(error.message || 'บัญชีนี้ไม่มีสิทธิ์เข้าสาขาที่เลือก'); }
@@ -2810,7 +2812,7 @@ if (oldToken) {
   if (deviceId) pushApi({ action: 'unregister', token: oldToken, deviceId }).catch(() => {});
   cloudRpc('api_logout', { p_token: oldToken }).catch(() => {});
 }
-sess.set(null); syncSnapshot = null; me = null; if (typeof pageDomCache !== 'undefined') { pageDomCache.clear(); renderedPageKey = null; renderCache = { tab: '', wide: null, html: '' }; } renderAnnounce(null); closeModal(); $('#bootScreen').classList.add('hide'); $('#app').classList.add('hide'); $('#login').classList.remove('hide'); showHint(); prefillLastUsername();
+sess.set(null); syncSnapshot = null; me = null; if (typeof pageDomCache !== 'undefined') { pageDomCache.clear(); renderedPageKey = null; renderCache = { tab: '', wide: null, html: '' }; } renderAnnounce(null); closeModal(); $('#bootScreen').classList.add('hide'); $('#app').classList.add('hide'); $('#login').classList.remove('hide'); showHint(); void prefillLastUsername();
 }
 let onlineUsers = new Set(), lastOnlineByUser = new Map(), presenceTimer = null, presenceBusy = false;
 function updateOnlineUsers(users = [], lastOnline = {}) {
@@ -4344,7 +4346,7 @@ return `<div class="sect"><h2>ตั้งค่าระบบ</h2><small>ก�
       <button type="button" class="btn ann-save" id="annSave">📢 บันทึกและแสดงประกาศ</button>
       <div class="ann-active"><b>กำลังแสดงอยู่</b><div id="annList"><small class="ann-empty">กำลังโหลด…</small></div></div>
     </div></div></div>` : ''}
-    ${canViewStorage ? `<div class="dash-card storage-card disclosure-card" id="storageUsageCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="storageDisclosurePanel"><span>🗄️ พื้นที่ฐานข้อมูล</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="storageDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><div class="storage-heading"><div><p class="settings-hint">ขนาดฐานข้อมูลจริง เทียบกับโควตาแผน Free 500 MB</p></div><button type="button" class="btn sm sec" id="refreshStorageUsage">ตรวจตอนนี้</button></div><div class="storage-usage-grid"><div class="storage-metric"><small>ใช้ไปแล้ว</small><b id="storageUsed">กำลังตรวจสอบ…</b><small>ฐานข้อมูลจริง</small></div><div class="storage-metric"><small>พื้นที่เหลือ</small><b id="storageRemaining">กำลังตรวจสอบ…</b><small>จากโควตา</small></div><div class="storage-metric"><small>เปอร์เซ็นต์ที่ใช้</small><b id="storagePercent">กำลังตรวจสอบ…</b><small id="storageQuota">โควตา 500 MB</small></div></div><div class="storage-progress" role="progressbar" aria-label="สัดส่วนพื้นที่ฐานข้อมูล" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="storageUsageBar"></span></div><div class="storage-footer"><small>ตรวจล่าสุด: <span id="storageCheckedAt">กำลังโหลด</span></small><small>ตรวจอัตโนมัติทุก 1 ชั่วโมงขณะเปิดหน้านี้</small></div><small class="storage-error" id="storageUsageError" role="status"></small></div></div></div>` : ''}
+    ${canViewStorage ? `<div class="dash-card storage-card disclosure-card" id="storageUsageCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="storageDisclosurePanel"><span>🗄️ พื้นที่ฐานข้อมูล</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="storageDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><div class="storage-heading"><div><p class="settings-hint">ข้อมูลสดจาก Supabase · อัปเดตเมื่อกดตรวจสอบ</p></div><button type="button" class="btn storage-refresh-btn" id="refreshStorageUsage"><span class="storage-refresh-icon" aria-hidden="true">↻</span><span>ตรวจตอนนี้</span></button></div><section class="storage-section"><div class="storage-section-head"><b>ฐานข้อมูล (Database)</b><span class="storage-plan-tag">Free · 500 MB</span></div><div class="storage-usage-grid"><div class="storage-metric"><small>ใช้ไปแล้ว</small><b id="storageUsed">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>พื้นที่คงเหลือ</small><b id="storageRemaining">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>ใช้งานแล้ว</small><b id="storagePercent">กำลังตรวจสอบ…</b></div></div><div class="storage-progress" role="progressbar" aria-label="สัดส่วนพื้นที่ฐานข้อมูล" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="storageUsageBar"></span></div></section><section class="storage-section storage-files-section"><div class="storage-section-head"><b>พื้นที่จัดเก็บไฟล์ (Storage)</b><span class="storage-plan-tag">Free · 1 GB</span></div><div class="storage-usage-grid"><div class="storage-metric"><small>ใช้ไปแล้ว</small><b id="storageFilesUsed">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>พื้นที่คงเหลือ</small><b id="storageFilesRemaining">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>จำนวนไฟล์</small><b id="storageFilesCount">—</b></div></div><div class="storage-progress" role="progressbar" aria-label="สัดส่วนพื้นที่จัดเก็บไฟล์" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="storageFilesBar"></span></div></section><div class="storage-footer"><small>ตรวจล่าสุด: <span id="storageCheckedAt">ยังไม่ได้ตรวจสอบ</span></small><small>ตัวเลขอ้างอิงโควตาแพ็กเกจ Free</small></div><small class="storage-error" id="storageUsageError" role="status"></small></div></div></div>` : ''}
     <div class="dash-card disclosure-card theme-picker-card"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="themeDisclosurePanel"><span>🎨 การแสดงผล</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="themeDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">
       
       <h3>🎨 เลือกธีมสี</h3><p style="font-size:12.5px;color:var(--mute);margin-bottom:6px">เลือกธีมที่ชอบ ธีมจะบันทึกแยกในอุปกรณ์นี้ ${isWideDesktop()?'เลื่อนแถบด้านล่างเพื่อดูธีมเพิ่มเติม':'ปัดซ้ายหรือขวาเพื่อดูธีมเพิ่มเติม'}</p>
@@ -5049,27 +5051,31 @@ async function refreshStorageUsage() {
 const card = $('#storageUsageCard');
 if (!card || storageUsageBusy || document.visibilityState === 'hidden' || !(me?.owner || me?.role === 'admin')) return;
 storageUsageBusy = true;
-const error = $('#storageUsageError');
+const button = $('#refreshStorageUsage'), error = $('#storageUsageError');
+if (button) { button.disabled = true; button.classList.add('is-loading'); }
 error.textContent = '';
 try {
 const result = await cloudRpc('api_storage_usage', { p_token: cloudToken });
-if (!result.ok) throw new Error(result.error || 'อ่านพื้นที่ฐานข้อมูลไม่สำเร็จ');
+if (!result.ok) throw new Error(result.error || 'อ่านพื้นที่ Supabase ไม่สำเร็จ');
 const mib = bytes => (Math.max(0, Number(bytes) || 0) / (1024 * 1024)).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const used = Number(result.usedBytes) || 0, remaining = Number(result.remainingBytes) || 0, quota = Number(result.quotaBytes) || 0;
-const percent = Number(result.usedPercent) || 0, bar = $('#storageUsageBar');
-$('#storageUsed').textContent = `${mib(used)} MB`;
-$('#storageRemaining').textContent = `${mib(remaining)} MB`;
-$('#storagePercent').textContent = `${percent.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
-$('#storageQuota').textContent = `โควตา ${mib(quota)} MB · ${result.quotaPlan || 'Free'}`;
-$('#storageCheckedAt').textContent = result.checkedAt ? new Date(result.checkedAt).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : 'ไม่ทราบเวลา';
-bar.style.width = `${Math.max(0, Math.min(100, percent))}%`;
-bar.classList.toggle('warn', percent >= 75 && percent < 90);
-bar.classList.toggle('danger', percent >= 90);
-card.querySelector('.storage-progress').setAttribute('aria-valuenow', String(Math.max(0, Math.min(100, percent))));
-} catch (e) {
-error.textContent = 'อ่านข้อมูลไม่ได้ กรุณาติดตั้ง supabase-storage-usage-migration.sql แล้วลองใหม่';
-$('#storageCheckedAt').textContent = 'ตรวจไม่สำเร็จ';
-} finally { storageUsageBusy = false; }
+const gib = bytes => (Math.max(0, Number(bytes) || 0) / (1024 * 1024 * 1024)).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const dbUsed = Number(result.databaseBytes)||0, dbRemaining = Number(result.databaseRemainingBytes)||0, dbPercent = Number(result.databasePercent)||0;
+const fileUsed = Number(result.storageBytes)||0, fileRemaining = Number(result.storageRemainingBytes)||0, filePercent = Number(result.storagePercent)||0;
+$('#storageUsed').textContent = mib(dbUsed)+' MB';
+$('#storageRemaining').textContent = mib(dbRemaining)+' MB';
+$('#storagePercent').textContent = dbPercent.toLocaleString('th-TH',{maximumFractionDigits:2})+'%';
+$('#storageFilesUsed').textContent = gib(fileUsed)+' GB';
+$('#storageFilesRemaining').textContent = gib(fileRemaining)+' GB';
+$('#storageFilesCount').textContent = (Number(result.storageFiles)||0).toLocaleString('th-TH')+' ไฟล์';
+const dbBar=$('#storageUsageBar'),fileBar=$('#storageFilesBar');
+dbBar.style.width=Math.max(0,Math.min(100,dbPercent))+'%';
+fileBar.style.width=Math.max(0,Math.min(100,filePercent))+'%';
+for(const [bar,p] of [[dbBar,dbPercent],[fileBar,filePercent]]){bar.classList.toggle('warn',p>=75&&p<90);bar.classList.toggle('danger',p>=90);const progress=bar.closest('.storage-progress');progress.setAttribute('aria-valuenow',String(Math.max(0,Math.min(100,p))));}
+$('#storageCheckedAt').textContent=result.checkedAt?new Date(result.checkedAt).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}):'ไม่ทราบเวลา';
+} catch(e) {
+error.textContent=e.message||'ตรวจสอบพื้นที่ไม่สำเร็จ กรุณาลองอีกครั้ง';
+$('#storageCheckedAt').textContent='ตรวจไม่สำเร็จ';
+} finally { storageUsageBusy=false; if(button){button.disabled=false;button.classList.remove('is-loading');} }
 }
 function optionCollection(kind) {
 if (kind === 'roles') return Object.keys(ROLE).map(key => ({ key, label: ROLE[key] }));
@@ -5854,25 +5860,42 @@ closeModal(); toast('เปลี่ยนรหัสสำเร็จ');
 } catch (error) { toast(error.message || 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ', 1); }
 };
 }
-function prefillLastUsername() {
-try {
-  const raw = localStorage.getItem('superk_remember_login');
-  const saved = raw ? JSON.parse(raw) : null;
-  if (!saved || typeof saved.username !== 'string') {
-    $('#lgRememberLogin').checked = false;
-    return;
-  }
-  if (!$('#lgUser').value) $('#lgUser').value = saved.username;
-  $('#lgRememberLogin').checked = true;
-  if (saved.branchId && $('#lgBranch')?.querySelector(`option[value="${CSS.escape(String(saved.branchId))}"]`)) {
-    $('#lgBranch').value = String(saved.branchId);
-    $('#lgBranch').dispatchEvent(new Event('change', { bubbles: true }));
-    if (typeof syncBranchChoiceUI === 'function') syncBranchChoiceUI();
-  }
-} catch { $('#lgRememberLogin').checked = false; }
+const REMEMBER_DB_NAME='superk-login-vault', REMEMBER_STORE='keys', REMEMBER_KEY_ID='device-key';
+function openRememberVault(){
+return new Promise((resolve,reject)=>{const req=indexedDB.open(REMEMBER_DB_NAME,1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(REMEMBER_STORE))req.result.createObjectStore(REMEMBER_STORE);};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
 }
+async function getRememberKey(create=false){
+const db=await openRememberVault();
+try{
+let key=await new Promise((resolve,reject)=>{const tx=db.transaction(REMEMBER_STORE,'readonly'),q=tx.objectStore(REMEMBER_STORE).get(REMEMBER_KEY_ID);q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error);});
+if(!key&&create){key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);await new Promise((resolve,reject)=>{const tx=db.transaction(REMEMBER_STORE,'readwrite');tx.objectStore(REMEMBER_STORE).put(key,REMEMBER_KEY_ID);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});}
+return key;
+}finally{db.close();}
+}
+function bytesToB64(bytes){let binary='';for(const b of bytes)binary+=String.fromCharCode(b);return btoa(binary);}
+function b64ToBytes(value){return Uint8Array.from(atob(value),c=>c.charCodeAt(0));}
+async function saveRememberedLogin(username,branchId,pin){
+try{const key=await getRememberKey(true),iv=crypto.getRandomValues(new Uint8Array(12)),plain=new TextEncoder().encode(JSON.stringify({username,branchId,pin})),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain);localStorage.setItem('superk_remember_login',JSON.stringify({iv:bytesToB64(iv),cipher:bytesToB64(new Uint8Array(cipher))}));}catch(error){console.warn('บันทึกการจดจำการเข้าสู่ระบบไม่สำเร็จ',error);toast('อุปกรณ์นี้ไม่รองรับการจดจำการเข้าสู่ระบบแบบเข้ารหัส',1);}
+}
+async function clearRememberedLogin(){
+try{localStorage.removeItem('superk_remember_login');const db=await openRememberVault();await new Promise((resolve,reject)=>{const tx=db.transaction(REMEMBER_STORE,'readwrite');tx.objectStore(REMEMBER_STORE).delete(REMEMBER_KEY_ID);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});db.close();}catch{}
+}
+async function prefillLastUsername() {
+try{
+const raw=localStorage.getItem('superk_remember_login');if(!raw){$('#lgRememberLogin').checked=false;return;}
+const saved=JSON.parse(raw),key=await getRememberKey(false);if(!key||!saved?.iv||!saved?.cipher)throw new Error('remember key missing');
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(saved.iv)},key,b64ToBytes(saved.cipher));
+const credential=JSON.parse(new TextDecoder().decode(plain));
+if(typeof credential.username!=='string'||!/^\\d{6}$/.test(String(credential.pin||'')))throw new Error('invalid credential');
+$('#lgUser').value=credential.username;$('#lgPinInput').value=credential.pin;$('#lgRememberLogin').checked=true;
+if(credential.branchId&&$('#lgBranch')?.querySelector(`option[value="${CSS.escape(String(credential.branchId))}"]`)){
+$('#lgBranch').value=String(credential.branchId);$('#lgBranch').dispatchEvent(new Event('change',{bubbles:true}));if(typeof syncBranchChoiceUI==='function')syncBranchChoiceUI();
+}
+}catch(error){$('#lgRememberLogin').checked=false;$('#lgPinInput').value='';if(error?.message!=='remember key missing')await clearRememberedLogin();}
+}
+$('#lgRememberLogin')?.addEventListener('change',e=>{if(!e.target.checked)void clearRememberedLogin();});
 function revealLogin(message = '') {
-$('#bootScreen').classList.add('hide'); $('#app').classList.add('hide'); $('#login').classList.remove('hide'); prefillLastUsername();
+$('#bootScreen').classList.add('hide'); $('#app').classList.add('hide'); $('#login').classList.remove('hide'); void prefillLastUsername();
 if (message) $('#lgMsg').textContent = message;
 }
 (async () => {
