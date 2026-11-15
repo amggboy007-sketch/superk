@@ -1795,6 +1795,13 @@ html.formal-theme .top-runway{display:none!important}
 .site-admin-card .fld{margin-bottom:12px}
 .site-admin-card input[type=file]{font-size:12px;padding:9px}
 .story-brand-name{display:block}
+.official-login-logo{position:absolute;top:15px;right:15px;width:42px;height:42px;display:grid;place-items:center;overflow:hidden;border:1px solid var(--theme-border-strong);border-radius:12px;background:var(--theme-wash);color:var(--acc-hover);font-size:14px;font-weight:900;box-shadow:var(--shadow-sm)}
+.official-login-logo .site-brand-image{width:100%;height:100%;padding:4px;box-sizing:border-box}
+.official-logo-settings{padding:13px;border:1px solid var(--theme-border-strong);border-radius:14px;background:var(--theme-wash);margin-bottom:12px}
+.official-logo-settings h4,.branch-logo-settings h4{margin:0 0 7px;font-size:13px}
+.branch-logo-settings{padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--card-bg)}
+.site-logo-preview-frame.official{width:48px;height:48px;flex-basis:48px;border-radius:12px}
+.site-logo-preview-frame.branch{width:38px;height:38px;flex-basis:38px;border-radius:10px}
 </style>
 </head>
 <body data-theme="teal">
@@ -1802,7 +1809,7 @@ html.formal-theme .top-runway{display:none!important}
 <script>
 /* Restore the uploaded logo before the startup screen is first painted. */
 try {
-  const cachedLogo = localStorage.getItem('inv_site_logo_cache');
+  const cachedLogo = localStorage.getItem('inv_official_logo_cache');
   if (cachedLogo && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(cachedLogo) && cachedLogo.length <= 2500000) {
     const bootLogo = document.getElementById('siteBootLogo');
     if (bootLogo) bootLogo.innerHTML = '<img src="' + cachedLogo + '" alt="" class="site-brand-image">';
@@ -1813,19 +1820,20 @@ try {
 <section id="login" class="hide">
   <div class="login-wrap">
     <div class="login-story" aria-hidden="true">
-      <div class="story-brand"><span class="story-mark" id="siteStoryLogo" aria-hidden="true">SK</span><span><span class="story-brand-name" id="siteStoryName">Super K</span><span class="story-brand-sub">BUSINESS MANAGEMENT PLATFORM</span></span></div>
+      <div class="story-brand"><span class="story-mark" id="siteStoryLogo" aria-hidden="true">SK</span><span><span class="story-brand-name" id="siteStoryName">Super K</span><span class="story-brand-sub">SUPER K · BUSINESS MANAGEMENT PLATFORM</span></span></div>
       <div class="story-copy"><span class="eyebrow">ONE PLATFORM · MULTIPLE BRANCHES</span><h2 id="siteLoginHeading">จัดการธุรกิจหลายสาขา<br>ได้ในที่เดียว</h2><p>ระบบจัดการสต็อก งานพนักงาน และข้อมูลสาขา เชื่อมต่อบนคลาวด์</p></div>
       <div class="ingredient-art"><span class="ingredient rice">📦</span><span class="ingredient fish">📊</span><span class="ingredient leaf">🏬</span><span class="art-caption">SMART WORKSPACE FOR YOUR BUSINESS</span></div>
       <div class="story-foot"><span>SUPER K</span><span>จัดการง่าย · ทำงานเป็นระบบ · ทุกสาขา</span></div>
     </div>
     <form class="lg" id="lgForm" autocomplete="on">
+      <div class="official-login-logo" id="officialLoginLogo" aria-label="โลโก้ทางการ Super K">SK</div>
       <div class="lg-header">
         <div class="lg-icon" id="siteLoginLogo" aria-hidden="true" style="font-size:19px;font-weight:900;letter-spacing:-1px">SK</div>
         <h1>เข้าสู่ระบบ</h1>
       </div>
       <label class="fld"><span>สาขาที่ปฏิบัติงาน</span><div class="branch-select-wrap"><select class="in branch-select" id="lgBranch" name="branch" required aria-label="เลือกสาขาที่ปฏิบัติงานก่อนเข้าสู่ระบบ"><option value="">กำลังโหลดรายชื่อสาขา…</option></select></div></label>
       <small class="branch-help">เลือกสาขาที่ผู้ดูแลสร้างบัญชีให้ บัญชีพนักงานเข้าได้เฉพาะสาขานั้น</small>
-      <label class="fld"><span>ชื่อผู้ใช้</span><input class="in" id="lgUser" name="username" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="••••••••" required></label>
+      <label class="fld"><span>ชื่อผู้ใช้</span><input class="in" id="lgUser" name="username" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="ชื่อผู้ใช้ของคุณ" required></label>
       <label class="fld"><span>รหัสลับ 6 หลัก</span><input class="in" id="lgPinInput" name="pin" type="password" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="current-password" placeholder="••••••" style="letter-spacing:5px;text-align:center;font-size:18px"></label>
       <div class="msg" id="lgMsg" role="alert" aria-live="polite"></div>
       <button type="submit" class="btn login-submit">เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
@@ -1881,6 +1889,17 @@ const CLOUD_URL = 'https://tataeikxoymbnvwxnwvx.supabase.co';
 const CLOUD_KEY = 'sb_publishable_J7mDCbfmAU2ZDrYc3IlgKA__G0DtxfR';
 let siteBrand = { siteName: 'Super K', logoData: null };
 let siteLogoDraft = null;
+let officialSiteBrand = { logoData: null };
+let officialLogoDraft = null;
+function applyOfficialBrand(data = {}) {
+const logo = typeof data.logoData === 'string' && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(data.logoData) && data.logoData.length <= 2500000 ? data.logoData : null;
+officialSiteBrand = { logoData: logo };
+try { if (logo) localStorage.setItem('inv_official_logo_cache', logo); else localStorage.removeItem('inv_official_logo_cache'); } catch {}
+['siteBootLogo','officialLoginLogo'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = logo ? '<img src="' + esc(logo) + '" alt="โลโก้ Super K" class="site-brand-image">' : 'SK'; });
+const preview = document.getElementById('officialLogoPreview');
+if (preview) { preview.hidden = !logo; if (logo) preview.src = logo; else preview.removeAttribute('src'); }
+officialLogoDraft = logo;
+}
 function applySiteBrand(data = {}) {
 const name = String(data.siteName || 'Super K').trim().slice(0, 60) || 'Super K';
 const logo = typeof data.logoData === 'string' && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(data.logoData) && data.logoData.length <= 2500000 ? data.logoData : null;
@@ -1895,20 +1914,17 @@ if (data.branchName && currentBranch?.id) {
   const option = Array.from($('#lgBranch')?.options || []).find(item => String(item.value) === String(currentBranch.id));
   if (option) option.textContent = 'สาขา' + branchName;
 }
-try { if (logo) localStorage.setItem('inv_site_logo_cache', logo); else localStorage.removeItem('inv_site_logo_cache'); } catch {}
+try { const key = currentBranch?.id ? 'inv_branch_logo_cache_' + currentBranch.id : ''; if (key && logo) localStorage.setItem(key, logo); else if (key) localStorage.removeItem(key); localStorage.removeItem('inv_site_logo_cache'); } catch {}
 document.title = 'Super K | ระบบบริหารจัดการธุรกิจหลายสาขา';
 const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
-setText('siteStoryName', 'Super K');
-setText('siteLoginHeading', 'จัดการธุรกิจหลายสาขาได้ในที่เดียว');
-setText('siteHeaderName', name);
-['siteHeaderLogo', 'siteBootLogo'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = logo ? '<img src="' + esc(logo) + '" alt="" class="site-brand-image">' : 'SK'; });
+setText('siteStoryName', 'Super K'); setText('siteLoginHeading', 'จัดการธุรกิจหลายสาขาได้ในที่เดียว'); setText('siteHeaderName', name);
+const headerLogo = document.getElementById('siteHeaderLogo');
+if (headerLogo) headerLogo.innerHTML = logo ? '<img src="' + esc(logo) + '" alt="โลโก้สาขา" class="site-brand-image">' : 'SK';
 ['siteStoryLogo', 'siteLoginLogo'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = 'SK'; });
 const preview = document.getElementById('siteLogoPreview');
 if (preview) { preview.hidden = !logo; if (logo) preview.src = logo; else preview.removeAttribute('src'); }
-const nameInput = document.getElementById('siteNameInput');
-if (nameInput && document.activeElement !== nameInput) nameInput.value = name;
-const branchNameInput = document.getElementById('siteBranchNameInput');
-if (branchNameInput && document.activeElement !== branchNameInput) branchNameInput.value = currentBranch?.name || '';
+const nameInput = document.getElementById('siteNameInput'); if (nameInput && document.activeElement !== nameInput) nameInput.value = name;
+const branchNameInput = document.getElementById('siteBranchNameInput'); if (branchNameInput && document.activeElement !== branchNameInput) branchNameInput.value = currentBranch?.name || '';
 siteLogoDraft = logo;
 }
 let appDownloadUrl = '';
@@ -1939,12 +1955,18 @@ toast(appDownloadUrl ? 'บันทึกลิงก์ดาวน์โห�
 } catch (error) { toast(error.message || 'บันทึกลิงก์ไม่สำเร็จ', 1); }
 finally { if (button) { button.disabled = false; button.textContent = 'บันทึกลิงก์'; } }
 }
-async function loadSiteBrand(branchId = currentBranch?.id) {
-try {
-  const result = await cloudRpc('api_site_brand_get', branchId ? { p_branch_id: branchId } : {});
-  if (result?.ok && (!branchId || String(currentBranch?.id) === String(branchId))) applySiteBrand(result);
+async function loadOfficialBrand() {
+try { const result = await cloudRpc('api_site_brand_get'); if (result?.ok) applyOfficialBrand({ logoData: result.officialLogoData ?? result.logoData }); }
+catch (error) { console.warn('โหลดโลโก้ทางการ Super K ไม่สำเร็จ', error); }
 }
-catch (error) { console.warn('โหลดข้อมูลแบรนด์เว็บไซต์ไม่สำเร็จ', error); }
+async function loadSiteBrand(branchId = currentBranch?.id) {
+if (!branchId) return;
+try {
+  const cached = localStorage.getItem('inv_branch_logo_cache_' + branchId);
+  if (String(currentBranch?.id) === String(branchId) && cached && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(cached)) { const header = document.getElementById('siteHeaderLogo'); if (header) header.innerHTML = '<img src="' + esc(cached) + '" alt="โลโก้สาขา" class="site-brand-image">'; }
+  const result = await cloudRpc('api_site_brand_get', { p_branch_id: branchId });
+  if (result?.ok && String(currentBranch?.id) === String(branchId)) { applySiteBrand(result); if (result.officialLogoData !== undefined) applyOfficialBrand({ logoData: result.officialLogoData }); }
+} catch (error) { console.warn('โหลดข้อมูลแบรนด์สาขาไม่สำเร็จ', error); }
 }
 async function readSiteLogo(file) {
 if (!file) return null;
@@ -1974,18 +1996,26 @@ throw new Error('รูปภาพมีขนาดใหญ่มากเก
 }
 async function saveSiteBrand(button) {
 if (String(me?.name || '').trim().toLowerCase() !== 'kiangkai' || me?.owner !== true) return toast('ไม่มีสิทธิ์จัดการเว็บไซต์', 1);
-const name = String($('#siteNameInput')?.value || '').trim();
-const branchName = String($('#siteBranchNameInput')?.value || '').trim();
+const name = String($('#siteNameInput')?.value || '').trim(), branchName = String($('#siteBranchNameInput')?.value || '').trim();
 if (!name || name.length > 60) return toast('ชื่อเว็บไซต์ต้องมี 1–60 ตัวอักษร', 1);
 if (branchName.length < 2 || branchName.length > 80) return toast('ชื่อสาขาต้องมี 2–80 ตัวอักษร', 1);
 if (button) { button.disabled = true; button.textContent = 'กำลังบันทึก…'; }
 try {
 const result = await cloudRpc('api_site_brand_update', { p_token: cloudToken, p_branch_id: currentBranch.id, p_site_name: name, p_branch_name: branchName, p_logo_data: siteLogoDraft });
 if (!result?.ok) throw new Error(result?.error || 'บันทึกข้อมูลสาขาไม่สำเร็จ');
-applySiteBrand(result);
-toast('บันทึกชื่อเว็บไซต์ ชื่อสาขา และโลโก้สำหรับสาขานี้แล้ว');
+applySiteBrand(result); toast('บันทึกชื่อเว็บไซต์ ชื่อสาขา และโลโก้สาขาแล้ว');
 } catch (error) { toast(error.message || 'บันทึกข้อมูลสาขาไม่สำเร็จ', 1); }
-finally { if (button) { button.disabled = false; button.textContent = 'บันทึกการเปลี่ยนแปลง'; } }
+finally { if (button) { button.disabled = false; button.textContent = 'บันทึกข้อมูลสาขา'; } }
+}
+async function saveOfficialBrand(button) {
+if (String(me?.name || '').trim().toLowerCase() !== 'kiangkai' || me?.owner !== true) return toast('เฉพาะผู้ดูแลหลักเท่านั้นที่เปลี่ยนโลโก้ทางการได้', 1);
+if (button) { button.disabled = true; button.textContent = 'กำลังบันทึก…'; }
+try {
+const result = await cloudRpc('api_official_brand_update', { p_logo_data: officialLogoDraft || '' });
+if (!result?.ok) throw new Error(result?.error || 'บันทึกโลโก้ทางการไม่สำเร็จ');
+applyOfficialBrand(result); toast(officialLogoDraft ? 'บันทึกโลโก้ทางการ Super K แล้ว' : 'นำโลโก้ทางการออกแล้ว');
+} catch (error) { toast(error.message || 'บันทึกโลโก้ทางการไม่สำเร็จ', 1); }
+finally { if (button) { button.disabled = false; button.textContent = 'บันทึกโลโก้ทางการ'; } }
 }
 const IS_MOBILE_BROWSER = (() => { try { const ua = navigator.userAgent || ''; return /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1); } catch { return false; } })();
 const mobileSessionBackup = {
@@ -2073,7 +2103,7 @@ const previous = branchStore.get() || currentBranch.id;
 select.innerHTML = branches.length ? branches.map(b => `<option value="${esc(b.id)}">สาขา${esc(b.name)}</option>`).join('') : '<option value="">ไม่พบสาขา กรุณาติดต่อผู้ดูแลระบบ</option>';
 const selected = branches.find(b => String(b.id) === String(previous)) || branches[0]; if (selected) setCurrentBranch(selected);
 }
-$('#lgBranch').addEventListener('change', e => { const branch = branches.find(b => String(b.id) === e.target.value); if (branch) { setCurrentBranch(branch); $('#lgMsg').textContent = ''; } });
+$('#lgBranch').addEventListener('change', e => { const branch = branches.find(b => String(b.id) === e.target.value); if (branch) { setCurrentBranch(branch); void loadSiteBrand(branch.id); $('#lgMsg').textContent = ''; } });
 async function refreshCloudAuth() {
 const saved = cloudTokenStore.getSession();
 if (!saved?.refreshToken) return false;
@@ -2724,6 +2754,7 @@ enter(result.me, result.branch);
 }
 function enter(u, branch = currentBranch) {
 setCurrentBranch(branch);
+void loadSiteBrand(branch.id);
 me = u; $('#lgPinInput').value = ''; $('#lgUser').value = '';
 void refreshPushSubscriptionForSession();
 $('#bootScreen').classList.add('hide'); $('#login').classList.add('hide'); $('#app').classList.remove('hide');
@@ -4249,7 +4280,7 @@ const resetAudit = stockResetLog && (!lastReset || Number(stockResetLog.ts) > Nu
 return `<div class="sect"><h2>ตั้งค่าระบบ</h2><small>กำหนดค่าการแสดงผลและข้อมูล</small></div>
   <div class="dash-grid settings-grid">
     ${can.manageBranches() ? branchManagerCardMarkup('') : ''}
-    ${canManageSite ? `<div class="dash-card disclosure-card site-admin-card" id="siteAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="siteAdminDisclosurePanel"><span>🌐 จัดการเว็บไซต์</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="siteAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><p class="settings-hint">กำหนดชื่อเว็บไซต์ ชื่อสาขา และโลโก้เฉพาะสาขาที่กำลังใช้งาน การเปลี่ยนแปลงจะไม่กระทบสาขาอื่น</p><label class="fld"><span>ชื่อเว็บไซต์</span><input class="in" id="siteNameInput" maxlength="60" value="${esc(siteBrand.siteName)}" placeholder="ชื่อเว็บไซต์"></label><label class="fld"><span>ชื่อสาขา</span><input class="in" id="siteBranchNameInput" maxlength="80" value="${esc(currentBranch.name)}" placeholder="ชื่อสาขา"></label><label class="fld"><span>โลโก้เว็บไซต์ (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="siteLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame"><img id="siteLogoPreview" class="site-logo-preview site-brand-image" alt="ตัวอย่างโลโก้" ${siteBrand.logoData ? `src="${esc(siteBrand.logoData)}"` : 'hidden'}></div><small>ตัวอย่างพื้นที่โลโก้บนหัวเว็บไซต์จริง</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearSiteLogoBtn">นำโลโก้ออก</button><button type="button" class="btn sm" id="saveSiteBrandBtn">บันทึกการเปลี่ยนแปลง</button></div><small class="settings-hint">รองรับรูปต้นฉบับสูงสุด 20 MB ระบบจะย่อและบีบอัดเป็น WEBP ให้อัตโนมัติ โดยคงสัดส่วนภาพ</small></div></div></div>` : ''}
+    ${canManageSite ? `<div class="dash-card disclosure-card site-admin-card" id="siteAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="siteAdminDisclosurePanel"><span>🌐 จัดการเว็บไซต์</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="siteAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><p class="settings-hint">แยกโลโก้ทางการ Super K ออกจากโลโก้สาขาอย่างชัดเจน โลโก้ทางการจะแสดงที่หน้า Login และหน้ารอสักครู่ ส่วนโลโก้สาขาจะแสดงที่หัวเว็บไซต์หลังเข้าสู่ระบบ</p><section class="official-logo-settings"><h4>🏅 โลโก้ทางการ Super K</h4><label class="fld"><span>อัปโหลดโลโก้เว็บไซต์ (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="officialLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame official"><img id="officialLogoPreview" class="site-logo-preview" alt="ตัวอย่างโลโก้ทางการ" ${officialSiteBrand.logoData ? `src="${esc(officialSiteBrand.logoData)}"` : 'hidden'}></div><small>แสดงที่มุมขวาของการ์ด Login และหน้ารอสักครู่</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearOfficialLogoBtn">นำโลโก้ทางการออก</button><button type="button" class="btn sm" id="saveOfficialLogoBtn">บันทึกโลโก้ทางการ</button></div></section><section class="branch-logo-settings"><h4>🏬 โลโก้ประจำสาขา</h4><label class="fld"><span>ชื่อเว็บไซต์</span><input class="in" id="siteNameInput" maxlength="60" value="${esc(siteBrand.siteName)}" placeholder="ชื่อเว็บไซต์"></label><label class="fld"><span>ชื่อสาขา</span><input class="in" id="siteBranchNameInput" maxlength="80" value="${esc(currentBranch.name)}" placeholder="ชื่อสาขา"></label><label class="fld"><span>อัปโหลดโลโก้สาขา (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="siteLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame branch"><img id="siteLogoPreview" class="site-logo-preview site-brand-image" alt="ตัวอย่างโลโก้สาขา" ${siteBrand.logoData ? `src="${esc(siteBrand.logoData)}"` : 'hidden'}></div><small>แสดงมุมซ้ายบนของหัวเว็บไซต์เมื่อเข้าสู่สาขานี้</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearSiteLogoBtn">นำโลโก้สาขาออก</button><button type="button" class="btn sm" id="saveSiteBrandBtn">บันทึกข้อมูลสาขา</button></div></section><small class="settings-hint">รองรับรูปต้นฉบับสูงสุด 20 MB ระบบย่อและบีบอัดเป็น WEBP อัตโนมัติ โดยคงสัดส่วนภาพ</small></div></div></div>` : ''}
     ${isAnnouncer() ? `<div class="dash-card disclosure-card announce-card" id="announceCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="announceDisclosurePanel"><span>📢 ประกาศข้อความ</span><span class="disclosure-count" id="announceCount"></span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="announceDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">
       <p class="settings-hint">ข้อความจะเลื่อนจากขวาไปซ้ายใต้หัวเว็บไซต์ของผู้ใช้ในสาขาที่เลือก จนครบเวลาที่กำหนด หรือจนกว่าจะยกเลิก</p>
       <label class="fld"><span>ข้อความประกาศ</span><textarea class="in" id="annText" rows="3" maxlength="200" placeholder="พิมพ์ข้อความที่ต้องการประกาศ"></textarea><small class="ann-counter" id="annCounter">0/200</small></label>
@@ -4497,6 +4528,16 @@ if ($('#clearSiteLogoBtn')) $('#clearSiteLogoBtn').onclick = () => {
 siteLogoDraft = null; const preview = $('#siteLogoPreview'); if (preview) { preview.removeAttribute('src'); preview.hidden = true; }
 if ($('#siteLogoInput')) $('#siteLogoInput').value = '';
 };
+if ($('#officialLogoInput')) $('#officialLogoInput').onchange = async event => {
+const file = event.target.files?.[0]; if (!file) return;
+try { officialLogoDraft = await readSiteLogo(file); const preview = $('#officialLogoPreview'); if (preview) { preview.src = officialLogoDraft; preview.hidden = false; } }
+catch (error) { event.target.value = ''; toast(error.message || 'เลือกโลโก้ทางการไม่สำเร็จ', 1); }
+};
+if ($('#clearOfficialLogoBtn')) $('#clearOfficialLogoBtn').onclick = () => {
+officialLogoDraft = null; const preview = $('#officialLogoPreview'); if (preview) { preview.removeAttribute('src'); preview.hidden = true; }
+if ($('#officialLogoInput')) $('#officialLogoInput').value = '';
+};
+if ($('#saveOfficialLogoBtn')) $('#saveOfficialLogoBtn').onclick = event => saveOfficialBrand(event.currentTarget);
 if ($('#saveSiteBrandBtn')) $('#saveSiteBrandBtn').onclick = event => saveSiteBrand(event.currentTarget);
 if ($('#saveAppDownloadBtn')) $('#saveAppDownloadBtn').onclick = event => saveAppDownloadUrl(event.currentTarget);
 if ($('#appDownloadBtn')) $('#appDownloadBtn').onclick = () => { const u = normalizeAppDownloadUrl(appDownloadUrl); if (!u) return toast('ยังไม่มีการกำหนดลิงก์ดาวน์โหลด', 1); window.open(u, '_blank', 'noopener,noreferrer'); };
@@ -4859,7 +4900,7 @@ await cloudRpc('api_branch_login', { p_branch_id: currentBranch.id, p_name: me.n
 const result = await cloudRpc('api_branch_switch', { p_token: cloudToken, p_branch_id: branch.id });
 if (!result.ok) { if (button) button.disabled = false; e.target.elements.pin.value = ''; try { localStorage.removeItem(pinKey); } catch (_) {} return toast(result.error || 'เข้าสาขาไม่สำเร็จ', 1); }
 try { localStorage.removeItem(pinKey); } catch (_) {}
-sess.set(cloudToken, result.branch.id, cloudTokenStore.getSession()?.refreshToken); setCurrentBranch(result.branch); applyCloudState(result.state); me = result.me;
+sess.set(cloudToken, result.branch.id, cloudTokenStore.getSession()?.refreshToken); setCurrentBranch(result.branch); void loadSiteBrand(result.branch.id); applyCloudState(result.state); me = result.me;
 syncSnapshot = cloneData(result.state); syncVersion = result.version; closeModal(); enter(me, result.branch); toast(`เข้าสาขา${result.branch.name}แล้ว`);
 } catch (error) { if (button) button.disabled = false; toast(error.message || 'เชื่อมต่อฐานข้อมูลไม่สำเร็จ', 1); }
 };
@@ -5720,8 +5761,8 @@ if (message) $('#lgMsg').textContent = message;
 }
 (async () => {
 await init();
-await loadSiteBrand();
-setInterval(loadSiteBrand, 120000);
+await loadOfficialBrand();
+setInterval(loadOfficialBrand, 120000);
 let startupMessage = '';
 try {
 const branchResult = await cloudRpc('api_branch_list');
