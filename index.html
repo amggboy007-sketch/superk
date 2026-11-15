@@ -930,26 +930,27 @@ html.dark-theme .theme-opt:not([data-dark="1"]) .theme-emoji{background:linear-g
 @media(min-width:1100px){.ef-page{inset:10px 10px 10px auto;width:min(760px,96vw);border:1px solid var(--line);border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.18)}}
 
 .settings-grid .theme-picker-card .text-scale-card{padding:12px 0;border-bottom:1px solid var(--line);margin:0 0 12px}.settings-grid .theme-picker-card>.disclosure-panel>.disclosure-inner>h3{font-size:15px;margin:2px 0 6px}.settings-grid .theme-picker-card .text-scale-card h3{font-size:15px;margin:0 0 6px}
-/* ===== Super K compact rounded header card ===== */
+/* ===== Super K wide rounded header card ===== */
 #app .top{
- position:sticky!important;
- top:calc(env(safe-area-inset-top,0px) + 8px)!important;
+ position:relative!important;
+ top:auto!important;
  z-index:30;
+ box-sizing:border-box;
  display:flex;
  align-items:center;
  justify-content:space-between;
  gap:12px;
- width:fit-content!important;
- max-width:calc(100% - 24px)!important;
+ width:calc(100% - 28px)!important;
+ max-width:1680px!important;
  min-height:58px;
  margin:10px auto 0!important;
- padding:9px 14px!important;
+ padding:9px 16px!important;
  border:1px solid var(--theme-border-strong)!important;
- border-radius:21px!important;
+ border-radius:22px!important;
  background-color:var(--theme-top-bg)!important;
  background-image:radial-gradient(circle at 4% 0%,color-mix(in srgb,var(--acc) 13%,transparent) 0,transparent 34%),radial-gradient(circle at 100% 100%,color-mix(in srgb,var(--theme-soft) 75%,transparent) 0,transparent 38%)!important;
  color:var(--ink)!important;
- box-shadow:0 8px 24px color-mix(in srgb,var(--theme-shadow) 78%,transparent),inset 0 1px 0 rgba(255,255,255,.55)!important;
+ box-shadow:0 7px 20px color-mix(in srgb,var(--theme-shadow) 72%,transparent),inset 0 1px 0 rgba(255,255,255,.55)!important;
  overflow:visible;
  isolation:isolate;
 }
@@ -957,25 +958,29 @@ html.dark-theme .theme-opt:not([data-dark="1"]) .theme-emoji{background:linear-g
 #app .top .brand-copy{min-width:0}
 #app .top .me{flex:0 0 auto}
 #app .top .brand-badge{box-shadow:0 4px 12px var(--theme-shadow)}
+/* Announcement stays in normal document flow; it never sticks over the header */
+#app .announce-bar{position:relative!important;top:auto!important;z-index:1!important;margin:7px 14px 0!important;width:auto;box-sizing:border-box}
 @media(max-width:680px){
- #app .top{gap:8px;min-height:54px;margin-top:8px!important;padding:7px 10px!important;border-radius:18px!important}
+ #app .top{width:calc(100% - 24px)!important;min-height:58px;margin:9px 12px 0!important;padding:8px 11px!important;gap:8px;border-radius:20px!important}
  #app .top .brand{gap:7px}
- #app .top .brand-copy{max-width:min(48vw,190px)}
- #app .top .brand-title{font-size:14px}
+ #app .top .brand-copy{max-width:min(49vw,220px)}
+ #app .top .brand-title{font-size:15px}
  #app .top .brand-branch{font-size:9.5px!important}
  #app .top .me{gap:4px;padding:3px 4px 3px 7px}
  #app .top .me-info{max-width:100px}
  #app .top .me-name-row b{font-size:11px}
  #app .top .me-info>span{font-size:9px}
  #app .top .me-btn{width:29px;height:29px;min-width:29px}
+ #app .announce-bar{margin:7px 12px 0!important}
 }
 @media(max-width:360px){
- #app .top{max-width:calc(100% - 16px)!important;padding-left:8px!important;padding-right:8px!important;gap:5px}
+ #app .top{width:calc(100% - 20px)!important;margin-left:10px!important;margin-right:10px!important;padding-left:8px!important;padding-right:8px!important;gap:5px}
  #app .top .brand-copy{max-width:43vw}
  #app .top .me-info{max-width:76px}
 }
 @media(min-width:1100px){
- #app .top{width:fit-content!important;max-width:calc(100% - 48px)!important;min-height:64px;margin:12px auto 0!important;padding:9px 18px!important;border-radius:22px!important}
+ #app .top{width:calc(100% - clamp(48px,6vw,112px))!important;max-width:1680px!important;min-height:64px;margin:12px auto 0!important;padding:9px 22px!important;border-radius:23px!important}
+ #app .announce-bar{width:calc(100% - clamp(48px,6vw,112px));max-width:1680px;margin:8px auto 0!important}
 }
 </style>
 <style id="smooth-motion">
