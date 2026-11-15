@@ -4898,13 +4898,59 @@ toast('บันทึกสิทธิ์ผู้ใช้งานแล้�
 function manageBranchSubscription(branchId) {
 if (!me?.owner || String(me?.name || '').toLowerCase() !== 'kiangkai') return toast('เฉพาะผู้ดูแลหลักเท่านั้นที่จัดการวันสมาชิกได้', 1);
 const branch = branches.find(b => String(b.id) === String(branchId)); if (!branch) return toast('ไม่พบสาขาที่เลือก', 1);
-const expiry = branch.expires_at ? formatSubscriptionDate(branch.expires_at) : 'ยังไม่มีวันหมดอายุ';
-openModal(`<h3>⏳ จัดการสมาชิกสาขา${esc(branch.name)}</h3><p class="settings-hint">วันหมดอายุปัจจุบัน: <b>${esc(expiry)}</b><br>หากสาขายังไม่หมดอายุ การเพิ่มวันจะต่อจากวันหมดอายุเดิม หากหมดอายุแล้ว การเพิ่มวันจะเริ่มนับจากเวลาปัจจุบัน</p><form id="manageSubscriptionForm"><label class="fld"><span>การปรับระยะเวลา</span><select class="in" name="direction"><option value="add">เพิ่มวัน</option><option value="remove">ลดวัน</option></select></label><label class="fld"><span>จำนวนวัน (1–3650 วัน)</span><input class="in" name="days" type="number" inputmode="numeric" min="1" max="3650" step="1" value="30" required></label><small class="settings-hint">ระบบจะบันทึกประวัติการเปลี่ยนแปลงทุกครั้ง</small><div class="acts"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button type="submit" class="btn" id="saveSubscriptionBtn">บันทึกวันสมาชิก</button></div></form>`);
+const expiryMs = Date.parse(branch.expires_at || ''), now = Date.now();
+const baseMs = Number.isFinite(expiryMs) && expiryMs > now ? expiryMs : now;
+const initialPreview = new Date(baseMs + 30 * 86400000);
+const previewDate = d => d.toLocaleString('th-TH', { dateStyle:'long', timeStyle:'short' });
+openModal(`<h3>⏳ จัดการสมาชิกสาขา ${esc(branch.name)}</h3>
+<p class="settings-hint">วันหมดอายุปัจจุบัน: <b>${esc(branch.expires_at ? formatSubscriptionDate(branch.expires_at) : 'ยังไม่มีวันหมดอายุ')}</b><br>เพิ่มวันจะต่อจากวันหมดอายุเดิม หากหมดอายุแล้วจะเริ่มนับจากเวลาปัจจุบัน</p>
+<form id="manageSubscriptionForm" class="sub-adjust-form">
+  <label class="fld"><span>จำนวนวันที่ต้องการปรับ</span>
+    <div class="sub-stepper"><button type="button" class="sub-step-btn" data-sub-step="-1" aria-label="ลดจำนวนวัน">−</button><input class="in" name="days" type="number" inputmode="numeric" min="1" max="3650" step="1" value="30" required><button type="button" class="sub-step-btn" data-sub-step="1" aria-label="เพิ่มจำนวนวัน">+</button></div>
+  </label>
+  <div class="sub-direction-label">เลือกการปรับระยะเวลา</div>
+  <div class="sub-direction" role="group" aria-label="เลือกเพิ่มหรือลดวัน">
+    <button type="button" class="sub-direction-btn is-selected" data-sub-direction="add" aria-pressed="true">✓ เพิ่มวัน</button>
+    <button type="button" class="sub-direction-btn" data-sub-direction="remove" aria-pressed="false">ลดวัน</button>
+  </div>
+  <input type="hidden" name="direction" value="add">
+  <div class="sub-preview" aria-live="polite"><small>คาดว่าจะหมดอายุวันที่</small><b id="subExpiryPreview">${previewDate(initialPreview)}</b><small id="subExpiryHint">คำนวณจากวันหมดอายุเดิมหรือเวลาปัจจุบัน</small></div>
+  <small class="settings-hint">ระบบจะบันทึกประวัติการเปลี่ยนแปลงทุกครั้ง</small>
+  <div class="acts"><button type="button" class="btn sec" onclick="closeModal()">ยกเลิก</button><button type="submit" class="btn" id="saveSubscriptionBtn">บันทึกวันสมาชิก</button></div>
+</form>`);
 const form = document.getElementById('manageSubscriptionForm');
+const daysInput = form.elements.days, directionInput = form.elements.direction;
+const preview = () => {
+  const days = Math.max(0, Math.min(3650, Number(daysInput.value) || 0));
+  const direction = directionInput.value;
+  const base = direction === 'add' ? baseMs : (Number.isFinite(expiryMs) ? expiryMs : now);
+  const target = new Date(base + (direction === 'remove' ? -1 : 1) * days * 86400000);
+  const output = document.getElementById('subExpiryPreview');
+  output.textContent = days ? previewDate(target) : 'กรุณาระบุจำนวนวัน';
+  output.classList.toggle('is-expired', target.getTime() <= Date.now());
+  document.getElementById('subExpiryHint').textContent = direction === 'add'
+    ? (expiryMs > now ? 'เพิ่มต่อจากวันหมดอายุเดิม' : 'เริ่มนับจากเวลาปัจจุบัน เนื่องจากสมาชิกหมดอายุแล้ว')
+    : 'คำนวณโดยหักจำนวนวันที่เลือกจากวันหมดอายุปัจจุบัน';
+};
+form.querySelectorAll('[data-sub-direction]').forEach(btn => btn.onclick = () => {
+  directionInput.value = btn.dataset.subDirection;
+  form.querySelectorAll('[data-sub-direction]').forEach(item => {
+    const selected = item === btn;
+    item.classList.toggle('is-selected', selected);
+    item.setAttribute('aria-pressed', String(selected));
+    item.textContent = (selected ? '✓ ' : '') + (item.dataset.subDirection === 'add' ? 'เพิ่มวัน' : 'ลดวัน');
+  });
+  preview();
+});
+form.querySelectorAll('[data-sub-step]').forEach(btn => btn.onclick = () => {
+  const next = Math.max(1, Math.min(3650, (Number(daysInput.value) || 0) + Number(btn.dataset.subStep)));
+  daysInput.value = String(next); preview();
+});
+daysInput.addEventListener('input', preview);
 form.onsubmit = async e => {
 e.preventDefault();
 const button = document.getElementById('saveSubscriptionBtn');
-const days = Number(form.elements.days.value), delta = form.elements.direction.value === 'remove' ? -days : days;
+const days = Number(daysInput.value), delta = directionInput.value === 'remove' ? -days : days;
 if (!Number.isInteger(days) || days < 1 || days > 3650) return toast('จำนวนวันต้องอยู่ระหว่าง 1–3650 วัน', 1);
 button.disabled = true; button.textContent = 'กำลังบันทึก…';
 try {
@@ -4915,6 +4961,7 @@ if (String(currentBranch.id) === String(branch.id)) { currentSubscription = {...
 closeModal(); build(); toast((delta > 0 ? 'เพิ่ม' : 'ลด') + 'วันสมาชิกสาขา' + branch.name + 'แล้ว');
 } catch (error) { button.disabled = false; button.textContent = 'บันทึกวันสมาชิก'; toast(error.message || 'ปรับวันสมาชิกไม่สำเร็จ', 1); }
 };
+preview();
 }
 function createBranchModal() {
 if (!can.manageBranches()) return toast('บัญชีนี้ไม่มีสิทธิ์จัดการสาขา', 1);
@@ -7563,5 +7610,35 @@ body[data-theme="panda"] .btn:not(.sec),body[data-theme="panda"] .fab{box-shadow
   body[data-theme="panda"] #app::after{bottom:100px;left:4px;font-size:25px}
 }
 </style>
+
+<style id="branch-manager-polish-v2">
+/* The right drawer handle mirrors the left navigation handle exactly. */
+.sd-right-tab{
+  width:32px!important;height:38px!important;top:0!important;right:6px!important;
+  border:1.5px solid color-mix(in srgb,var(--acc-hover,var(--acc)) 38%,transparent)!important;
+  border-radius:13px 0 0 13px!important;
+  background:color-mix(in srgb,var(--acc) 58%,transparent)!important;
+  color:#fff!important;padding:0!important;display:grid!important;place-items:center!important;
+}
+.sd-right-dock.open .sd-right-tab{background:color-mix(in srgb,var(--acc) 72%,transparent)!important}
+.sd-right-tab:active{transform:scale(.93)!important}
+.sd-right-tab svg{width:16px!important;height:16px!important;stroke-width:2.8!important}
+.sub-adjust-form{margin-top:14px}
+.sub-stepper{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;gap:8px;align-items:center}
+.sub-stepper .in{height:48px;text-align:center;font-size:18px;font-weight:750;font-variant-numeric:tabular-nums}
+.sub-step-btn{height:48px;border:1px solid var(--theme-border-strong);border-radius:13px;background:var(--theme-wash);color:var(--acc-hover);font-size:25px;font-weight:600;line-height:1;display:grid;place-items:center;transition:background .16s ease,transform .12s ease}
+.sub-step-btn:active{transform:scale(.95);background:var(--acc-light)}
+.sub-direction-label{margin:2px 0 7px;color:var(--mute);font-size:12px;font-weight:650}
+.sub-direction{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.sub-direction-btn{min-height:42px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg);color:var(--mute);font-size:13px;font-weight:700;transition:background .18s ease,border-color .18s ease,color .18s ease}
+.sub-direction-btn.is-selected[data-sub-direction="add"]{border-color:#9acbaa;background:#edf8f0;color:#34784a}
+.sub-direction-btn.is-selected[data-sub-direction="remove"]{border-color:#e7b5b9;background:#fff1f2;color:#a64d59}
+.sub-preview{display:grid;gap:3px;margin:4px 0 12px;padding:12px 13px;border:1px solid var(--theme-border-strong);border-radius:13px;background:var(--theme-wash)}
+.sub-preview small{font-size:10.5px;color:var(--mute)}
+.sub-preview b{font-size:14px;color:var(--ink);font-weight:750;font-variant-numeric:tabular-nums}
+.sub-preview b.is-expired{color:var(--bad)}
+@media(prefers-reduced-motion:reduce){.sub-step-btn,.sub-direction-btn{transition:none!important}}
+</style>
+
 </body>
 </html>
