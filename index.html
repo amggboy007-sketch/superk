@@ -1848,9 +1848,9 @@ try {
   <div class="login-wrap">
     <div class="login-story" aria-hidden="true">
       <div class="login-platform-brand login-platform-brand-top"><span class="login-platform-symbol official-login-logo" id="officialLoginLogo" aria-label="โลโก้ทางการ Super K">SK</span><span class="login-platform-wordmark">Super K<small>SMART BUSINESS PLATFORM</small></span></div>
-      <div class="story-copy"><span class="eyebrow">ONE PLATFORM · EVERY BRANCH</span><h2 id="siteLoginHeading">จัดการธุรกิจหลายสาขา<br>ได้ในที่เดียว</h2><p>ระบบจัดการสต็อก งานพนักงาน และข้อมูลสาขา เชื่อมต่อบนคลาวด์</p></div>
+      <div class="story-copy"><span class="eyebrow">ONE PLATFORM · YOUR BUSINESS</span><h2 id="siteLoginHeading">จัดการธุรกิจของคุณ<br>ได้ในที่เดียว</h2><p>ระบบจัดการสต็อก งานขาย และข้อมูลธุรกิจ เชื่อมต่อบนคลาวด์</p></div>
       <div class="ingredient-art"><span class="ingredient rice">📦</span><span class="ingredient fish">📊</span><span class="ingredient leaf">🏬</span><span class="art-caption">SMART WORKSPACE FOR YOUR BUSINESS</span></div>
-      <div class="story-foot"><span>SUPER K</span><span>จัดการง่าย · ทำงานเป็นระบบ · ทุกสาขา</span></div>
+      <div class="story-foot"><span>SUPER K</span><span>จัดการง่าย · เป็นระบบ · พร้อมใช้งาน</span></div>
     </div>
     <form class="lg" id="lgForm" autocomplete="on">
       <div class="lg-header">
@@ -1861,13 +1861,13 @@ try {
 <select class="in branch-select branch-choice-native" id="lgBranch" name="branch" required aria-label="เลือกเว็บไซต์ของคุณ"><option value="">กำลังโหลดรายชื่อสาขา…</option></select>
 <button type="button" class="branch-choice-trigger" id="branchChoiceTrigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="branchChoiceList"><span class="branch-choice-leading" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 20.5h17M5.5 20.5V8.8L12 4l6.5 4.8v11.7M9 20.5v-6h6v6M8.5 9.5h.01M15.5 9.5h.01"/></svg></span><span class="branch-choice-current" id="branchChoiceCurrent">กำลังโหลดรายชื่อเว็บไซต์…</span><span class="branch-choice-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></span></button>
 <div class="branch-choice-panel" id="branchChoicePanel"><div class="branch-choice-panel-inner"><div class="branch-choice-options" id="branchChoiceList" role="listbox" aria-label="เว็บไซต์ที่เลือกได้"></div></div></div></div></label>
-      <small class="branch-help">เลือกสาขาที่ผู้ดูแลสร้างบัญชีให้ บัญชีพนักงานเข้าได้เฉพาะสาขานั้น</small>
+      <small class="branch-help">เลือกพื้นที่ใช้งานที่คุณสมัครไว้ เพื่อเข้าสู่ระบบ</small>
       <label class="fld"><span>ชื่อผู้ใช้</span><input class="in" id="lgUser" name="username" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="ชื่อผู้ใช้ของคุณ" required></label>
       <label class="fld"><span>รหัสลับ 6 หลัก</span><input class="in" id="lgPinInput" name="pin" type="password" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="current-password" placeholder="••••••" style="letter-spacing:5px;text-align:center;font-size:18px"></label>
       <div class="msg" id="lgMsg" role="alert" aria-live="polite"></div>
       <button type="submit" class="btn login-submit">เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
       <div class="hint hide" id="lgHint">เข้าใช้งานครั้งแรก ให้เจ้าของร้านลงชื่อเข้าใช้และตั้งรหัสใหม่</div>
-      <p class="login-note">Super K · ระบบบริหารจัดการธุรกิจบนคลาวด์สำหรับหลายสาขา</p>
+      <p class="login-note">Super K · แพลตฟอร์มจัดการธุรกิจบนคลาวด์</p>
     </form>
   </div>
 </section>
@@ -1941,12 +1941,12 @@ if (data.branchName && currentBranch?.id) {
   if ($('#branchName')) $('#branchName').textContent = 'สาขา' + branchName;
   if ($('#loginBranchTitle')) $('#loginBranchTitle').textContent = 'สาขา' + branchName;
   const option = Array.from($('#lgBranch')?.options || []).find(item => String(item.value) === String(currentBranch.id));
-  if (option) option.textContent = 'สาขา' + branchName;
+  if (option) option.textContent = branchName;
 }
 try { const key = currentBranch?.id ? 'inv_branch_logo_cache_' + currentBranch.id : ''; if (key && logo) localStorage.setItem(key, logo); else if (key) localStorage.removeItem(key); localStorage.removeItem('inv_site_logo_cache'); } catch {}
 document.title = 'Super K | ระบบบริหารจัดการธุรกิจหลายสาขา';
 const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
-setText('siteStoryName', 'Super K'); setText('siteLoginHeading', 'จัดการธุรกิจหลายสาขาได้ในที่เดียว'); setText('siteHeaderName', name);
+setText('siteStoryName', 'Super K'); setText('siteLoginHeading', 'จัดการธุรกิจของคุณได้ในที่เดียว'); setText('siteHeaderName', name);
 const headerLogo = document.getElementById('siteHeaderLogo');
 if (headerLogo) headerLogo.innerHTML = logo ? '<img src="' + esc(logo) + '" alt="โลโก้สาขา" class="site-brand-image">' : 'SK';
 ['siteStoryLogo', 'siteLoginLogo'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = 'SK'; });
@@ -2120,7 +2120,7 @@ let currentSubscription = null, subscriptionTimer = null, subscriptionDisplayTim
 function setCurrentBranch(branch) {
 if (!branch?.id || !branch?.name) return;
 currentBranch = { id: String(branch.id), name: String(branch.name) }; branchStore.set(currentBranch.id);
-const label = `สาขา${currentBranch.name}`;
+const label = currentBranch.name;
 if ($('#branchName')) $('#branchName').textContent = label;
 if ($('#loginBranchTitle')) $('#loginBranchTitle').textContent = label;
 if ($('#lgBranch')) $('#lgBranch').value = currentBranch.id;
@@ -2129,7 +2129,7 @@ function renderBranchOptions(items = branches) {
 branches = Array.isArray(items) ? items.filter(x => x?.id && x?.name) : [];
 const select = $('#lgBranch'); if (!select) return;
 const previous = branchStore.get() || currentBranch.id;
-select.innerHTML = branches.length ? branches.map(b => `<option value="${esc(b.id)}">สาขา${esc(b.name)}</option>`).join('') : '<option value="">ไม่พบสาขา กรุณาติดต่อผู้ดูแลระบบ</option>';
+select.innerHTML = branches.length ? branches.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('') : '<option value="">ยังไม่มีพื้นที่ใช้งาน กรุณาติดต่อผู้ดูแลระบบ</option>';
 const selected = branches.find(b => String(b.id) === String(previous)) || branches[0]; if (selected) setCurrentBranch(selected);
 }
 $('#lgBranch').addEventListener('change', e => { const branch = branches.find(b => String(b.id) === e.target.value); if (branch) { setCurrentBranch(branch); void loadSiteBrand(branch.id); $('#lgMsg').textContent = ''; } });
@@ -2754,7 +2754,7 @@ const name = $('#lgUser').value.trim().toLowerCase(), pinVal = $('#lgPinInput').
 const fail = t => { msg.textContent = t; $('#lgPinInput').value = ''; };
 if (Date.now() < lock.until) return fail(`ระงับชั่วคราว รออีก ${Math.ceil((lock.until - Date.now()) / 1000)} วิ`);
 const branchId = $('#lgBranch').value;
-if (!branchId) return fail('กรุณาเลือกสาขาก่อนเข้าสู่ระบบ');
+if (!branchId) return fail('กรุณาเลือกพื้นที่ใช้งานก่อนเข้าสู่ระบบ');
 if (!name) return fail('กรุณากรอกชื่อผู้ใช้ก่อน');
 if (pinVal.length !== 6) return fail('กรุณากรอกรหัสให้ครบ 6 หลัก');
 let authData;
@@ -7687,10 +7687,15 @@ body[data-theme="panda"] .btn:not(.sec),body[data-theme="panda"] .fab{box-shadow
 @media(max-width:680px){.login-platform-brand{margin-bottom:18px;padding-bottom:14px}.login-platform-symbol{width:39px;height:39px}.login-platform-wordmark{font-size:19px}.branch-choice-options{max-height:190px}}
 @media(prefers-reduced-motion:reduce){.branch-choice-trigger,.branch-choice-arrow,.branch-choice-panel,.branch-choice-option{transition:none!important}}
 </style>
-<script id="superk-login-branch-picker-v1">
-(()=>{const w=document.getElementById('branchChoiceWrap'),n=document.getElementById('lgBranch'),t=document.getElementById('branchChoiceTrigger'),c=document.getElementById('branchChoiceCurrent'),l=document.getElementById('branchChoiceList');if(!w||!n||!t||!c||!l)return;
+<script id="superk-login-branch-picker-v2">
+(()=>{const w=document.getElementById('branchChoiceWrap'),n=document.getElementById('lgBranch'),t=document.getElementById('branchChoiceTrigger'),c=document.getElementById('branchChoiceCurrent'),l=document.getElementById('branchChoiceList'),currentMark=w?.querySelector('.branch-choice-leading');if(!w||!n||!t||!c||!l||!currentMark)return;
+const logos=new Map(),pending=new Set();
+const fallback='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-5 6 5v11M9 20v-6h6v6M9 10h.01M15 10h.01"/></svg>';
+const paintMark=(el,src)=>{el.replaceChildren();if(src){const im=document.createElement('img');im.src=src;im.alt='';im.loading='lazy';im.decoding='async';el.append(im)}else el.innerHTML=fallback};
 const close=()=>{w.classList.remove('is-open');t.setAttribute('aria-expanded','false')},open=()=>{if(!t.disabled){w.classList.add('is-open');t.setAttribute('aria-expanded','true')}};
-const sync=()=>{const o=n.options[n.selectedIndex];c.textContent=o&&o.value?o.textContent.trim():'แตะเพื่อเลือกเว็บไซต์';l.replaceChildren();const opts=Array.from(n.options).filter(x=>x.value&&!x.disabled);if(!opts.length){const e=document.createElement('div');e.className='branch-choice-empty';e.textContent='ยังไม่มีเว็บไซต์ให้เลือก';l.append(e)}opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='branch-choice-option';b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===n.value));const mark=document.createElement('span');mark.className='branch-choice-option-mark';mark.textContent='⌂';mark.setAttribute('aria-hidden','true');const label=document.createElement('span');label.textContent=o.textContent.trim();b.append(mark,label);b.addEventListener('click',()=>{n.value=o.value;n.dispatchEvent(new Event('change',{bubbles:true}));sync();close();t.focus()});l.append(b)});t.disabled=n.disabled||!opts.length;if(n.disabled)c.textContent=n.options[0]?.textContent.trim()||'กำลังโหลดรายชื่อเว็บไซต์…'};
+const validLogo=v=>typeof v==='string'&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(v)&&v.length<=2500000?v:null;
+const fetchLogos=opts=>{opts.forEach(o=>{const id=o.value;if(logos.has(id)||pending.has(id))return;pending.add(id);let cached=null;try{cached=validLogo(localStorage.getItem('inv_branch_logo_cache_'+id))}catch{}if(cached){logos.set(id,cached);pending.delete(id);sync();return}if(typeof cloudRpc!=='function'){pending.delete(id);logos.set(id,null);return}cloudRpc('api_site_brand_get',{p_branch_id:id}).then(r=>{const logo=r?.ok?validLogo(r.logoData):null;logos.set(id,logo);if(logo){try{localStorage.setItem('inv_branch_logo_cache_'+id,logo)}catch{}}}).catch(()=>logos.set(id,null)).finally(()=>{pending.delete(id);sync()})})};
+const sync=()=>{const opts=Array.from(n.options).filter(x=>x.value&&!x.disabled),o=n.options[n.selectedIndex];c.textContent=o&&o.value?o.textContent.trim():'แตะเพื่อเลือกพื้นที่ใช้งาน';paintMark(currentMark,logos.get(n.value)||null);l.replaceChildren();if(!opts.length){const e=document.createElement('div');e.className='branch-choice-empty';e.textContent='ยังไม่มีพื้นที่ใช้งานให้เลือก';l.append(e)}opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='branch-choice-option';b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===n.value));const mark=document.createElement('span');mark.className='branch-choice-option-mark';mark.setAttribute('aria-hidden','true');paintMark(mark,logos.get(o.value)||null);const label=document.createElement('span');label.className='branch-choice-option-name';label.textContent=o.textContent.trim();b.append(mark,label);b.addEventListener('click',()=>{n.value=o.value;n.dispatchEvent(new Event('change',{bubbles:true}));sync();close();t.focus()});l.append(b)});t.disabled=n.disabled||!opts.length;if(n.disabled)c.textContent=n.options[0]?.textContent.trim()||'กำลังโหลดรายชื่อพื้นที่ใช้งาน…';fetchLogos(opts)};
 t.addEventListener('click',()=>w.classList.contains('is-open')?close():open());n.addEventListener('change',sync);new MutationObserver(sync).observe(n,{childList:true,subtree:true,attributes:true});document.addEventListener('click',e=>{if(!w.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&w.classList.contains('is-open')){close();t.focus()}});sync()})();
 </script>
 
@@ -7851,5 +7856,28 @@ html:has(#login:not(.hide)),body:has(#login:not(.hide)){height:100%;overflow:hid
 <style id="superk-login-official-logo-position-fix">
 .login-platform-brand-top #officialLoginLogo{position:relative!important;top:auto!important;right:auto!important;left:auto!important;bottom:auto!important;border:0!important;margin:0!important;align-self:center!important}
 </style>
+
+<style id="superk-login-tenant-branding-v4">
+/* Use each workspace's uploaded brand image in both the selected field and dropdown rows. */
+.branch-choice-leading,.branch-choice-option-mark{overflow:hidden;position:relative}
+.branch-choice-leading img,.branch-choice-option-mark img{display:block;width:100%;height:100%;object-fit:contain;padding:3px;border-radius:inherit;background:#fff}
+.branch-choice-option-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#fff0f4,#fff8ed);color:#b8758d;display:grid;place-items:center;flex:none}
+.branch-choice-option-mark svg,.branch-choice-leading svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.branch-choice-option{min-height:54px;gap:11px;padding:8px 10px}
+.branch-choice-option-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.branch-choice-leading{width:38px!important;height:38px!important}
+.branch-choice-arrow{width:32px!important;height:32px!important;border-radius:10px!important;border:1px solid #ead4dd!important;background:linear-gradient(145deg,#fff,#fff0f4)!important;box-shadow:0 2px 7px rgba(156,91,119,.09)!important}
+.branch-choice-arrow svg{width:16px!important;height:16px!important}
+.branch-choice-wrap.is-open .branch-choice-arrow{transform:rotate(180deg)!important;border-radius:10px!important;background:linear-gradient(145deg,#f4dce6,#fcecf2)!important}
+.branch-help{font-size:11px!important;line-height:1.5!important;color:#927987!important;margin-top:1px!important}
+.login-story .story-copy h2{max-width:470px}
+@media(max-width:680px){
+ .branch-choice-leading{width:34px!important;height:34px!important}
+ .branch-choice-option-mark{width:32px;height:32px}
+ .branch-choice-arrow{width:31px!important;height:31px!important}
+ .branch-choice-option{min-height:49px}
+}
+</style>
+
 </body>
 </html>
