@@ -7695,5 +7695,89 @@ const close=()=>{w.classList.remove('is-open');t.setAttribute('aria-expanded','f
 const sync=()=>{const o=n.options[n.selectedIndex];c.textContent=o&&o.value?o.textContent.trim():'แตะเพื่อเลือกเว็บไซต์';l.replaceChildren();const opts=Array.from(n.options).filter(x=>x.value&&!x.disabled);if(!opts.length){const e=document.createElement('div');e.className='branch-choice-empty';e.textContent='ยังไม่มีเว็บไซต์ให้เลือก';l.append(e)}opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='branch-choice-option';b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===n.value));const mark=document.createElement('span');mark.className='branch-choice-option-mark';mark.textContent='⌂';mark.setAttribute('aria-hidden','true');const label=document.createElement('span');label.textContent=o.textContent.trim();b.append(mark,label);b.addEventListener('click',()=>{n.value=o.value;n.dispatchEvent(new Event('change',{bubbles:true}));sync();close();t.focus()});l.append(b)});t.disabled=n.disabled||!opts.length;if(n.disabled)c.textContent=n.options[0]?.textContent.trim()||'กำลังโหลดรายชื่อเว็บไซต์…'};
 t.addEventListener('click',()=>w.classList.contains('is-open')?close():open());n.addEventListener('change',sync);new MutationObserver(sync).observe(n,{childList:true,subtree:true,attributes:true});document.addEventListener('click',e=>{if(!w.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&w.classList.contains('is-open')){close();t.focus()}});sync()})();
 </script>
+
+<style id="superk-login-refinement-v2">
+/* Remove duplicate corner/form logos: keep the single Super K identity beside the form header. */
+#officialLoginLogo,.lg-header .lg-icon{display:none!important}
+.login-platform-brand{margin:0 0 20px!important;padding:0 0 16px!important;gap:12px}
+.login-platform-symbol{width:46px;height:46px;border-radius:15px;background:linear-gradient(145deg,#e9a3b8,#e8b77e);box-shadow:0 7px 18px rgba(191,126,149,.18);font-size:16px;letter-spacing:-.8px}
+.login-platform-wordmark{font-size:22px;letter-spacing:-.7px;color:#513b49}
+.login-platform-wordmark small{font-size:8px;letter-spacing:2.1px;color:#ad8797}
+.lg-header{margin:0 0 19px!important}
+.lg-header h1{font-size:24px!important;letter-spacing:-.5px;color:#513b49!important}
+.branch-choice-trigger{min-height:56px;padding:8px 13px;border:1px solid #eadde1;background:#fff;border-radius:15px;box-shadow:0 3px 12px rgba(109,72,87,.045)}
+.branch-choice-trigger:hover{border-color:#dfb2c0;background:#fffdfd;box-shadow:0 5px 16px rgba(191,126,149,.09)}
+.branch-choice-leading{width:35px;height:35px;border-radius:12px;background:linear-gradient(145deg,#fff0f4,#fff7ec);color:#c47b92;font-size:0}
+.branch-choice-leading:before{content:"";width:14px;height:12px;position:relative;top:2px;border:1.7px solid currentColor;border-radius:3px}
+.branch-choice-leading:after{content:"";position:absolute;width:7px;height:7px;border-left:1.7px solid currentColor;border-top:1.7px solid currentColor;transform:translateY(-7px) rotate(45deg)}
+.branch-choice-arrow{width:34px;height:34px;border:1px solid #f0e1e5;border-radius:50%;background:#fff8f8;color:#bd8294;transition:transform .28s cubic-bezier(.2,.75,.25,1),background .2s ease,border-color .2s ease}
+.branch-choice-arrow svg{width:15px;height:15px;stroke-width:1.8}
+.branch-choice-wrap.is-open .branch-choice-arrow{transform:rotate(180deg);background:#fcecf1;border-color:#eccbd5;color:#a95f78}
+.branch-choice-panel{top:calc(100% + 7px)}
+.branch-choice-options{border-color:#ecdee3;box-shadow:0 14px 30px rgba(100,64,80,.13)}
+/* Keep the complete login composition within one screen without document scrolling. */
+html:has(#login:not(.hide)),body:has(#login:not(.hide)){height:100%;overflow:hidden}
+#login{height:100vh;height:100dvh;min-height:0!important;overflow:hidden!important;padding:clamp(10px,2.2vh,24px)!important;align-items:center!important;justify-content:center!important}
+.login-wrap{width:min(100%,920px);height:auto;max-height:100%;min-height:0!important;grid-template-columns:1fr 1fr;border-radius:26px}
+.login-story{min-height:0;padding:clamp(20px,3.2vh,34px);justify-content:space-between}
+.story-copy{margin-top:clamp(12px,2vh,24px)}
+.story-copy h2{font-size:clamp(23px,2.6vw,31px);line-height:1.32;margin:9px 0}
+.ingredient-art{height:clamp(100px,19vh,170px);flex:none}
+.rice{width:clamp(76px,9vw,108px);height:clamp(76px,9vw,108px);font-size:clamp(38px,5vw,56px)}
+.fish{width:clamp(90px,11vw,126px);height:clamp(90px,11vw,126px);font-size:clamp(42px,5.5vw,62px)}
+.leaf{width:clamp(60px,7vw,78px);height:clamp(60px,7vw,78px);font-size:clamp(30px,4vw,38px)}
+.sushi-friends{bottom:45px}
+#login .lg{min-width:0;align-self:center;padding:clamp(22px,4vh,42px) clamp(22px,4vw,44px)!important}
+#login .lg .fld{margin-bottom:clamp(10px,1.7vh,15px)}
+#login .lg .in{min-height:47px}
+.branch-help{margin-bottom:10px}
+.login-note{margin-top:12px!important}
+#login .msg{min-height:16px;margin-bottom:4px}
+@media(max-width:680px){
+ #login{padding:10px!important;align-items:center!important}
+ .login-wrap{width:min(100%,440px);height:auto;max-height:100%;grid-template-columns:1fr;border-radius:22px;overflow:hidden}
+ .login-story{min-height:0;height:auto;padding:15px 19px 12px;gap:0}
+ .story-brand{gap:8px;font-size:12px;letter-spacing:1px}
+ .story-mark{width:31px;height:31px;font-size:14px}
+ .story-brand-sub{font-size:7px;letter-spacing:1.5px}
+ .story-copy{margin-top:12px}
+ .eyebrow{font-size:8px;letter-spacing:1.5px}
+ .story-copy h2{font-size:clamp(18px,5vw,22px);line-height:1.25;margin:4px 0}
+ .story-copy p{font-size:10px;line-height:1.4}
+ .ingredient-art{display:none}
+ .story-foot{margin-top:11px;padding-top:7px;font-size:7px}
+ .sushi-friends{display:none}
+ #login .lg{padding:17px 21px 15px!important}
+ .login-platform-brand{margin-bottom:12px!important;padding-bottom:10px!important;gap:9px}
+ .login-platform-symbol{width:36px;height:36px;border-radius:12px;font-size:13px}
+ .login-platform-wordmark{font-size:18px}
+ .login-platform-wordmark small{font-size:7px;letter-spacing:1.6px;margin-top:3px}
+ .lg-header{margin-bottom:12px!important}
+ .lg-header h1{font-size:20px!important}
+ #login .lg .fld{margin-bottom:9px}
+ #login .lg .fld span{font-size:12px;margin-bottom:5px}
+ #login .lg .in{min-height:43px;padding:9px 12px;font-size:13px}
+ .branch-choice-trigger{min-height:48px;padding:6px 9px}
+ .branch-choice-leading{width:30px;height:30px}
+ .branch-choice-arrow{width:30px;height:30px}
+ .branch-help{font-size:10px;margin-top:-5px;margin-bottom:7px}
+ #login .login-submit{min-height:44px;padding:9px 14px}
+ .login-note{font-size:9px!important;margin-top:8px!important}
+ #login .msg{min-height:13px;font-size:11px}
+}
+@media(max-height:740px) and (max-width:680px){
+ #login{padding:7px!important}
+ .login-story{padding:11px 17px 9px}
+ .story-copy{margin-top:8px}
+ .story-foot{margin-top:7px;padding-top:5px}
+ #login .lg{padding:12px 19px 10px!important}
+ .login-platform-brand{margin-bottom:8px!important;padding-bottom:7px!important}
+ .lg-header{margin-bottom:8px!important}
+ #login .lg .fld{margin-bottom:7px}
+ .branch-help{margin-bottom:5px}
+ .login-note{margin-top:5px!important}
+}
+@media(prefers-reduced-motion:reduce){.branch-choice-arrow{transition:none!important}}
+</style>
 </body>
 </html>
