@@ -115,6 +115,12 @@ button{cursor:pointer;border:0;background:none;user-select:none}
 .bm-name-wrap{flex-wrap:wrap;row-gap:2px}
 .bm-card .bm-manage-subscription{background:var(--acc-light)!important;color:var(--acc-hover)!important;border:1px solid var(--theme-border-strong)!important;box-shadow:none!important}
 .bm-card .bm-actions{flex-wrap:wrap;justify-content:flex-end}
+.branch-subscription,.bm-subscription{color:#b5e2c2!important}
+.branch-subscription.is-warning,.bm-subscription.is-warning{color:#f2d9a8!important}
+.branch-subscription.is-expired,.bm-subscription.is-expired{color:#efb0b9!important}
+.bm-card .bm-actions .bm-badge{display:inline-flex;align-items:center;justify-content:center;min-height:38px;height:38px;padding:0 9px;border:1px solid var(--theme-border-strong)!important;border-radius:10px;background:var(--theme-wash)!important;color:var(--acc-hover)!important;font:inherit;font-size:11px;font-weight:800;line-height:1;white-space:nowrap;box-shadow:none!important;opacity:1!important}
+@media(max-width:480px){.bm-card .bm-actions .bm-badge{justify-self:stretch;width:100%;min-width:0!important}}
+
 @media(max-width:480px){.bm-row{flex-wrap:wrap;align-items:flex-start}.bm-name-wrap{flex:1 1 100%}.bm-card .bm-actions{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px}.bm-card .bm-actions .bm-btn{width:100%;min-width:0!important;padding:0 6px!important;font-size:11px!important}.bm-card .bm-actions .bm-badge{justify-self:start}}
 @media(max-width:680px){.subscription-expired-card{padding:25px 20px}.branch-subscription{font-size:9px}}
 .branch-select-wrap{position:relative}
@@ -2051,7 +2057,7 @@ let cloudToken = cloudTokenStore.get(), syncSnapshot = null, syncVersion = 0, sy
 const branchStore = { key: 'inv_selected_branch', get() { try { return localStorage.getItem(this.key) || ''; } catch { return ''; } }, set(id) { try { if (id) localStorage.setItem(this.key, id); else localStorage.removeItem(this.key); } catch {} } };
 const PRIMARY_BRANCH_FALLBACK = { id: 'e735a3bf-8a74-4a8c-9e9b-7af778e91234', name: 'พันท้ายนรสิงห์' };
 let branches = [], currentBranch = { id: '', name: 'พันท้ายนรสิงห์' };
-let currentSubscription = null, subscriptionTimer = null, subscriptionBusy = false;
+let currentSubscription = null, subscriptionTimer = null, subscriptionDisplayTimer = null, subscriptionBusy = false;
 function setCurrentBranch(branch) {
 if (!branch?.id || !branch?.name) return;
 currentBranch = { id: String(branch.id), name: String(branch.name) }; branchStore.set(currentBranch.id);
@@ -2639,26 +2645,21 @@ function subscriptionDaysLeft(value) {
 const ms = Date.parse(value || '');
 return Number.isFinite(ms) ? Math.max(0, Math.ceil((ms - Date.now()) / 86400000)) : 0;
 }
-function subscriptionText(data) {
-if (!data?.expires_at) return 'ยังไม่ได้กำหนดอายุสมาชิก';
-const expiry = Date.parse(data.expires_at);
-const left = Number.isFinite(expiry) ? Math.max(0, Math.floor((expiry - Date.now()) / 1000)) : 0;
-if (data.expired || left <= 0) return 'หมดอายุแล้ว · ' + formatSubscriptionDate(data.expires_at);
-return 'เหลือ ' + Math.max(1, Math.ceil(left / 86400)) + ' วัน · หมดอายุ ' + formatSubscriptionDate(data.expires_at);
-}
+function subscriptionText(data) { return subscriptionCountdownText(data?.expires_at, data?.expired); }
 function updateSubscriptionHeader(data = currentSubscription) {
 const el = document.getElementById('branchSubscription'); if (!el) return;
 if (!data) { el.textContent = ''; el.className = 'branch-subscription hide'; return; }
-const expired = !!data.expired || Number(data.remaining_seconds) <= 0;
-const warning = !expired && Number(data.remaining_seconds) <= 7 * 86400;
-const days = Math.max(1, Math.ceil(Math.max(0, Number(data.remaining_seconds) || 0) / 86400));
-el.textContent = expired ? 'สมาชิกหมดอายุแล้ว' : 'สมาชิกเหลือ ' + days + ' วัน';
+const expiry = Date.parse(data.expires_at || '');
+const expired = !!data.expired || !Number.isFinite(expiry) || expiry <= Date.now();
+const warning = !expired && expiry - Date.now() <= 7 * 86400000;
+el.textContent = expired ? 'หมดอายุแล้ว' : subscriptionCountdownText(data.expires_at, false);
 el.title = data.expires_at ? 'หมดอายุ ' + formatSubscriptionDate(data.expires_at) : 'ยังไม่ได้กำหนดวันหมดอายุ';
 el.className = 'branch-subscription' + (expired ? ' is-expired' : warning ? ' is-warning' : '');
 }
 function showSubscriptionExpired(data = {}) {
 stopPresence();
 if (subscriptionTimer) { clearInterval(subscriptionTimer); subscriptionTimer = null; }
+if (subscriptionDisplayTimer) { clearInterval(subscriptionDisplayTimer); subscriptionDisplayTimer = null; }
 const page = document.getElementById('subscriptionExpired');
 document.getElementById('subscriptionExpiredBranch').textContent = 'สาขา' + (data.branch_name || currentBranch?.name || '');
 document.getElementById('subscriptionExpiredDate').textContent = data.expires_at ? 'หมดอายุเมื่อ ' + formatSubscriptionDate(data.expires_at) : 'ยังไม่มีข้อมูลวันหมดอายุในระบบ';
@@ -2683,7 +2684,10 @@ finally { subscriptionBusy = false; }
 }
 function startSubscriptionMonitor() {
 if (subscriptionTimer) clearInterval(subscriptionTimer);
+if (subscriptionDisplayTimer) clearInterval(subscriptionDisplayTimer);
 subscriptionTimer = setInterval(() => { if (document.visibilityState !== 'hidden') refreshSubscriptionStatus(true); }, 60000);
+subscriptionDisplayTimer = setInterval(() => { if (document.visibilityState !== 'hidden') { updateSubscriptionHeader(); updateSubscriptionCountdowns(); } }, 1000);
+updateSubscriptionHeader(); updateSubscriptionCountdowns();
 }
 document.getElementById('subscriptionExpiredLogout')?.addEventListener('click', () => logout());
 async function tryLogin() {
@@ -2729,6 +2733,7 @@ tab = 'stock'; build(); startPresence(); refreshAnnouncement(true); void refresh
 function logout() {
 stopPresence();
 if (subscriptionTimer) { clearInterval(subscriptionTimer); subscriptionTimer = null; }
+if (subscriptionDisplayTimer) { clearInterval(subscriptionDisplayTimer); subscriptionDisplayTimer = null; }
 currentSubscription = null; updateSubscriptionHeader(null);
 const expiredPage = document.getElementById('subscriptionExpired'); if (expiredPage) expiredPage.classList.add('hide');
 const oldToken = cloudToken;
@@ -2787,6 +2792,40 @@ function updateBranchOnlineBadges() {
     const label = n === null ? 'ยังโหลดจำนวนผู้ใช้ออนไลน์ไม่ได้' : `ผู้ใช้ออนไลน์ ${n} คน`;
     el.title = label; el.setAttribute('aria-label', label);
   });
+}
+
+function subscriptionCountdownText(value, expiredFlag = false) {
+  if (!value) return 'ยังไม่ได้กำหนดอายุสมาชิก';
+  const expiry = Date.parse(value);
+  if (!Number.isFinite(expiry) || expiredFlag || expiry <= Date.now()) return 'หมดอายุแล้ว';
+  const totalMinutes = Math.max(1, Math.ceil((expiry - Date.now()) / 60000));
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
+  const minutes = totalMinutes % 60;
+  return `${days} วัน ${hours} ชม. ${minutes} นาที`;
+}
+function branchManagerCardMarkup(prefix = '') {
+  const createId = prefix ? prefix + 'createBranchBtn' : 'createBranchBtn';
+  return `<div class="dash-card branch-admin-card bm-card"><div class="bm-head"><h3>🏬 จัดการสาขา<span class="bm-count">${branches.length}</span></h3><button type="button" class="btn sm bm-add" id="${createId}" data-create-branch>${ic('plus')} เพิ่มสาขา</button></div><details class="bm-info"><summary>วิธีเข้าถึงสาขา</summary><p class="settings-hint">จัดการสาขาได้เฉพาะบัญชีหลัก kiangkai ผู้ใช้งานสาขาอื่นต้องเข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสของตนเอง และเข้าได้เฉพาะสาขาที่เลือกไว้</p></details><div class="bm-list">${branches.map(b => { const isCurrent = String(b.id) === String(currentBranch.id); const expiry = Date.parse(b.expires_at || ''); const expired = !Number.isFinite(expiry) || expiry <= Date.now(); const warning = !expired && expiry - Date.now() <= 604800000; return `<div class="bm-row${isCurrent ? ' is-current' : ''}"><span class="bm-name-wrap"><span class="bm-name" title="${esc(b.name)}">${esc(b.name)}</span>${branchOnlineHtml(b)}<small class="bm-subscription ${expired ? 'is-expired' : warning ? 'is-warning' : ''}" data-subscription-countdown="${esc(b.expires_at || '')}" data-subscription-expired="${expired ? 'true' : 'false'}">${esc(subscriptionCountdownText(b.expires_at, b.subscription_expired))}</small></span><span class="bm-actions">${isCurrent ? `<button type="button" class="btn sm bm-btn bm-badge" disabled aria-label="สาขา${esc(b.name)}กำลังใช้งาน">กำลังใช้งาน</button>` : `<button type="button" class="btn sm bm-btn bm-close" data-delete-branch="${esc(b.id)}" aria-label="ลบสาขา ${esc(b.name)}">ลบสาขา</button><button type="button" class="btn sm bm-btn bm-enter" data-switch-branch="${esc(b.id)}" aria-label="เข้าสาขา ${esc(b.name)}">เข้า</button>`}<button type="button" class="btn sm bm-btn bm-manage-subscription" data-manage-subscription="${esc(b.id)}" aria-label="จัดการวันสมาชิก ${esc(b.name)}">จัดการวัน</button></span></div>`; }).join('')}</div></div>`;
+}
+function updateSubscriptionCountdowns() {
+  document.querySelectorAll('[data-subscription-countdown]').forEach(el => {
+    const expiry = el.dataset.subscriptionCountdown;
+    const parsed = Date.parse(expiry || '');
+    const expired = !Number.isFinite(parsed) || parsed <= Date.now();
+    const warning = !expired && parsed - Date.now() <= 604800000;
+    const next = subscriptionCountdownText(expiry, expired);
+    if (el.textContent !== next) el.textContent = next;
+    el.classList.toggle('is-expired', expired);
+    el.classList.toggle('is-warning', warning);
+    el.dataset.subscriptionExpired = String(expired);
+  });
+}
+function bindBranchManagerActions(root = document) {
+  root.querySelectorAll('[data-create-branch]').forEach(button => { if (button.dataset.branchActionBound) return; button.dataset.branchActionBound = '1'; button.onclick = createBranchModal; });
+  root.querySelectorAll('[data-manage-subscription]').forEach(button => { if (button.dataset.branchActionBound) return; button.dataset.branchActionBound = '1'; button.onclick = () => manageBranchSubscription(button.dataset.manageSubscription); });
+  root.querySelectorAll('[data-switch-branch]').forEach(button => { if (button.dataset.branchActionBound) return; button.dataset.branchActionBound = '1'; button.onclick = () => switchBranch(button.dataset.switchBranch); });
+  root.querySelectorAll('[data-delete-branch]').forEach(button => { if (button.dataset.branchActionBound) return; button.dataset.branchActionBound = '1'; button.onclick = () => deleteBranch(button.dataset.deleteBranch); });
 }
 async function refreshBranchOnline() {
   if (!document.querySelector('[data-branch-online]')) return;
@@ -4209,7 +4248,7 @@ const stockResetLog = L.find(x => x.note === STOCK_RESET_NOTE);
 const resetAudit = stockResetLog && (!lastReset || Number(stockResetLog.ts) > Number(lastReset.ts || 0)) ? { scope: 'stock', user: stockResetLog.user, ts: stockResetLog.ts } : lastReset;
 return `<div class="sect"><h2>ตั้งค่าระบบ</h2><small>กำหนดค่าการแสดงผลและข้อมูล</small></div>
   <div class="dash-grid settings-grid">
-    ${can.manageBranches() ? `<div class="dash-card branch-admin-card bm-card"><div class="bm-head"><h3>🏬 จัดการสาขา<span class="bm-count">${branches.length}</span></h3><button type="button" class="btn sm bm-add" id="createBranchBtn">${ic('plus')} เพิ่มสาขา</button></div><details class="bm-info"><summary>วิธีเข้าถึงสาขา</summary><p class="settings-hint">จัดการสาขาได้เฉพาะบัญชีหลัก kiangkai ผู้ใช้งานสาขาอื่นต้องเข้าสู่ระบบด้วยชื่อผู้ใช้และรหัสของตนเอง และเข้าได้เฉพาะสาขาที่เลือกไว้</p></details><div class="bm-list">${branches.map(b => { const isCurrent = String(b.id)===String(currentBranch.id); return `<div class="bm-row${isCurrent?' is-current':''}"><span class="bm-name-wrap"><span class="bm-name" title="${esc(b.name)}">${esc(b.name)}</span>${branchOnlineHtml(b)}<small class="bm-subscription ${!b.expires_at || Date.parse(b.expires_at) <= Date.now() ? 'is-expired' : (Date.parse(b.expires_at) - Date.now() <= 604800000 ? 'is-warning' : '')}">${esc(subscriptionText({expires_at:b.expires_at,remaining_seconds:b.remaining_seconds,expired:b.subscription_expired}))}</small></span><span class="bm-actions">${isCurrent?`<span class="bm-badge">กำลังใช้งาน</span>`:`<button type="button" class="btn sm bm-btn bm-close" data-delete-branch="${esc(b.id)}" aria-label="ลบสาขา ${esc(b.name)}">ลบสาขา</button><button type="button" class="btn sm bm-btn bm-enter" data-switch-branch="${esc(b.id)}" aria-label="เข้าสาขา ${esc(b.name)}">เข้า</button>`}<button type="button" class="btn sm bm-btn bm-manage-subscription" data-manage-subscription="${esc(b.id)}" aria-label="จัดการวันสมาชิก ${esc(b.name)}">จัดการวัน</button></span></div>`; }).join('')}</div></div>` : ''}
+    ${can.manageBranches() ? branchManagerCardMarkup('') : ''}
     ${canManageSite ? `<div class="dash-card disclosure-card site-admin-card" id="siteAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="siteAdminDisclosurePanel"><span>🌐 จัดการเว็บไซต์</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="siteAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><p class="settings-hint">กำหนดชื่อเว็บไซต์ ชื่อสาขา และโลโก้เฉพาะสาขาที่กำลังใช้งาน การเปลี่ยนแปลงจะไม่กระทบสาขาอื่น</p><label class="fld"><span>ชื่อเว็บไซต์</span><input class="in" id="siteNameInput" maxlength="60" value="${esc(siteBrand.siteName)}" placeholder="ชื่อเว็บไซต์"></label><label class="fld"><span>ชื่อสาขา</span><input class="in" id="siteBranchNameInput" maxlength="80" value="${esc(currentBranch.name)}" placeholder="ชื่อสาขา"></label><label class="fld"><span>โลโก้เว็บไซต์ (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="siteLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame"><img id="siteLogoPreview" class="site-logo-preview site-brand-image" alt="ตัวอย่างโลโก้" ${siteBrand.logoData ? `src="${esc(siteBrand.logoData)}"` : 'hidden'}></div><small>ตัวอย่างพื้นที่โลโก้บนหัวเว็บไซต์จริง</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearSiteLogoBtn">นำโลโก้ออก</button><button type="button" class="btn sm" id="saveSiteBrandBtn">บันทึกการเปลี่ยนแปลง</button></div><small class="settings-hint">รองรับรูปต้นฉบับสูงสุด 20 MB ระบบจะย่อและบีบอัดเป็น WEBP ให้อัตโนมัติ โดยคงสัดส่วนภาพ</small></div></div></div>` : ''}
     ${isAnnouncer() ? `<div class="dash-card disclosure-card announce-card" id="announceCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="announceDisclosurePanel"><span>📢 ประกาศข้อความ</span><span class="disclosure-count" id="announceCount"></span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="announceDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">
       <p class="settings-hint">ข้อความจะเลื่อนจากขวาไปซ้ายใต้หัวเว็บไซต์ของผู้ใช้ในสาขาที่เลือก จนครบเวลาที่กำหนด หรือจนกว่าจะยกเลิก</p>
@@ -4586,10 +4625,8 @@ updatePageMascots(); toast(`ตั้งจำนวนสติ๊กเกอ�
 
 
 
-if ($('#createBranchBtn')) $('#createBranchBtn').onclick = createBranchModal;
-document.querySelectorAll('[data-manage-subscription]').forEach(button => button.onclick = () => manageBranchSubscription(button.dataset.manageSubscription));
-document.querySelectorAll('[data-switch-branch]').forEach(button => button.onclick = () => switchBranch(button.dataset.switchBranch));
-document.querySelectorAll('[data-delete-branch]').forEach(button => button.onclick = () => deleteBranch(button.dataset.deleteBranch));
+bindBranchManagerActions();
+updateSubscriptionCountdowns();
 document.querySelectorAll('[data-disclosure-toggle]').forEach(button => button.onclick = () => toggleDisclosure(button));
 bindAnnounceCard(); refreshBranchOnline();
 const resetScopeSelect = $('#resetScope');
