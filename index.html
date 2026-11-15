@@ -929,7 +929,55 @@ html.dark-theme .theme-opt:not([data-dark="1"]) .theme-emoji{background:linear-g
 .ef-preview{max-width:100%;max-height:150px;border-radius:10px;margin-top:8px}
 @media(min-width:1100px){.ef-page{inset:10px 10px 10px auto;width:min(760px,96vw);border:1px solid var(--line);border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.18)}}
 
-.settings-grid .theme-picker-card .text-scale-card{padding:12px 0;border-bottom:1px solid var(--line);margin:0 0 12px}.settings-grid .theme-picker-card>.disclosure-panel>.disclosure-inner>h3{font-size:15px;margin:2px 0 6px}.settings-grid .theme-picker-card .text-scale-card h3{font-size:15px;margin:0 0 6px}</style>
+.settings-grid .theme-picker-card .text-scale-card{padding:12px 0;border-bottom:1px solid var(--line);margin:0 0 12px}.settings-grid .theme-picker-card>.disclosure-panel>.disclosure-inner>h3{font-size:15px;margin:2px 0 6px}.settings-grid .theme-picker-card .text-scale-card h3{font-size:15px;margin:0 0 6px}
+/* ===== Super K compact rounded header card ===== */
+#app .top{
+ position:sticky!important;
+ top:calc(env(safe-area-inset-top,0px) + 8px)!important;
+ z-index:30;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ width:fit-content!important;
+ max-width:calc(100% - 24px)!important;
+ min-height:58px;
+ margin:10px auto 0!important;
+ padding:9px 14px!important;
+ border:1px solid var(--theme-border-strong)!important;
+ border-radius:21px!important;
+ background-color:var(--theme-top-bg)!important;
+ background-image:radial-gradient(circle at 4% 0%,color-mix(in srgb,var(--acc) 13%,transparent) 0,transparent 34%),radial-gradient(circle at 100% 100%,color-mix(in srgb,var(--theme-soft) 75%,transparent) 0,transparent 38%)!important;
+ color:var(--ink)!important;
+ box-shadow:0 8px 24px color-mix(in srgb,var(--theme-shadow) 78%,transparent),inset 0 1px 0 rgba(255,255,255,.55)!important;
+ overflow:visible;
+ isolation:isolate;
+}
+#app .top .brand{min-width:0;flex:0 1 auto}
+#app .top .brand-copy{min-width:0}
+#app .top .me{flex:0 0 auto}
+#app .top .brand-badge{box-shadow:0 4px 12px var(--theme-shadow)}
+@media(max-width:680px){
+ #app .top{gap:8px;min-height:54px;margin-top:8px!important;padding:7px 10px!important;border-radius:18px!important}
+ #app .top .brand{gap:7px}
+ #app .top .brand-copy{max-width:min(48vw,190px)}
+ #app .top .brand-title{font-size:14px}
+ #app .top .brand-branch{font-size:9.5px!important}
+ #app .top .me{gap:4px;padding:3px 4px 3px 7px}
+ #app .top .me-info{max-width:100px}
+ #app .top .me-name-row b{font-size:11px}
+ #app .top .me-info>span{font-size:9px}
+ #app .top .me-btn{width:29px;height:29px;min-width:29px}
+}
+@media(max-width:360px){
+ #app .top{max-width:calc(100% - 16px)!important;padding-left:8px!important;padding-right:8px!important;gap:5px}
+ #app .top .brand-copy{max-width:43vw}
+ #app .top .me-info{max-width:76px}
+}
+@media(min-width:1100px){
+ #app .top{width:fit-content!important;max-width:calc(100% - 48px)!important;min-height:64px;margin:12px auto 0!important;padding:9px 18px!important;border-radius:22px!important}
+}
+</style>
 <style id="smooth-motion">
 html{-webkit-text-size-adjust:100%}
 button,.row,[data-t]{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
@@ -4351,7 +4399,7 @@ return `<div class="sect"><h2>ตั้งค่าระบบ</h2><small>ก�
       <button type="button" class="btn ann-save" id="annSave">📢 บันทึกและแสดงประกาศ</button>
       <div class="ann-active"><b>กำลังแสดงอยู่</b><div id="annList"><small class="ann-empty">กำลังโหลด…</small></div></div>
     </div></div></div>` : ''}
-    ${canViewStorage ? `<div class="dash-card storage-card disclosure-card" id="storageUsageCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="storageDisclosurePanel"><span>🗄️ พื้นที่ฐานข้อมูล</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="storageDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><div class="storage-heading"><div><p class="settings-hint">ข้อมูลสดจาก Supabase · อัปเดตเมื่อกดตรวจสอบ</p></div><button type="button" class="btn sec sm storage-refresh-btn" id="refreshStorageUsage">ตรวจตอนนี้</button></div><section class="storage-section"><div class="storage-section-head"><b>ฐานข้อมูล (Database)</b><span class="storage-plan-tag">Free · 500 MB</span></div><div class="storage-usage-grid"><div class="storage-metric"><small>ใช้ไปแล้ว</small><b id="storageUsed">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>พื้นที่คงเหลือ</small><b id="storageRemaining">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>ใช้งานแล้ว</small><b id="storagePercent">กำลังตรวจสอบ…</b></div></div><div class="storage-progress" role="progressbar" aria-label="สัดส่วนพื้นที่ฐานข้อมูล" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="storageUsageBar"></span></div></section><section class="storage-section storage-files-section"><div class="storage-section-head"><b>พื้นที่จัดเก็บไฟล์ (Storage)</b><span class="storage-plan-tag">Free · 1 GB</span></div><div class="storage-usage-grid"><div class="storage-metric"><small>ใช้ไปแล้ว</small><b id="storageFilesUsed">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>พื้นที่คงเหลือ</small><b id="storageFilesRemaining">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>จำนวนไฟล์</small><b id="storageFilesCount">—</b></div></div><div class="storage-progress" role="progressbar" aria-label="สัดส่วนพื้นที่จัดเก็บไฟล์" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="storageFilesBar"></span></div></section><div class="storage-footer"><small>ตรวจล่าสุด: <span id="storageCheckedAt">ยังไม่ได้ตรวจสอบ</span></small><small>ตัวเลขอ้างอิงโควตาแพ็กเกจ Free</small></div><small class="storage-error" id="storageUsageError" role="status"></small></div></div></div>` : ''}
+    ${canViewStorage ? `<div class="dash-card storage-card disclosure-card" id="storageUsageCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="storageDisclosurePanel"><span>🗄️ พื้นที่ฐานข้อมูล</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="storageDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><div class="storage-heading"><div><p class="settings-hint">ข้อมูลสดจาก Supabase · ตรวจอัตโนมัติทุก 1 ชั่วโมงขณะเปิดใช้งานเว็บ</p></div><button type="button" class="btn sec sm storage-refresh-btn" id="refreshStorageUsage">ตรวจตอนนี้</button></div><section class="storage-section"><div class="storage-section-head"><b>ฐานข้อมูล (Database)</b><span class="storage-plan-tag">Free · 500 MB</span></div><div class="storage-usage-grid"><div class="storage-metric"><small>ใช้ไปแล้ว</small><b id="storageUsed">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>พื้นที่คงเหลือ</small><b id="storageRemaining">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>ใช้งานแล้ว</small><b id="storagePercent">กำลังตรวจสอบ…</b></div></div><div class="storage-progress" role="progressbar" aria-label="สัดส่วนพื้นที่ฐานข้อมูล" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="storageUsageBar"></span></div></section><section class="storage-section storage-files-section"><div class="storage-section-head"><b>พื้นที่จัดเก็บไฟล์ (Storage)</b><span class="storage-plan-tag">Free · 1 GB</span></div><div class="storage-usage-grid"><div class="storage-metric"><small>ใช้ไปแล้ว</small><b id="storageFilesUsed">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>พื้นที่คงเหลือ</small><b id="storageFilesRemaining">กำลังตรวจสอบ…</b></div><div class="storage-metric"><small>จำนวนไฟล์</small><b id="storageFilesCount">—</b></div></div><div class="storage-progress" role="progressbar" aria-label="สัดส่วนพื้นที่จัดเก็บไฟล์" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="storageFilesBar"></span></div></section><div class="storage-footer"><small>ตรวจล่าสุด: <span id="storageCheckedAt">ยังไม่ได้ตรวจสอบ</span></small><small>ตัวเลขอ้างอิงโควตาแพ็กเกจ Free</small></div><small class="storage-error" id="storageUsageError" role="status"></small></div></div></div>` : ''}
     <div class="dash-card disclosure-card theme-picker-card"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="themeDisclosurePanel"><span>🎨 การแสดงผล</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="themeDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">
       
       <h3>🎨 เลือกธีมสี</h3><p style="font-size:12.5px;color:var(--mute);margin-bottom:6px">เลือกธีมที่ชอบ ธีมจะบันทึกแยกในอุปกรณ์นี้ ${isWideDesktop()?'เลื่อนแถบด้านล่างเพื่อดูธีมเพิ่มเติม':'ปัดซ้ายหรือขวาเพื่อดูธีมเพิ่มเติม'}</p>
@@ -4699,6 +4747,7 @@ panel.classList.add('open');
 if (isWideDesktop()) requestAnimationFrame(updatePageMascots);
 if (me?.owner || me?.role === 'admin') {
 refreshStorageUsage();
+if (storageUsageTimer) clearInterval(storageUsageTimer);
 storageUsageTimer = setInterval(refreshStorageUsage, 60 * 60 * 1000);
 }
 if ($('#refreshStorageUsage')) $('#refreshStorageUsage').onclick = refreshStorageUsage;
@@ -5053,12 +5102,12 @@ if (verificationToken) cloudRpc('api_logout', { p_token: verificationToken }).ca
 };
 }
 async function refreshStorageUsage() {
-const card = $('#storageUsageCard');
-if (!card || storageUsageBusy || document.visibilityState === 'hidden' || !(me?.owner || me?.role === 'admin')) return;
+if (storageUsageBusy || document.visibilityState === 'hidden' || !(me?.owner || me?.role === 'admin')) return;
 storageUsageBusy = true;
 const button = $('#refreshStorageUsage'), error = $('#storageUsageError'), buttonLabel = button?.textContent || 'ตรวจตอนนี้';
+const setText = (selector, value) => { const el = $(selector); if (el) el.textContent = value; };
 if (button) { button.disabled = true; button.textContent = 'กำลังตรวจสอบ…'; }
-error.textContent = '';
+if (error) error.textContent = '';
 try {
 const result = await cloudRpc('api_storage_usage', { p_token: cloudToken });
 if (!result.ok) throw new Error(result.error || 'อ่านพื้นที่ Supabase ไม่สำเร็จ');
@@ -5066,20 +5115,20 @@ const mib = bytes => (Math.max(0, Number(bytes) || 0) / (1024 * 1024)).toLocaleS
 const gib = bytes => (Math.max(0, Number(bytes) || 0) / (1024 * 1024 * 1024)).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const dbUsed = Number(result.databaseBytes)||0, dbRemaining = Number(result.databaseRemainingBytes)||0, dbPercent = Number(result.databasePercent)||0;
 const fileUsed = Number(result.storageBytes)||0, fileRemaining = Number(result.storageRemainingBytes)||0, filePercent = Number(result.storagePercent)||0;
-$('#storageUsed').textContent = mib(dbUsed)+' MB';
-$('#storageRemaining').textContent = mib(dbRemaining)+' MB';
-$('#storagePercent').textContent = dbPercent.toLocaleString('th-TH',{maximumFractionDigits:2})+'%';
-$('#storageFilesUsed').textContent = gib(fileUsed)+' GB';
-$('#storageFilesRemaining').textContent = gib(fileRemaining)+' GB';
-$('#storageFilesCount').textContent = (Number(result.storageFiles)||0).toLocaleString('th-TH')+' ไฟล์';
+setText('#storageUsed',mib(dbUsed)+' MB');
+setText('#storageRemaining',mib(dbRemaining)+' MB');
+setText('#storagePercent',dbPercent.toLocaleString('th-TH',{maximumFractionDigits:2})+'%');
+setText('#storageFilesUsed',gib(fileUsed)+' GB');
+setText('#storageFilesRemaining',gib(fileRemaining)+' GB');
+setText('#storageFilesCount',(Number(result.storageFiles)||0).toLocaleString('th-TH')+' ไฟล์');
 const dbBar=$('#storageUsageBar'),fileBar=$('#storageFilesBar');
-dbBar.style.width=Math.max(0,Math.min(100,dbPercent))+'%';
-fileBar.style.width=Math.max(0,Math.min(100,filePercent))+'%';
-for(const [bar,p] of [[dbBar,dbPercent],[fileBar,filePercent]]){bar.classList.toggle('warn',p>=75&&p<90);bar.classList.toggle('danger',p>=90);const progress=bar.closest('.storage-progress');progress.setAttribute('aria-valuenow',String(Math.max(0,Math.min(100,p))));}
-$('#storageCheckedAt').textContent=result.checkedAt?new Date(result.checkedAt).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}):'ไม่ทราบเวลา';
+if(dbBar) dbBar.style.width=Math.max(0,Math.min(100,dbPercent))+'%';
+if(fileBar) fileBar.style.width=Math.max(0,Math.min(100,filePercent))+'%';
+for(const [bar,p] of [[dbBar,dbPercent],[fileBar,filePercent]]) if(bar){bar.classList.toggle('warn',p>=75&&p<90);bar.classList.toggle('danger',p>=90);const progress=bar.closest('.storage-progress');if(progress)progress.setAttribute('aria-valuenow',String(Math.max(0,Math.min(100,p))));}
+setText('#storageCheckedAt',result.checkedAt?new Date(result.checkedAt).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}):'ไม่ทราบเวลา');
 } catch(e) {
-error.textContent=e.message||'ตรวจสอบพื้นที่ไม่สำเร็จ กรุณาลองอีกครั้ง';
-$('#storageCheckedAt').textContent='ตรวจไม่สำเร็จ';
+if (error) error.textContent=e.message||'ตรวจสอบพื้นที่ไม่สำเร็จ กรุณาลองอีกครั้ง';
+setText('#storageCheckedAt','ตรวจไม่สำเร็จ');
 } finally { storageUsageBusy=false; if(button){button.disabled=false;button.textContent=buttonLabel;} }
 }
 function optionCollection(kind) {
