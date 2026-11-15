@@ -1829,7 +1829,7 @@ html.formal-theme .top-runway{display:none!important}
 </style>
 </head>
 <body data-theme="teal">
-<div id="bootScreen" role="status" aria-live="polite"><div class="boot-card"><span class="boot-mascot" id="siteBootLogo" aria-hidden="true">🍣</span><span class="boot-spinner" aria-hidden="true"></span><strong>กำลังตรวจสอบข้อมูล</strong><small>กรุณารอสักครู่</small></div></div>
+<div id="bootScreen" role="status" aria-live="polite"><div class="boot-card"><span class="boot-mascot" id="siteBootLogo" aria-hidden="true">SK</span><span class="boot-spinner" aria-hidden="true"></span><strong>กำลังตรวจสอบข้อมูล</strong><small>กรุณารอสักครู่</small></div></div>
 <script>
 /* Restore the uploaded logo before the startup screen is first painted. */
 try {
@@ -6722,7 +6722,7 @@ const JMENU = [{ id: 'jobs', icon: '🗓️', label: 'จ๊อบพนัก�
     bindBranchManagerActions(body);
     updateSubscriptionCountdowns();
     const card = body.querySelector('.branch-admin-card');
-    if (card && !card.querySelector('.card-mascot')) { const friends = THEME_CARD_FRIENDS[currentTheme] || THEMES[currentTheme]?.friends || ['🌿','✨','🏬']; const sticker = document.createElement('span'); sticker.className = 'card-mascot mascot-top-right'; sticker.setAttribute('aria-hidden','true'); sticker.textContent = friends[0]; card.classList.add('has-card-mascot'); card.append(sticker); }
+    if (card && !THEMES[currentTheme]?.formal && !card.querySelector('.card-mascot')) { const friends = THEME_CARD_FRIENDS[currentTheme] || THEMES[currentTheme]?.friends || ['🌿','✨','🏬']; const sticker = document.createElement('span'); sticker.className = 'card-mascot mascot-top-right'; sticker.setAttribute('aria-hidden','true'); sticker.textContent = friends[0]; card.classList.add('has-card-mascot'); card.append(sticker); }
     refreshBranchOnline();
   };
   rightDock.querySelector('.sd-right-tab').onclick = () => rightMenuOpen(!rightDock.classList.contains('open'));
