@@ -2840,12 +2840,12 @@ catch (error) { sess.set(null); return fail(error.message || 'ตรวจสอ
 if (subscription.expired && !subscription.owner) { currentSubscription = subscription; showSubscriptionExpired(subscription); return; }
 currentSubscription = subscription; updateSubscriptionHeader(subscription);
 lock = { n: 0, until: 0 }; store.set('inv_lock', lock);
-if (rememberLogin) await saveRememberedLogin(name, branchId, pinVal);
-else await clearRememberedLogin();
 let result;
 try { result = await cloudRpc('api_get_state', { p_branch_id: branchId }); }
 catch (error) { sess.set(null); return fail(error.message || 'บัญชีนี้ไม่มีสิทธิ์เข้าสาขาที่เลือก'); }
 applyCloudState(result.state); syncSnapshot = cloneData(result.state); syncVersion = result.version || 1;
+if (rememberLogin) await saveRememberedLogin(name, branchId, pinVal);
+else await clearRememberedLogin();
 if (logNeedsPrune) save();
 enter(result.me, result.branch);
 }
@@ -5925,38 +5925,88 @@ closeModal(); toast('เปลี่ยนรหัสสำเร็จ');
 }
 const REMEMBER_DB_NAME='superk-login-vault', REMEMBER_STORE='keys', REMEMBER_KEY_ID='device-key';
 function openRememberVault(){
-return new Promise((resolve,reject)=>{const req=indexedDB.open(REMEMBER_DB_NAME,1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(REMEMBER_STORE))req.result.createObjectStore(REMEMBER_STORE);};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
+ return new Promise((resolve,reject)=>{
+  if(!('indexedDB' in window)) return reject(new Error('อุปกรณ์นี้ไม่รองรับพื้นที่จัดเก็บแบบปลอดภัย'));
+  const req=indexedDB.open(REMEMBER_DB_NAME,1);
+  req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(REMEMBER_STORE))req.result.createObjectStore(REMEMBER_STORE);};
+  req.onsuccess=()=>{req.result.onversionchange=()=>req.result.close();resolve(req.result);};
+  req.onerror=()=>reject(req.error||new Error('เปิดพื้นที่จัดเก็บรหัสผ่านไม่สำเร็จ'));
+  req.onblocked=()=>reject(new Error('พื้นที่จัดเก็บรหัสผ่านกำลังถูกใช้งาน กรุณาปิดแท็บ Super K อื่นแล้วลองใหม่'));
+ });
 }
 async function getRememberKey(create=false){
-const db=await openRememberVault();
-try{
-let key=await new Promise((resolve,reject)=>{const tx=db.transaction(REMEMBER_STORE,'readonly'),q=tx.objectStore(REMEMBER_STORE).get(REMEMBER_KEY_ID);q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error);});
-if(!key&&create){key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);await new Promise((resolve,reject)=>{const tx=db.transaction(REMEMBER_STORE,'readwrite');tx.objectStore(REMEMBER_STORE).put(key,REMEMBER_KEY_ID);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});}
-return key;
-}finally{db.close();}
+ const db=await openRememberVault();
+ try{
+  let key=await new Promise((resolve,reject)=>{
+   const tx=db.transaction(REMEMBER_STORE,'readonly'),q=tx.objectStore(REMEMBER_STORE).get(REMEMBER_KEY_ID);
+   q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error);
+   tx.onerror=()=>reject(tx.error);
+  });
+  if(!key&&create){
+   if(!window.crypto?.subtle)throw new Error('เบราว์เซอร์นี้ไม่รองรับการเข้ารหัสที่ปลอดภัย');
+   key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+   await new Promise((resolve,reject)=>{
+    const tx=db.transaction(REMEMBER_STORE,'readwrite');
+    tx.objectStore(REMEMBER_STORE).put(key,REMEMBER_KEY_ID);
+    tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('บันทึกกุญแจเข้ารหัสไม่สำเร็จ'));
+   });
+   const verify=await new Promise((resolve,reject)=>{
+    const tx=db.transaction(REMEMBER_STORE,'readonly'),q=tx.objectStore(REMEMBER_STORE).get(REMEMBER_KEY_ID);
+    q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error);tx.onerror=()=>reject(tx.error);
+   });
+   if(!verify)throw new Error('ไม่สามารถเก็บกุญแจเข้ารหัสไว้ในเครื่องได้');
+   key=verify;
+  }
+  return key;
+ }finally{db.close();}
 }
 function bytesToB64(bytes){let binary='';for(const b of bytes)binary+=String.fromCharCode(b);return btoa(binary);}
 function b64ToBytes(value){return Uint8Array.from(atob(value),c=>c.charCodeAt(0));}
 async function saveRememberedLogin(username,branchId,pin){
-try{const key=await getRememberKey(true),iv=crypto.getRandomValues(new Uint8Array(12)),plain=new TextEncoder().encode(JSON.stringify({username,branchId,pin})),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain);localStorage.setItem('superk_remember_login',JSON.stringify({iv:bytesToB64(iv),cipher:bytesToB64(new Uint8Array(cipher))}));}catch(error){console.warn('บันทึกการจดจำการเข้าสู่ระบบไม่สำเร็จ',error);toast('อุปกรณ์นี้ไม่รองรับการจดจำการเข้าสู่ระบบแบบเข้ารหัส',1);}
+ try{
+  if(!window.crypto?.subtle)throw new Error('เบราว์เซอร์นี้ไม่รองรับการเข้ารหัสที่ปลอดภัย');
+  const key=await getRememberKey(true),iv=crypto.getRandomValues(new Uint8Array(12));
+  const plain=new TextEncoder().encode(JSON.stringify({username,branchId:String(branchId||''),pin}));
+  const cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain);
+  const payload=JSON.stringify({iv:bytesToB64(iv),cipher:bytesToB64(new Uint8Array(cipher))});
+  localStorage.setItem('superk_remember_login',payload);
+  const saved=JSON.parse(localStorage.getItem('superk_remember_login')||'null');
+  const check=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(saved.iv)},key,b64ToBytes(saved.cipher));
+  const verified=JSON.parse(new TextDecoder().decode(check));
+  if(verified.username!==username||verified.pin!==pin||String(verified.branchId)!==String(branchId||''))throw new Error('ตรวจสอบข้อมูลที่บันทึกแล้วไม่ตรงกัน');
+  return true;
+ }catch(error){
+  console.warn('บันทึกการจดจำการเข้าสู่ระบบไม่สำเร็จ',error);
+  try{localStorage.removeItem('superk_remember_login');}catch{}
+  toast('บันทึกรหัสผ่านในเครื่องนี้ไม่สำเร็จ: '+(error.message||'พื้นที่จัดเก็บไม่พร้อมใช้งาน'),1);
+  return false;
+ }
 }
 async function clearRememberedLogin(){
-try{localStorage.removeItem('superk_remember_login');const db=await openRememberVault();await new Promise((resolve,reject)=>{const tx=db.transaction(REMEMBER_STORE,'readwrite');tx.objectStore(REMEMBER_STORE).delete(REMEMBER_KEY_ID);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});db.close();}catch{}
+ try{localStorage.removeItem('superk_remember_login');const db=await openRememberVault();try{await new Promise((resolve,reject)=>{const tx=db.transaction(REMEMBER_STORE,'readwrite');tx.objectStore(REMEMBER_STORE).delete(REMEMBER_KEY_ID);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}finally{db.close();}}catch(error){console.warn('ล้างข้อมูลจดจำการเข้าสู่ระบบไม่สำเร็จ',error);}
 }
-async function prefillLastUsername() {
-try{
-const raw=localStorage.getItem('superk_remember_login');if(!raw){$('#lgRememberLogin').checked=false;return;}
-const saved=JSON.parse(raw),key=await getRememberKey(false);if(!key||!saved?.iv||!saved?.cipher)throw new Error('remember key missing');
-const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(saved.iv)},key,b64ToBytes(saved.cipher));
-const credential=JSON.parse(new TextDecoder().decode(plain));
-if(typeof credential.username!=='string'||!/^\d{6}$/.test(String(credential.pin||'')))throw new Error('invalid credential');
-$('#lgUser').value=credential.username;$('#lgPinInput').value=credential.pin;$('#lgRememberLogin').checked=true;
-if(credential.branchId&&$('#lgBranch')?.querySelector(`option[value="${CSS.escape(String(credential.branchId))}"]`)){
-$('#lgBranch').value=String(credential.branchId);$('#lgBranch').dispatchEvent(new Event('change',{bubbles:true}));if(typeof syncBranchChoiceUI==='function')syncBranchChoiceUI();
-}
-}catch(error){$('#lgRememberLogin').checked=false;$('#lgPinInput').value='';if(error?.message!=='remember key missing')await clearRememberedLogin();}
+async function prefillLastUsername(){
+ try{
+  const raw=localStorage.getItem('superk_remember_login');
+  if(!raw){$('#lgRememberLogin').checked=false;return;}
+  const saved=JSON.parse(raw),key=await getRememberKey(false);
+  if(!key||!saved?.iv||!saved?.cipher)throw new Error('remember credential unavailable');
+  const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(saved.iv)},key,b64ToBytes(saved.cipher));
+  const credential=JSON.parse(new TextDecoder().decode(plain));
+  if(typeof credential.username!=='string'||!/^[0-9]{6}$/.test(String(credential.pin||'')))throw new Error('ข้อมูลที่จำไว้ไม่ถูกต้อง');
+  $('#lgUser').value=credential.username;$('#lgPinInput').value=credential.pin;$('#lgRememberLogin').checked=true;
+  if(credential.branchId&&$('#lgBranch')?.querySelector(`option[value="${CSS.escape(String(credential.branchId))}"]`)){
+   $('#lgBranch').value=String(credential.branchId);$('#lgBranch').dispatchEvent(new Event('change',{bubbles:true}));
+   if(typeof syncBranchChoiceUI==='function')syncBranchChoiceUI();
+  }
+ }catch(error){
+  console.warn('เรียกคืนข้อมูลเข้าสู่ระบบไม่สำเร็จ',error);
+  $('#lgRememberLogin').checked=false;$('#lgPinInput').value='';
+  await clearRememberedLogin();
+ }
 }
 $('#lgRememberLogin')?.addEventListener('change',e=>{if(!e.target.checked)void clearRememberedLogin();});
+
 function revealLogin(message = '') {
 $('#bootScreen').classList.add('hide'); $('#app').classList.add('hide'); $('#login').classList.remove('hide'); void prefillLastUsername();
 if (message) $('#lgMsg').textContent = message;
