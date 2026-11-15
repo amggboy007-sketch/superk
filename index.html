@@ -4342,7 +4342,7 @@ const resetAudit = stockResetLog && (!lastReset || Number(stockResetLog.ts) > Nu
 return `<div class="sect"><h2>ตั้งค่าระบบ</h2><small>กำหนดค่าการแสดงผลและข้อมูล</small></div>
   <div class="dash-grid settings-grid">
     ${can.manageBranches() ? branchManagerCardMarkup('') : ''}
-    ${canManageSite ? `<div class="dash-card disclosure-card site-admin-card" id="siteAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="siteAdminDisclosurePanel"><span>🌐 จัดการเว็บไซต์</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="siteAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><p class="settings-hint">แยกโลโก้ทางการ Super K ออกจากโลโก้สาขาอย่างชัดเจน โลโก้ทางการจะแสดงที่หน้า Login และหน้ารอสักครู่ ส่วนโลโก้สาขาจะแสดงที่หัวเว็บไซต์หลังเข้าสู่ระบบ</p><section class="official-logo-settings"><h4>🏅 โลโก้ทางการ Super K</h4><label class="fld"><span>อัปโหลดโลโก้เว็บไซต์ (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="officialLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame official"><img id="officialLogoPreview" class="site-logo-preview" alt="ตัวอย่างโลโก้ทางการ" ${officialSiteBrand.logoData ? `src="${esc(officialSiteBrand.logoData)}"` : 'hidden'}></div><small>แสดงที่มุมขวาของการ์ด Login และหน้ารอสักครู่</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearOfficialLogoBtn">นำโลโก้ทางการออก</button><button type="button" class="btn sm" id="saveOfficialLogoBtn">บันทึกโลโก้ทางการ</button></div></section><section class="branch-logo-settings"><h4>🏬 โลโก้ประจำสาขา</h4><label class="fld"><span>ชื่อเว็บไซต์</span><input class="in" id="siteNameInput" maxlength="60" value="${esc(siteBrand.siteName)}" placeholder="ชื่อเว็บไซต์"></label><label class="fld"><span>ชื่อสาขา</span><input class="in" id="siteBranchNameInput" maxlength="80" value="${esc(currentBranch.name)}" placeholder="ชื่อสาขา"></label><label class="fld"><span>อัปโหลดโลโก้สาขา (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="siteLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame branch"><img id="siteLogoPreview" class="site-logo-preview site-brand-image" alt="ตัวอย่างโลโก้สาขา" ${siteBrand.logoData ? `src="${esc(siteBrand.logoData)}"` : 'hidden'}></div><small>แสดงมุมซ้ายบนของหัวเว็บไซต์เมื่อเข้าสู่สาขานี้</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearSiteLogoBtn">นำโลโก้สาขาออก</button><button type="button" class="btn sm" id="saveSiteBrandBtn">บันทึกข้อมูลสาขา</button></div></section><small class="settings-hint">รองรับรูปต้นฉบับสูงสุด 20 MB ระบบย่อและบีบอัดเป็น WEBP อัตโนมัติ โดยคงสัดส่วนภาพ</small></div></div></div>` : ''}
+    ${canManageSite ? `<div class="dash-card disclosure-card site-admin-card" id="siteAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="siteAdminDisclosurePanel"><span>🌐 จัดการเว็บไซต์</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="siteAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner"><p class="settings-hint">แยกโลโก้ทางการ Super K ออกจากโลโก้สาขาอย่างชัดเจน โลโก้ทางการจะแสดงที่หน้า Login และหน้ารอสักครู่ ส่วนโลโก้สาขาจะแสดงที่หัวเว็บไซต์หลังเข้าสู่ระบบ</p><section class="official-logo-settings"><h4>🏅 โลโก้ทางการ Super K</h4><label class="fld"><span>อัปโหลดโลโก้เว็บไซต์ (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="officialLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame official"><img id="officialLogoPreview" class="site-logo-preview" alt="ตัวอย่างโลโก้ทางการ" ${officialSiteBrand.logoData ? `src="${esc(officialSiteBrand.logoData)}"` : 'hidden'}></div><small>แสดงมุมขวาบนของหน้าเข้าสู่ระบบ และบนหน้ารอสักครู่</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearOfficialLogoBtn">นำโลโก้ทางการออก</button><button type="button" class="btn sm" id="saveOfficialLogoBtn">บันทึกโลโก้ทางการ</button></div></section><section class="branch-logo-settings"><h4>🏬 โลโก้ประจำสาขา</h4><label class="fld"><span>ชื่อเว็บไซต์</span><input class="in" id="siteNameInput" maxlength="60" value="${esc(siteBrand.siteName)}" placeholder="ชื่อเว็บไซต์"></label><label class="fld"><span>ชื่อสาขา</span><input class="in" id="siteBranchNameInput" maxlength="80" value="${esc(currentBranch.name)}" placeholder="ชื่อสาขา"></label><label class="fld"><span>อัปโหลดโลโก้สาขา (PNG, JPG หรือ WEBP)</span><input class="in" type="file" id="siteLogoInput" accept="image/png,image/jpeg,image/webp"></label><div class="site-logo-preview-wrap"><div class="site-logo-preview-frame branch"><img id="siteLogoPreview" class="site-logo-preview site-brand-image" alt="ตัวอย่างโลโก้สาขา" ${siteBrand.logoData ? `src="${esc(siteBrand.logoData)}"` : 'hidden'}></div><small>แสดงมุมซ้ายบนของหัวเว็บไซต์เมื่อเข้าสู่สาขานี้</small></div><div class="site-admin-actions"><button type="button" class="btn sm sec" id="clearSiteLogoBtn">นำโลโก้สาขาออก</button><button type="button" class="btn sm" id="saveSiteBrandBtn">บันทึกข้อมูลสาขา</button></div></section><small class="settings-hint">รองรับรูปต้นฉบับสูงสุด 20 MB ระบบย่อและบีบอัดเป็น WEBP อัตโนมัติ โดยคงสัดส่วนภาพ</small></div></div></div>` : ''}
     ${isAnnouncer() ? `<div class="dash-card disclosure-card announce-card" id="announceCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="announceDisclosurePanel"><span>📢 ประกาศข้อความ</span><span class="disclosure-count" id="announceCount"></span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="announceDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">
       <p class="settings-hint">ข้อความจะเลื่อนจากขวาไปซ้ายใต้หัวเว็บไซต์ของผู้ใช้ในสาขาที่เลือก จนครบเวลาที่กำหนด หรือจนกว่าจะยกเลิก</p>
       <label class="fld"><span>ข้อความประกาศ</span><textarea class="in" id="annText" rows="3" maxlength="200" placeholder="พิมพ์ข้อความที่ต้องการประกาศ"></textarea><small class="ann-counter" id="annCounter">0/200</small></label>
@@ -7902,9 +7902,7 @@ html:has(#login:not(.hide)),body:has(#login:not(.hide)){height:100%;overflow:hid
 @media(prefers-reduced-motion:reduce){.branch-choice-arrow,.branch-choice-arrow svg{transition:none!important}}
 </style>
 
-<style id="superk-login-official-logo-position-fix">
-.login-platform-brand-top #officialLoginLogo{position:relative!important;top:auto!important;right:auto!important;left:auto!important;bottom:auto!important;border:0!important;margin:0!important;align-self:center!important}
-</style>
+
 
 <style id="superk-login-tenant-branding-v4">
 /* Use each workspace's uploaded brand image in both the selected field and dropdown rows. */
@@ -7928,5 +7926,28 @@ html:has(#login:not(.hide)),body:has(#login:not(.hide)){height:100%;overflow:hid
 }
 </style>
 
+
+<style id="superk-dropdown-consistency-v1">
+/* Standard dropdowns: use a compact arrow button treatment matching the login branch picker. */
+#app select:not(.branch-choice-native):not(.flt select):not(.history-filter select):not(.ih-filter select) {
+  -webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;
+  padding-right:50px!important;background-color:var(--card-bg,#fff)!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a66f86' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E"),linear-gradient(145deg,#fff,#fff0f4)!important;
+  background-repeat:no-repeat,no-repeat!important;background-size:16px 16px,32px 32px!important;
+  background-position:right 14px center,right 6px center!important;
+}
+#app select:not(.branch-choice-native):not(.flt select):not(.history-filter select):not(.ih-filter select):focus{border-color:var(--acc)!important}
+#app .flt select,#app .history-filter select,#app .ih-filter select {
+  -webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;
+  padding-right:38px!important;background-repeat:no-repeat!important;background-size:16px 16px!important;
+  background-position:right 11px center!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23877987' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E")!important;
+}
+#app .history-filter select::-ms-expand,#app .ih-filter select::-ms-expand,#app .flt select::-ms-expand{display:none}
+@media(max-width:680px){
+ #app select:not(.branch-choice-native):not(.flt select):not(.history-filter select):not(.ih-filter select){padding-right:46px!important;background-position:right 13px center,right 5px center!important;background-size:15px 15px,31px 31px!important}
+ #app .flt select,#app .history-filter select,#app .ih-filter select{padding-right:36px!important;background-position:right 10px center!important}
+}
+</style>
 </body>
 </html>
