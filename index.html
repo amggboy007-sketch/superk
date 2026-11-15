@@ -1381,6 +1381,9 @@ html.nav-busy .card-mascot{animation-play-state:paused!important}
 .pin-remember{display:flex;align-items:center;gap:8px;margin:2px 0 12px;font-size:13px;color:var(--mute);cursor:pointer;-webkit-user-select:none;user-select:none}
 .pin-remember input{width:18px;height:18px;margin:0;accent-color:var(--acc);flex:none}
 
+.login-remember{margin:2px 0 3px!important;color:var(--ink)!important;font-size:13px!important;font-weight:650}
+.login-remember input{width:17px!important;height:17px!important;accent-color:var(--acc)}
+.login-remember-note{display:block;margin:-1px 0 10px 25px;color:var(--mute);font-size:10.5px;line-height:1.35}
 /* ===== Settings drop-down: full-width panel + new chevron badge ===== */
 .disclosure-panel.open .disclosure-inner,.disclosure-inner{padding-right:14px!important}
 .disclosure-chevron{display:grid;place-items:center;width:30px;height:30px;margin-left:auto;border:1px solid color-mix(in srgb,var(--acc) 34%,var(--card-bg));border-radius:10px;background:color-mix(in srgb,var(--acc) 13%,var(--card-bg));color:var(--acc-hover);transform:none;transition:background-color .25s ease,border-color .25s ease,color .25s ease!important}
@@ -1864,6 +1867,8 @@ try {
       <small class="branch-help">เลือกพื้นที่ใช้งานที่คุณสมัครไว้ เพื่อเข้าสู่ระบบ</small>
       <label class="fld"><span>ชื่อผู้ใช้</span><input class="in" id="lgUser" name="username" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="ชื่อผู้ใช้ของคุณ" required></label>
       <label class="fld"><span>รหัสลับ 6 หลัก</span><input class="in" id="lgPinInput" name="pin" type="password" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="current-password" placeholder="••••••" style="letter-spacing:5px;text-align:center;font-size:18px"></label>
+      <label class="pin-remember login-remember" for="lgRememberLogin"><input type="checkbox" id="lgRememberLogin" name="rememberLogin"><span>จดจำการเข้าสู่ระบบของฉัน</span></label>
+      <small class="login-remember-note">จำชื่อผู้ใช้และเว็บไซต์ที่เลือกไว้บนอุปกรณ์นี้ โดยไม่บันทึกรหัสลับ</small>
       <div class="msg" id="lgMsg" role="alert" aria-live="polite"></div>
       <button type="submit" class="btn login-submit">เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
       <div class="hint hide" id="lgHint">เข้าใช้งานครั้งแรก ให้เจ้าของร้านลงชื่อเข้าใช้และตั้งรหัสใหม่</div>
@@ -2750,7 +2755,7 @@ updateSubscriptionHeader(); updateSubscriptionCountdowns();
 }
 document.getElementById('subscriptionExpiredLogout')?.addEventListener('click', () => logout());
 async function tryLogin() {
-const name = $('#lgUser').value.trim().toLowerCase(), pinVal = $('#lgPinInput').value, msg = $('#lgMsg');
+const name = $('#lgUser').value.trim().toLowerCase(), pinVal = $('#lgPinInput').value, msg = $('#lgMsg'), rememberLogin = !!$('#lgRememberLogin')?.checked;
 const fail = t => { msg.textContent = t; $('#lgPinInput').value = ''; };
 if (Date.now() < lock.until) return fail(`ระงับชั่วคราว รออีก ${Math.ceil((lock.until - Date.now()) / 1000)} วิ`);
 const branchId = $('#lgBranch').value;
@@ -2773,7 +2778,10 @@ catch (error) { sess.set(null); return fail(error.message || 'ตรวจสอ
 if (subscription.expired && !subscription.owner) { currentSubscription = subscription; showSubscriptionExpired(subscription); return; }
 currentSubscription = subscription; updateSubscriptionHeader(subscription);
 lock = { n: 0, until: 0 }; store.set('inv_lock', lock);
-if (IS_MOBILE_BROWSER) { try { localStorage.setItem('inv_last_username', name); } catch {} }
+try {
+  if (rememberLogin) localStorage.setItem('superk_remember_login', JSON.stringify({ username: name, branchId }));
+  else localStorage.removeItem('superk_remember_login');
+} catch {}
 let result;
 try { result = await cloudRpc('api_get_state', { p_branch_id: branchId }); }
 catch (error) { sess.set(null); return fail(error.message || 'บัญชีนี้ไม่มีสิทธิ์เข้าสาขาที่เลือก'); }
@@ -5847,8 +5855,21 @@ closeModal(); toast('เปลี่ยนรหัสสำเร็จ');
 };
 }
 function prefillLastUsername() {
-if (!IS_MOBILE_BROWSER) return;
-try { const last = localStorage.getItem('inv_last_username'); if (last && !$('#lgUser').value) $('#lgUser').value = last; } catch {}
+try {
+  const raw = localStorage.getItem('superk_remember_login');
+  const saved = raw ? JSON.parse(raw) : null;
+  if (!saved || typeof saved.username !== 'string') {
+    $('#lgRememberLogin').checked = false;
+    return;
+  }
+  if (!$('#lgUser').value) $('#lgUser').value = saved.username;
+  $('#lgRememberLogin').checked = true;
+  if (saved.branchId && $('#lgBranch')?.querySelector(`option[value="${CSS.escape(String(saved.branchId))}"]`)) {
+    $('#lgBranch').value = String(saved.branchId);
+    $('#lgBranch').dispatchEvent(new Event('change', { bubbles: true }));
+    if (typeof syncBranchChoiceUI === 'function') syncBranchChoiceUI();
+  }
+} catch { $('#lgRememberLogin').checked = false; }
 }
 function revealLogin(message = '') {
 $('#bootScreen').classList.add('hide'); $('#app').classList.add('hide'); $('#login').classList.remove('hide'); prefillLastUsername();
