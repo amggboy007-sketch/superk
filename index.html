@@ -930,6 +930,10 @@ html.dark-theme .theme-opt:not([data-dark="1"]) .theme-emoji{background:linear-g
 @media(min-width:1100px){.ef-page{inset:10px 10px 10px auto;width:min(760px,96vw);border:1px solid var(--line);border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.18)}}
 
 .settings-grid .theme-picker-card .text-scale-card{padding:12px 0;border-bottom:1px solid var(--line);margin:0 0 12px}.settings-grid .theme-picker-card>.disclosure-panel>.disclosure-inner>h3{font-size:15px;margin:2px 0 6px}.settings-grid .theme-picker-card .text-scale-card h3{font-size:15px;margin:0 0 6px}
+/* Remove decorative mascot only from the Settings branch dropdown card */
+.settings-grid>.branch-admin-disclosure .card-mascot{display:none!important}
+.settings-grid>.branch-admin-disclosure.has-card-mascot{padding:0!important}
+.settings-grid>.branch-admin-disclosure{overflow:hidden}
 /* Branch manager in Settings uses the same disclosure/dropdown pattern as other sections */
 .settings-grid>.branch-admin-disclosure{grid-column:1;grid-row:1;padding:0!important;overflow:hidden}
 .settings-grid>.branch-admin-disclosure>.disclosure-summary{min-height:54px}
@@ -2952,7 +2956,7 @@ function branchManagerCardMarkup(prefix = '') {
 }
 function branchManagerSettingsDisclosureMarkup() {
   const card = branchManagerCardMarkup('').replace('<div class="dash-card branch-admin-card bm-card">','<div class="bm-card">').replace(/<h3>🏬 จัดการสาข<span class="bm-count">.*?<\/span><\/h3>/,'');
-  return `<div class="dash-card disclosure-card branch-admin-card branch-admin-disclosure" id="branchAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="branchAdminDisclosurePanel"><span>🏬 จัดการสาข</span><span class="disclosure-count">${branches.length} สาขา</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="branchAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">${card}</div></div></div>`;
+  return `<div class="dash-card disclosure-card branch-admin-card branch-admin-disclosure" id="branchAdminCard"><button type="button" class="disclosure-summary" data-disclosure-toggle aria-expanded="false" aria-controls="branchAdminDisclosurePanel"><span>🏬 จัดการสาขา</span><span class="disclosure-count">${branches.length} สาขา</span><span class="disclosure-chevron" aria-hidden="true"></span></button><div class="disclosure-panel" id="branchAdminDisclosurePanel" aria-hidden="true" inert><div class="disclosure-inner">${card}</div></div></div>`;
 }
 
 function updateSubscriptionCountdowns() {
