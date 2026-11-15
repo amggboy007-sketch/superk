@@ -930,20 +930,20 @@ html.dark-theme .theme-opt:not([data-dark="1"]) .theme-emoji{background:linear-g
 @media(min-width:1100px){.ef-page{inset:10px 10px 10px auto;width:min(760px,96vw);border:1px solid var(--line);border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.18)}}
 
 .settings-grid .theme-picker-card .text-scale-card{padding:12px 0;border-bottom:1px solid var(--line);margin:0 0 12px}.settings-grid .theme-picker-card>.disclosure-panel>.disclosure-inner>h3{font-size:15px;margin:2px 0 6px}.settings-grid .theme-picker-card .text-scale-card h3{font-size:15px;margin:0 0 6px}
-/* ===== Super K wide rounded header card ===== */
+/* ===== Super K near-edge sticky header card ===== */
 #app .top{
- position:relative!important;
- top:auto!important;
+ position:sticky!important;
+ top:calc(env(safe-area-inset-top,0px) + 8px)!important;
  z-index:30;
  box-sizing:border-box;
  display:flex;
  align-items:center;
  justify-content:space-between;
  gap:12px;
- width:calc(100% - 28px)!important;
- max-width:1680px!important;
+ width:calc(100% - 12px)!important;
+ max-width:none!important;
  min-height:58px;
- margin:10px auto 0!important;
+ margin:8px 6px 0!important;
  padding:9px 16px!important;
  border:1px solid var(--theme-border-strong)!important;
  border-radius:22px!important;
@@ -958,10 +958,17 @@ html.dark-theme .theme-opt:not([data-dark="1"]) .theme-emoji{background:linear-g
 #app .top .brand-copy{min-width:0}
 #app .top .me{flex:0 0 auto}
 #app .top .brand-badge{box-shadow:0 4px 12px var(--theme-shadow)}
-/* Announcement stays in normal document flow; it never sticks over the header */
-#app .announce-bar{position:relative!important;top:auto!important;z-index:1!important;margin:7px 14px 0!important;width:auto;box-sizing:border-box}
+/* Announcement remains sticky directly beneath the header, never over it */
+#app .announce-bar{
+ position:sticky!important;
+ top:calc(env(safe-area-inset-top,0px) + 8px + var(--top-h,58px) + 6px)!important;
+ z-index:29!important;
+ box-sizing:border-box;
+ width:calc(100% - 12px)!important;
+ margin:7px 6px 0!important;
+}
 @media(max-width:680px){
- #app .top{width:calc(100% - 24px)!important;min-height:58px;margin:9px 12px 0!important;padding:8px 11px!important;gap:8px;border-radius:20px!important}
+ #app .top{width:calc(100% - 12px)!important;min-height:58px;margin:8px 6px 0!important;padding:8px 11px!important;gap:8px;border-radius:20px!important}
  #app .top .brand{gap:7px}
  #app .top .brand-copy{max-width:min(49vw,220px)}
  #app .top .brand-title{font-size:15px}
@@ -971,16 +978,15 @@ html.dark-theme .theme-opt:not([data-dark="1"]) .theme-emoji{background:linear-g
  #app .top .me-name-row b{font-size:11px}
  #app .top .me-info>span{font-size:9px}
  #app .top .me-btn{width:29px;height:29px;min-width:29px}
- #app .announce-bar{margin:7px 12px 0!important}
+ #app .announce-bar{width:calc(100% - 12px)!important;margin:7px 6px 0!important}
 }
 @media(max-width:360px){
- #app .top{width:calc(100% - 20px)!important;margin-left:10px!important;margin-right:10px!important;padding-left:8px!important;padding-right:8px!important;gap:5px}
+ #app .top{padding-left:8px!important;padding-right:8px!important;gap:5px}
  #app .top .brand-copy{max-width:43vw}
  #app .top .me-info{max-width:76px}
 }
-@media(min-width:1100px){
- #app .top{width:calc(100% - clamp(48px,6vw,112px))!important;max-width:1680px!important;min-height:64px;margin:12px auto 0!important;padding:9px 22px!important;border-radius:23px!important}
- #app .announce-bar{width:calc(100% - clamp(48px,6vw,112px));max-width:1680px;margin:8px auto 0!important}
+@media(prefers-reduced-motion:reduce){
+ #app .top,#app .announce-bar{scroll-behavior:auto}
 }
 </style>
 <style id="smooth-motion">
