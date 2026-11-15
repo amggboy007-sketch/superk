@@ -1390,14 +1390,14 @@ html.nav-busy .card-mascot{animation-play-state:paused!important}
 /* ===== แผงจัดการสาขาด้านขวา ===== */
 .sd-right-scrim{position:fixed;inset:0;z-index:42;background:rgba(40,28,36,.2);opacity:0;pointer-events:none;transition:opacity .24s ease}
 .sd-right-scrim.show{opacity:1;pointer-events:auto}
-.sd-right-dock{position:fixed;right:0;top:calc(var(--top-h,56px) + var(--ann-h,0px) + var(--dock-gap,14px));z-index:44;display:none;width:min(360px,calc(100vw - 72px))}
+.sd-right-dock{position:fixed;right:0;top:calc(var(--top-h,56px) + var(--ann-h,0px) + var(--dock-gap,14px));z-index:44;display:none;width:0}
 .sd-right-dock.on{display:block}
-.sd-right-panel{position:relative;width:100%;max-height:min(72vh,640px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:10px;border:1px solid var(--line);border-right:0;border-radius:18px 0 0 18px;background:var(--card-bg);box-shadow:0 16px 42px rgba(25,35,31,.18);transform:translate3d(105%,0,0);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.sd-right-panel{position:absolute;right:0;top:0;width:min(360px,calc(100vw - 72px));max-height:min(72vh,640px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:10px;border:1px solid var(--line);border-right:0;border-radius:18px 0 0 18px;background:var(--card-bg);box-shadow:0 16px 42px rgba(25,35,31,.18);transform:translate3d(105%,0,0);transition:transform .3s cubic-bezier(.32,.72,0,1)}
 .sd-right-dock.open .sd-right-panel{transform:translate3d(0,0,0)}
-.sd-right-head{display:flex;align-items:center;justify-content:flex-end;min-height:26px;margin-bottom:6px}
+.sd-right-head{display:flex;align-items:center;justify-content:flex-end;min-height:26px;margin-bottom:6px;padding-right:42px}
 .sd-right-head small{margin-right:auto;color:var(--mute);font-size:10px;font-weight:700}
 .sd-right-close{width:30px;height:30px;border:1px solid var(--line);border-radius:10px;background:var(--theme-wash);color:var(--ink);font-size:18px;line-height:1}
-.sd-right-tab{position:absolute;left:-38px;top:0;width:32px;height:38px;display:grid;place-items:center;padding:0;border:1.5px solid color-mix(in srgb,var(--acc-hover,var(--acc)) 38%,transparent);border-radius:13px 0 0 13px;background:color-mix(in srgb,var(--acc) 58%,transparent);color:#fff;cursor:pointer;transition:background-color .2s ease,transform .12s ease}
+.sd-right-tab{position:absolute;right:6px;left:auto;top:0;width:32px;height:38px;display:grid;place-items:center;padding:0;border:1.5px solid color-mix(in srgb,var(--acc-hover,var(--acc)) 38%,transparent);border-radius:13px 0 0 13px;background:color-mix(in srgb,var(--acc) 58%,transparent);color:#fff;cursor:pointer;transition:background-color .2s ease,transform .12s ease}
 .sd-right-tab svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .28s cubic-bezier(.32,.72,0,1)}
 .sd-right-dock.open .sd-right-tab{background:color-mix(in srgb,var(--acc) 76%,transparent)}
 .sd-right-dock.open .sd-right-tab svg{transform:rotate(180deg)}
@@ -3346,6 +3346,8 @@ document.addEventListener('pointercancel', e => end(e, true));
 })();
 function updatePageMascots() {
 const main = $('#main'), friends = THEME_CARD_FRIENDS[currentTheme] || THEMES[currentTheme]?.friends || ['🍣','🍙','🍤'];
+document.querySelectorAll('#jobPage .card-mascot,#eggFeedPage .card-mascot').forEach(node => node.remove());
+document.querySelectorAll('#jobPage .has-card-mascot,#eggFeedPage .has-card-mascot').forEach(card => card.classList.remove('has-card-mascot'));
 main.querySelectorAll('.page-mascots').forEach(row => row.remove());
 main.querySelectorAll('.card-mascot').forEach(mascot => mascot.remove());
 main.querySelectorAll('.has-card-mascot').forEach(card => card.classList.remove('has-card-mascot'));
@@ -6703,7 +6705,7 @@ const JMENU = [{ id: 'jobs', icon: '🗓️', label: 'จ๊อบพนัก�
   const page = document.createElement('div'); page.className = 'jp'; page.id = 'jobPage'; page.setAttribute('aria-hidden', 'true');
   const rightScrim = document.createElement('div'); rightScrim.className = 'sd-right-scrim';
   const rightDock = document.createElement('div'); rightDock.className = 'sd-right-dock';
-  rightDock.innerHTML = '<div class="sd-right-panel"><div class="sd-right-head"><small>SUPER K · ADMIN</small><button type="button" class="sd-right-close" aria-label="ปิดแผงจัดการสาขา">×</button></div><div id="sdBranchManagerBody"></div></div><button type="button" class="sd-right-tab" aria-label="เปิดจัดการสาขา" title="จัดการสาขา"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>';
+  rightDock.innerHTML = '<div class="sd-right-panel"><div class="sd-right-head"><small>SUPER K · ADMIN</small></div><div id="sdBranchManagerBody"></div></div><button type="button" class="sd-right-tab" aria-label="เปิดจัดการสาขา" title="จัดการสาขา"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>';
   page.innerHTML = '<div class="jp-head"><button type="button" class="jp-btn sq" id="jpBack" aria-label="กลับ"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><h2>🗓️ จ๊อบพนักงาน</h2><button type="button" class="jp-btn sq" id="jpGear" aria-label="ตั้งค่า"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div><div class="jp-body" id="jpBody"></div><div class="jp-undo" id="jpUndo"><span>คัดลอกตารางแล้ว</span><button type="button" class="jp-btn" id="jpUndoBtn">ย้อนกลับ</button></div><button type="button" class="jp-fab" id="jpAdd">+ แจ้งสถานะ</button>';
   document.body.append(scrim, dock, page, rightScrim, rightDock);
   const items = $('#sdItems');
@@ -6724,7 +6726,6 @@ const JMENU = [{ id: 'jobs', icon: '🗓️', label: 'จ๊อบพนัก�
     refreshBranchOnline();
   };
   rightDock.querySelector('.sd-right-tab').onclick = () => rightMenuOpen(!rightDock.classList.contains('open'));
-  rightDock.querySelector('.sd-right-close').onclick = () => rightMenuOpen(false);
   rightScrim.onclick = () => rightMenuOpen(false);
   let rightTouchX = 0;
   rightDock.querySelector('.sd-right-panel').addEventListener('touchstart', e => { rightTouchX = e.touches[0].clientX; }, {passive:true});
@@ -6787,7 +6788,7 @@ const JMENU = [{ id: 'jobs', icon: '🗓️', label: 'จ๊อบพนัก�
  document.body.append(page);
  const body=()=>document.getElementById('efBody');
  window.eggFeedClose=()=>page.classList.remove('open');
- window.eggFeedOpen=async()=>{if(!can.eggFeed())return toast('ไม่มีสิทธิ์ใช้งานฟีด Super K',1);page.classList.add('open');updatePageMascots();await load();};
+ window.eggFeedOpen=async()=>{if(!can.eggFeed())return toast('ไม่มีสิทธิ์ใช้งานฟีด Super K',1);page.classList.add('open');await load();updatePageMascots();};
  async function readImage(file){
   if(!file)return '';
   if(!file.type.startsWith('image/'))throw new Error('กรุณาเลือกไฟล์รูปภาพ');
